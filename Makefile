@@ -1,28 +1,39 @@
-NAME	= minishell
+NAME		= minishell
 
-CC		= gcc
-CFLAGS	= -Wall -Wextra -Werror -lreadline
+CC			= gcc
+CFLAGS		= -Wall -Wextra -Werror
+READLINE	= -lreadline
+DSRCS		= src/
 
-SRC		= src/main.c src/signal.c
-OBJ		= ${SRC:.c=.o}
+FILES		= main utils/signal
+FSRCS		= $(addprefix $(DSRCS), ${addsuffix .c, ${FILES}})
+DOBJS		= objs/
+FOBJS		= $(addprefix $(DOBJS), ${addsuffix .o, ${FILES}})
 
-LIBFT_DIR	= libft
-LIBFT_LIB	= libft.a
+LIBD		= libft
+LIBA		= libft.a
 
-${LIBFT_LIB}:
-	@make bonus -C ${LIBFT_DIR}
+all:
+	@mkdir -p ${DOBJS}
+	@make ${NAME}
 
-all: ${NAME}
+$(DOBJS)%.o: ${DSRCS}%.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
-${NAME}:	${LIBFT_LIB} ${OBJ}
-	${CC} ${CFLAGS} ${OBJ} ${LIBFT_DIR}/${LIBFT_LIB} -o ${NAME}
+${NAME}:	${LIBD}/${LIBA} ${FOBJS}
+	@${CC} ${CFLAGS} ${FOBJS} ${READLINE} -L${LIBD} -lft -o ${NAME}
+
+${LIBD}/${LIBA}:
+	@make -C ${LIBD}
 
 clean: ${OBJ}
-	@make clean -C ${LIBFT_DIR}
-	rm -rf ${OBJ}
+	@make clean -C ${LIBD}
+	rm -rf ${DOBJS}
 
 fclean: clean
-	@make fclean -C ${LIBFT_DIR}
+	@make fclean -C ${LIBD}
 	rm -rf ${NAME}
 
 re: fclean all
+
+.PHONY:	all clean fclean re
