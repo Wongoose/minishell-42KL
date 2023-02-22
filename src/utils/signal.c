@@ -1,4 +1,4 @@
-#include "../minishell.h"
+#include "../../minishell.h"
 
 // NEXT: Fix echo, need to hide ^C?
 void	ms_init_signal(void)
