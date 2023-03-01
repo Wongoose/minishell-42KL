@@ -2,6 +2,7 @@
 # define MINISHELL_H
 
 # include "libft/libft.h"
+# include "ft_printf/includes/ft_printf.h"
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <sys/ioctl.h>
@@ -34,6 +35,8 @@ typedef struct s_vars
 	t_func	func[7];
 }	t_vars;
 
-void	ms_init_signal(void);
+void	init_signal(void);
+int	func_cd(t_vars *vars, char **args);
+int	func_echo(t_vars *vars, char **argv);
 
 #endif

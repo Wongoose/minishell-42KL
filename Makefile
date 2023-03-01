@@ -1,8 +1,8 @@
 NAME		= minishell
 
 CC			= gcc
-CFLAGS		= -Wall -Wextra -Werror
-READLINE	= -lreadline
+CFLAGS		= -Wall -Wextra -Werror -I/usr/local/opt/readline/include
+READLINE	= -lreadline -L/usr/local/opt/readline/lib
 
 DSRCS		= src/
 DOBJS		= objs/
@@ -17,6 +17,9 @@ FOBJS		= ${subst ${DSRCS}, ${DOBJS}, $(FSRCS:.c=.o)}
 LIBD		= libft
 LIBA		= libft.a
 
+PRINTFD		= ft_printf
+PRINTFA		= libftprintf.a
+
 all:
 	@mkdir -p ${ODIRS}
 	@make ${NAME}
@@ -24,18 +27,23 @@ all:
 $(DOBJS)%.o: ${DSRCS}%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-${NAME}:	${LIBD}/${LIBA} ${FOBJS}
-	@${CC} ${CFLAGS} ${FOBJS} ${LIBD}/${LIBA} ${READLINE} -o ${NAME}
+${NAME}:	${LIBD}/${LIBA} ${PRINTFD}/${PRINTFA} ${FOBJS}
+	@${CC} ${CFLAGS} ${FOBJS} ${LIBD}/${LIBA} ${PRINTFD}/${PRINTFA} -o ${NAME} ${READLINE}
 
 ${LIBD}/${LIBA}:
 	@make -C ${LIBD}
 
+${PRINTFD}/${PRINTFA}:
+	@make -C ${PRINTFD}
+
 clean: ${OBJ}
 	@make clean -C ${LIBD}
+	@make clean -C ${PRINTFD}
 	rm -rf ${DOBJS}
 
 fclean: clean
 	@make fclean -C ${LIBD}
+	@make fclean -C ${PRINTFD}
 	rm -rf ${NAME}
 
 re: fclean all
