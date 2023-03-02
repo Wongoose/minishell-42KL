@@ -19,13 +19,13 @@ typedef int	(*t_func)(struct s_vars *vars, char **args);
 
 typedef enum e_function
 {
-	MS_ECHO = 0,
-	MS_CD = 1,
-	MS_PWD = 2,
-	MS_EXPORT = 3,
-	MS_UNSET = 4,
-	MS_ENV = 5,
-	MS_EXIT = 6,
+	E_ECHO = 0,
+	E_CD = 1,
+	E_PWD = 2,
+	E_EXPORT = 3,
+	E_UNSET = 4,
+	E_ENV = 5,
+	E_EXIT = 6,
 }	t_function;
 
 typedef struct s_vars
@@ -38,5 +38,6 @@ typedef struct s_vars
 void	init_signal(void);
 int	func_cd(t_vars *vars, char **args);
 int	func_echo(t_vars *vars, char **argv);
+char	*get_envp_value(char **envp, char *key);
 
 #endif

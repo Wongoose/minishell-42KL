@@ -29,8 +29,9 @@ int	check_flag(char **argv)
 
 int	func_echo(t_vars *vars, char **argv)
 {
-	int	i;
-	int	flag_count;
+	int		i;
+	int		flag_count;
+	(void)	vars;
 
 	if (argv[1] == 0)
 	{
@@ -46,4 +47,5 @@ int	func_echo(t_vars *vars, char **argv)
 			ft_printf(" ");
 		i++;
 	}
+	return (0);
 }

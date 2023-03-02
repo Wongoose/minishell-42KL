@@ -9,7 +9,7 @@ DOBJS		= objs/
 
 ODIRS		= ${subst ${DSRCS}, ${DOBJS}, $(shell find src -type d)}
 
-FILES		= main utils/signal
+FILES		= main utils/signal functions/func_cd functions/func_echo helper/helper_envp
 FSRCS		= $(addprefix $(DSRCS), ${addsuffix .c, ${FILES}})
 FOBJS		= ${subst ${DSRCS}, ${DOBJS}, $(FSRCS:.c=.o)}
 # FOBJS		= $(addprefix $(DOBJS), ${addsuffix .o, ${FILES}})
