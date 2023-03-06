@@ -55,7 +55,7 @@ void	read_terminal(t_vars *vars)
 	if (ft_strlen(input) != 0)
 	{
 		printf(":> %s\n", input);
-		// add_history(input);
+		add_history(input);
 		// if (!ms_check_dangling(input))
 		// {
 		// cmd_list = ms_get_cmd_list(vars, input); 
