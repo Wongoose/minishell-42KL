@@ -1,6 +1,5 @@
 #include "../../minishell.h"
 
-// NEXT: Do cd with envp variable
 int	func_cd(t_vars *vars, char **args)
 {
 	char	*path;
@@ -12,7 +11,7 @@ int	func_cd(t_vars *vars, char **args)
 		path = get_envp_value(vars->envp, "HOME=");
 		if (path == NULL)
 			ft_putstr_fd("HOME not set\n", STDERR_FILENO); // Error if HOME cannot be found
-		else if (chdir(path) < 0)
+		else if (chdir(path) < 0) // chdir is a system function
 			perror(path);
 		free(path);
 	}

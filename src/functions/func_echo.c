@@ -1,6 +1,6 @@
 #include "../../minishell.h"
 
-int	check_flag(char **argv)
+int	count_flags(char **argv)
 {
 	int	i;
 	int	j;
@@ -38,8 +38,8 @@ int	func_echo(t_vars *vars, char **argv)
 		ft_printf("\n");
 		return (0);
 	}
-	flag_count = check_flag(argv);
-	i = flag_count;
+	flag_count = count_flags(argv);
+	i = flag_count + 1; // before printing, jump pass the number of -n
 	while (argv[i])
 	{
 		ft_printf(argv[i]);

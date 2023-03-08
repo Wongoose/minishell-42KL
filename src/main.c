@@ -40,9 +40,8 @@ void	init_vars(t_vars *vars, char **envp)
 // NEXT: DO PIPEX
 void	read_terminal(t_vars *vars)
 {
-	// t_cmd	*cmd_list;
 	char	*input;
-	(void)vars;
+	char	**test_args;
 
 	init_signal();
 	input = readline("$> ");
@@ -54,14 +53,10 @@ void	read_terminal(t_vars *vars)
 	// Below is PIPEX
 	if (ft_strlen(input) != 0)
 	{
-		printf(":> %s\n", input);
 		add_history(input);
-		// if (!ms_check_dangling(input))
-		// {
-		// cmd_list = ms_get_cmd_list(vars, input); 
-		// ms_run_execution(main, cmd_list);
-		// ms_cmd_list_free(&cmd_list);
-		// }
+		// TEST CODE >>>
+		// test_args = ft_split(input, ' ');
+		// vars->func[E_ECHO](vars, test_args);
 	}
 	free(input);
 }
