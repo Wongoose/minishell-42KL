@@ -36,8 +36,16 @@ typedef struct s_vars
 }	t_vars;
 
 void	init_signal(void);
-int	func_cd(t_vars *vars, char **args);
-int	func_echo(t_vars *vars, char **argv);
+
+// built_in_functions
+int		func_echo(t_vars *vars, char **argv);
+int		func_cd(t_vars *vars, char **args);
+int		func_pwd(t_vars *vars, char **args);
+int		func_exit(t_vars *vars, char **args);
+int		func_export(t_vars *vars, char **args);
+int		verify_variable(char *variable);
+int		export_error(int condition, char *var);
+
 char	*get_envp_value(char **envp, char *key);
 
 #endif

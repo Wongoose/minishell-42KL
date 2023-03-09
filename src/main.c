@@ -8,11 +8,11 @@ void	init_vars(t_vars *vars, char **envp)
 	// below are all function pointers (not yet define functions)
 	vars->func[E_ECHO] = func_echo;
 	vars->func[E_CD] = func_cd;
-	// vars->func[MS_PWD] = ms_pwd;
-	// vars->func[MS_EXPORT] = ms_export;
+	vars->func[E_PWD] = func_pwd;
+	// vars->func[E_EXPORT] = func_export;
 	// vars->func[MS_UNSET] = ms_unset;
 	// vars->func[MS_ENV] = ms_env;
-	// vars->func[MS_EXIT] = ms_exit;
+	vars->func[E_EXIT] = func_exit;
 }
 
 // static t_cmd	*ms_get_cmd_list(t_main *main, char *input)
