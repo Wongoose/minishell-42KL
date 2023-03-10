@@ -18,13 +18,13 @@ void	init_signal(void)
 	if (tcgetattr(STDIN_FILENO, &termios_current) == -1)
 	{
 		perror("Tcgetattr failed\n");
-		exit(1);
+		exit(errno);
 	}
 	termios_current.c_lflag &= ~ECHOCTL; // Turning off ECHO for Ctrl key pressed
 	if (tcsetattr(STDIN_FILENO, TCSANOW, &termios_current) == -1)
 	{
 		perror("Tcsetattr failed\n");
-		exit(1);
+		exit(errno);
 	}
 	signal(SIGINT, sigint_handler); // handles Ctrl-C
 	signal(SIGQUIT, SIG_IGN); // ignores Ctrl-\' SIG_IGN = signal ignore

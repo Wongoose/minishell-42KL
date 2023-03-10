@@ -19,3 +19,20 @@ char	*get_envp_value(char **envp, char *key)
 	}
 	return (value);
 }
+
+char	**dup_envp(char **envp)
+{
+	int	i;
+	int	j;
+	char	**new_envp;
+
+	i = 0;
+	while (envp[i] != 0)
+		i++;
+	new_envp = (char **)ft_calloc(i + 1, sizeof(char *));
+	i = 0;
+	j = 0;
+	while (envp[i] != 0)
+		new_envp[j++] = ft_strdup(envp[i++]);
+	return(new_envp);
+}

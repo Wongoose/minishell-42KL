@@ -1,7 +1,7 @@
 NAME		= minishell
 
 CC			= gcc
-CFLAGS		= -Wall -Wextra -Werror -I/usr/local/opt/readline/include
+CFLAGS		= -Wall -Wextra -Werror -fsanitize=address -g3 -I/usr/local/opt/readline/include
 READLINE	= -lreadline -L/usr/local/opt/readline/lib
 
 DSRCS		= src			\
@@ -16,10 +16,13 @@ FILES		=	signal				\
 				func_cd				\
 				func_echo			\
 				func_exit			\
+				func_env			\
 				func_pwd			\
 				func_export			\
 				func_export_utils	\
-				shared_envp
+				func_unset			\
+				shared_envp			\
+				free
 
 FOBJS		= $(addprefix $(DOBJS), $(addsuffix .o, $(FILES:.c=.o)))
 
@@ -27,15 +30,8 @@ vpath %.c $(DSRCS)
 
 # ODIRS		= ${subst ${DSRCS}, ${DOBJS}, $(shell find src -type d)}
 
-<<<<<<< HEAD
-FILES		= main utils/signal functions/func_cd functions/func_echo functions/func_env \
-				shared/shared_envp
-FSRCS		= $(addprefix $(DSRCS), ${addsuffix .c, ${FILES}})
-FOBJS		= ${subst ${DSRCS}, ${DOBJS}, $(FSRCS:.c=.o)}
-=======
 # FSRCS		= $(addprefix $(DSRCS), ${addsuffix .c, ${FILES}})
 # FOBJS		= ${subst ${DSRCS}, ${DOBJS}, $(FSRCS:.c=.o)}
->>>>>>> 00172429439fc7ce59f75a2acae1d99444266b52
 # FOBJS		= $(addprefix $(DOBJS), ${addsuffix .o, ${FILES}})
 
 LIBD		= libft
@@ -53,7 +49,7 @@ $(DOBJS)%.o: %.c
 	@echo "Compiling: $<"
 	@$(CC) $(CFLAGS) -I. -c $< -o $@
 
-${NAME}:	${LIBD}/${LIBA} ${PRINTFD}/${PRINTFA} ${FOBJS}
+${NAME}:	src/main.c ${LIBD}/${LIBA} ${PRINTFD}/${PRINTFA} ${FOBJS}
 	@echo "Compiling: src/main.c"
 	@${CC} ${CFLAGS} -I. src/main.c ${FOBJS} ${LIBD}/${LIBA} ${PRINTFD}/${PRINTFA} -o ${NAME} ${READLINE}
 
