@@ -33,19 +33,19 @@ BONUS_O	= $(BONUS_S:.c=.o)
 all:		$(NAME)
 
 $(NAME):	$(OBJS) $(INCLUDE)
-	ar rcs	$(NAME) $(OBJS)
+	@ar rcs	$(NAME) $(OBJS)
 
 bonus:		$(NAME) $(BONUS_O)
-	ar rcs	$(NAME) $(BONUS_O)
+	@ar rcs	$(NAME) $(BONUS_O)
 
 # .c.o:
 # 	$(CC) $(CFLAGS) -I$(INCLUDE) -c $< -o $(<:.c=.o)
 
 clean:
-	rm -rf $(OBJS) $(BONUS_O) #clean OBJS and BONUS_O
+	@rm -rf $(OBJS) $(BONUS_O) #clean OBJS and BONUS_O
 
 fclean:		clean
-	rm -rf $(NAME) #deletes libft.a as well
+	@rm -rf $(NAME) #deletes libft.a as well
 
 re:			fclean all
 
