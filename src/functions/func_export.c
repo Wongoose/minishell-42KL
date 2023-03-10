@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/09 18:29:10 by chenlee           #+#    #+#             */
-/*   Updated: 2023/03/09 22:05:34 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/03/10 18:10:08 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,10 @@ int	add_or_replace(t_vars *vars, char **args)
 		var_val = ft_split(args[i], '=');
 		if (verify_variable(var_val[0]))
 			return (export_error(1, var_val[0]));
+		else if (check_occurance(vars->envp, var_val) == TRUE)
+			replace_env(vars, var_val);
+		else
+			add_env(vars, var_val);
 	}
 	return (0);
 }

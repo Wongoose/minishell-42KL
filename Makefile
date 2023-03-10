@@ -27,15 +27,8 @@ vpath %.c $(DSRCS)
 
 # ODIRS		= ${subst ${DSRCS}, ${DOBJS}, $(shell find src -type d)}
 
-<<<<<<< HEAD
-FILES		= main utils/signal functions/func_cd functions/func_echo functions/func_env \
-				shared/shared_envp
-FSRCS		= $(addprefix $(DSRCS), ${addsuffix .c, ${FILES}})
-FOBJS		= ${subst ${DSRCS}, ${DOBJS}, $(FSRCS:.c=.o)}
-=======
 # FSRCS		= $(addprefix $(DSRCS), ${addsuffix .c, ${FILES}})
 # FOBJS		= ${subst ${DSRCS}, ${DOBJS}, $(FSRCS:.c=.o)}
->>>>>>> 00172429439fc7ce59f75a2acae1d99444266b52
 # FOBJS		= $(addprefix $(DOBJS), ${addsuffix .o, ${FILES}})
 
 LIBD		= libft

@@ -6,20 +6,20 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/09 20:19:27 by chenlee           #+#    #+#             */
-/*   Updated: 2023/03/09 22:04:29 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/03/10 18:10:56 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	export_error(int condition, char *var)
+int	export_unset_error(int condition, char *var, char *name)
 {
 	if (condition == 1)
 		ft_printf("minishell: export: '%s': not a valid identifier\n", var);
 	return (1);
 }
 
-int	verify_variable(char *variable)
+t_bool	verify_variable(char *variable)
 {
 	int	i;
 
