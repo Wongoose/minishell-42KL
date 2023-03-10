@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   func_exit.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/09 15:22:43 by chenlee           #+#    #+#             */
-/*   Updated: 2023/03/09 19:10:45 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/03/10 16:23:02 by zwong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	func_exit(t_vars *vars, char **args)
 	ft_printf("exit\n");
 	if (!args[1])
 	{
-		;
+		status = 0;
 		// status = struct->exit_status;
 	}
 	else

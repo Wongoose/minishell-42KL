@@ -17,7 +17,7 @@
 struct s_vars;
 typedef int	(*t_func)(struct s_vars *vars, char **args);
 
-typedef enum s_bool
+typedef enum e_bool
 {
 	TRUE = 1,
 	FALSE = 0,
@@ -42,16 +42,23 @@ typedef struct s_vars
 }	t_vars;
 
 void	init_signal(void);
+char	**dup_envp(char **envp);
 
 // built_in_functions
 int		func_echo(t_vars *vars, char **argv);
 int		func_cd(t_vars *vars, char **args);
 int		func_pwd(t_vars *vars, char **args);
 int		func_exit(t_vars *vars, char **args);
+int		func_env(t_vars *vars, char **args);
 int		func_export(t_vars *vars, char **args);
 int		export_unset_error(int condition, char *var, char *name);
 t_bool	verify_variable(char *variable);
 
+int		func_unset(t_vars *vars, char **args);
+t_bool	verify_variable(char *variable);
+int		export_unset_error(int condition, char *var, char *name);
+t_bool	validate_unset(char *variable);
 char	*get_envp_value(char **envp, char *key);
+void	free_doublearray(char **data);
 
 #endif
