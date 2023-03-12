@@ -12,16 +12,16 @@ DSRCS		= src			\
 
 DOBJS		= objs/
 
-FILES		=	signal				\
-				func_cd				\
-				func_echo			\
-				func_exit			\
-				func_env			\
-				func_pwd			\
-				func_export			\
-				func_export_utils	\
-				func_unset			\
-				shared_envp			\
+FILES		=	signal					\
+				func_cd					\
+				func_echo				\
+				func_exit				\
+				func_env				\
+				func_pwd				\
+				func_export				\
+				func_export_unset_utils	\
+				func_unset				\
+				shared_envp				\
 				free
 
 FOBJS		= $(addprefix $(DOBJS), $(addsuffix .o, $(FILES:.c=.o)))

@@ -9,7 +9,7 @@ void	init_vars(t_vars *vars, char **envp)
 	vars->func[E_ECHO] = func_echo;
 	vars->func[E_CD] = func_cd;
 	vars->func[E_PWD] = func_pwd;
-	// vars->func[E_EXPORT] = func_export;
+	vars->func[E_EXPORT] = func_export;
 	vars->func[E_UNSET] = func_unset;
 	vars->func[E_ENV] = func_env;
 	vars->func[E_EXIT] = func_exit;
@@ -57,7 +57,9 @@ void	read_terminal(t_vars *vars)
 		add_history(input);
 		// TEST CODE >>>
 		test_args = ft_split(input, ' ');
-		vars->func[E_PWD](vars, test_args);
+		if (ft_strcmp(test_args[0], "exit") == 0)
+			vars->func[E_EXIT](vars, test_args);
+		vars->func[E_EXPORT](vars, test_args);
 	}
 	free(input);
 }

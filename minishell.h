@@ -52,6 +52,8 @@ int		func_exit(t_vars *vars, char **args);
 int		func_env(t_vars *vars, char **args);
 int		func_export(t_vars *vars, char **args);
 int		export_unset_error(int condition, char *var, char *name);
+void	print_envp(t_vars *vars);
+char	**equal_split(char *str);
 t_bool	verify_variable(char *variable);
 
 int		func_unset(t_vars *vars, char **args);
