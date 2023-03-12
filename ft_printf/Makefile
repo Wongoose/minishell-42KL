@@ -20,15 +20,15 @@ SRCS		= ft_printf.c ft_putchar.c ft_puthex.c ft_putnbr.c ft_putptr.c ft_putstr.c
 OBJS		= ${SRCS:.c=.o}
 
 $(NAME):	${OBJS}
-	${CC} ${FLAGS} -I${INCLUDES} ${SRCS}
-	ar -rcs ${NAME} ${OBJS}
+	@${CC} ${FLAGS} -I${INCLUDES} ${SRCS}
+	@ar -rcs ${NAME} ${OBJS}
 
 all:		${NAME}
 
 clean:
-	rm -rf ${OBJS}
+	@rm -rf ${OBJS}
 
 fclean:		clean
-	rm -rf ${NAME}
+	@rm -rf ${NAME}
 
 re:			fclean all

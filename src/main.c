@@ -3,18 +3,19 @@
 // NEXT: Create built-in functions
 void	init_vars(t_vars *vars, char **envp)
 {
-	vars->envp = envp;
+	vars->envp = dup_envp(envp);
 	vars->functions = ft_split("echo cd pwd export unset env exit", ' ');
 	// below are all function pointers (not yet define functions)
 	vars->func[E_ECHO] = func_echo;
 	vars->func[E_CD] = func_cd;
-	// vars->func[MS_PWD] = ms_pwd;
-	// vars->func[MS_EXPORT] = ms_export;
-	// vars->func[MS_UNSET] = ms_unset;
-	// vars->func[MS_ENV] = ms_env;
-	// vars->func[MS_EXIT] = ms_exit;
+	vars->func[E_PWD] = func_pwd;
+	vars->func[E_EXPORT] = func_export;
+	vars->func[E_UNSET] = func_unset;
+	vars->func[E_ENV] = func_env;
+	vars->func[E_EXIT] = func_exit;
 }
 
+//
 // static t_cmd	*ms_get_cmd_list(t_main *main, char *input)
 // {
 // 	t_parser	*parser;
@@ -40,9 +41,8 @@ void	init_vars(t_vars *vars, char **envp)
 // NEXT: DO PIPEX
 void	read_terminal(t_vars *vars)
 {
-	// t_cmd	*cmd_list;
 	char	*input;
-	(void)vars;
+	char	**test_args;
 
 	init_signal();
 	input = readline("$> ");
@@ -54,14 +54,12 @@ void	read_terminal(t_vars *vars)
 	// Below is PIPEX
 	if (ft_strlen(input) != 0)
 	{
-		printf(":> %s\n", input);
 		add_history(input);
-		// if (!ms_check_dangling(input))
-		// {
-		// cmd_list = ms_get_cmd_list(vars, input); 
-		// ms_run_execution(main, cmd_list);
-		// ms_cmd_list_free(&cmd_list);
-		// }
+		// TEST CODE >>>
+		test_args = ft_split(input, ' ');
+		if (ft_strcmp(test_args[0], "exit") == 0)
+			vars->func[E_EXIT](vars, test_args);
+		vars->func[E_EXPORT](vars, test_args);
 	}
 	free(input);
 }
