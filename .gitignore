@@ -54,3 +54,4 @@ dkms.conf
 # extra
 minishell
 objects/
+.vscode
