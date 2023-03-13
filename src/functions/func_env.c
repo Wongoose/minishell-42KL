@@ -1,5 +1,6 @@
 #include "../../minishell.h"
 
+// QUESTION: What edge cases are there?
 int	func_env(t_vars *vars, char **args)
 {
 	int	i;
