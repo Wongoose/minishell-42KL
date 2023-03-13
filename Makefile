@@ -12,7 +12,8 @@ DSRCS		= src			\
 
 DOBJS		= objs/
 
-FILES		=	signal					\
+FILES		=	print_start				\
+				signal					\
 				func_cd					\
 				func_echo				\
 				func_exit				\

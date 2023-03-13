@@ -70,6 +70,7 @@ int	main(int argc, char **argv, char **envp)
 	(void)argv;
 	t_vars	vars;
 
+	print_startup();
 	init_vars(&vars, envp);
 	while (1)
 		read_terminal(&vars);

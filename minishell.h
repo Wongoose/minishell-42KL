@@ -41,6 +41,7 @@ typedef struct s_vars
 	t_func	func[7];
 }	t_vars;
 
+void	print_startup(void);
 void	init_signal(void);
 char	**dup_envp(char **envp);
 
