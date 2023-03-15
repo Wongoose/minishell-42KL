@@ -8,7 +8,8 @@ DSRCS		= src			\
 			  src/execution	\
 			  src/functions	\
 			  src/shared	\
-			  src/utils
+			  src/utils		\
+			  src/tokenization
 
 DOBJS		= objs/
 
@@ -23,7 +24,9 @@ FILES		=	print_start				\
 				func_export_unset_utils	\
 				func_unset				\
 				shared_envp				\
-				free
+				free					\
+				token_main				\
+				token_helper
 
 FOBJS		= $(addprefix $(DOBJS), $(addsuffix .o, $(FILES:.c=.o)))
 

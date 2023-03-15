@@ -55,11 +55,14 @@ void	read_terminal(t_vars *vars)
 	if (ft_strlen(input) != 0)
 	{
 		add_history(input);
+		vars->tokens = tokenize_input(input);
+		print_token_tree(vars->tokens, 0, "ROOT");
+
 		// TEST CODE >>>
 		test_args = ft_split(input, ' ');
 		if (ft_strcmp(test_args[0], "exit") == 0)
 			vars->func[E_EXIT](vars, test_args);
-		vars->func[E_EXPORT](vars, test_args);
+		// vars->func[E_EXPORT](vars, test_args);
 	}
 	free(input);
 }
