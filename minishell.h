@@ -14,16 +14,26 @@
 # include <dirent.h>
 # include <term.h>
 # include <limits.h>
+# include <string.h>
 
 struct s_vars;
 struct s_token;
 typedef int	(*t_func)(struct s_vars *vars, char **args);
+
+#define MAX_TOKENS 1024
 
 typedef enum e_bool
 {
 	TRUE = 1,
 	FALSE = 0,
 }	t_bool;
+
+typedef enum e_operator
+{
+	UNSET = 0,
+	AND = 1,
+	OR = 2,
+}	t_operator;
 
 typedef enum e_function
 {
@@ -54,6 +64,7 @@ typedef struct s_token
 	char			**arguments;
 	int				exit_status;
 	t_bool			has_pipe;
+	t_operator		operator;
 }	t_token;
 
 void	print_startup(void);
@@ -85,5 +96,6 @@ int is_operator(char *token);
 int is_left_paren(char *token);
 int is_right_paren(char *token);
 void print_token_tree(t_token *token, int level, char *direction); // temporary
+t_operator  get_operator_type(char *value);
 
 #endif

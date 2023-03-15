@@ -19,6 +19,16 @@ int is_right_paren(char *token)
     return (ft_strcmp(token, ")") == 0);
 }
 
+t_operator  get_operator_type(char *value)
+{
+    if (ft_strcmp(value, "&&") == 0)
+        return (AND);
+    else if (ft_strcmp(value, "||") == 0)
+        return (OR);
+    else
+        return (UNSET);
+}
+
 void print_token_tree(t_token *token, int level, char *direction)
 {
     if (token == NULL)
