@@ -4,6 +4,7 @@
 void	init_vars(t_vars *vars, char **envp)
 {
 	vars->envp = dup_envp(envp);
+	vars->path = ft_split(get_envp_value(vars->envp, "PATH"), ':');
 	vars->functions = ft_split("echo cd pwd export unset env exit", ' ');
 	// below are all function pointers (not yet define functions)
 	vars->func[E_ECHO] = func_echo;

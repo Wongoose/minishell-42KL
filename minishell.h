@@ -38,6 +38,7 @@ typedef struct s_vars
 {
 	char	**envp;
 	char	**functions;
+	char	**path;
 	t_func	func[7];
 }	t_vars;
 
