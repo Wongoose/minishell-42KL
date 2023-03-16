@@ -2,48 +2,47 @@
 
 t_pipe	create_new_pipe(char *value)
 {
-	t_pipe	*pipe;
+	t_pipe	pipe;
 	int		i;
 	int		j;
 	char	*formatted;
 	char	*head;
 
-	formatted = ft_calloc(sizeof(char), ft_strlen(value));
-	pipe = malloc(sizeof(t_pipe));
+	formatted = (char *)ft_calloc(ft_strlen(value), 1);
 	head = formatted;
 	i = 0;
-	pipe->has_redirect = FALSE;
+	pipe.has_redirect = FALSE;
 	while (value[i] != 0)
 	{
 		if (value[i] == '>')
 		{
-			pipe->has_redirect = TRUE;
-			pipe->redirect_type = OUT;
+			pipe.has_redirect = TRUE;
+			pipe.redirect_type = OUT;
 			if (value[++i] == '>')
-				pipe->redirect_type = APPEND;
+				pipe.redirect_type = APPEND;
 			else if (value[i] == ' ')
 				i++;
 			j = i;
 			while (value[j] != 0)
 			{
 				if (value[j + 1] = ' ')
-					pipe->outfile = ft_substr(value, i, j);
+					pipe.outfile = ft_substr(value, i, j);
 			}
 			i = j;
 		}
 		else if (value[i] == '<')
 		{
-			pipe->has_redirect = TRUE;
-			pipe->redirect_type = IN;
+			pipe.has_redirect = TRUE;
+			pipe.redirect_type = IN;
 			if (value[++i] == '<')
-				pipe->redirect_type = HEREDOC;
+				pipe.redirect_type = HEREDOC;
 			else if (value[i] == ' ')
 				i++;
 			j = i;
 			while (value[j] != 0)
 			{
 				if (value[j + 1] = ' ')
-					pipe->infile = ft_substr(value, i, j);
+					pipe.infile = ft_substr(value, i, j);
 			}
 			i = j;
 		}
@@ -52,8 +51,8 @@ t_pipe	create_new_pipe(char *value)
 		i++;
 	}
 	free(value);
-	pipe->arg = ft_split(head, ' ');
-	pipe->cmd = pipe->arg[0];
+	pipe.arg = ft_split(head, ' ');
+	pipe.cmd = pipe.arg[0];
 	return (pipe);
 }
 
@@ -77,7 +76,7 @@ t_pipe	*get_pipe_list(char *value)
 	if (pipe_count == 0)
 		return (NULL);
 	pipe_list = (t_pipe *)malloc(sizeof(t_pipe) * (pipe_count + 2));
-	buffer = (char *)ft_calloc(1000);
+	buffer = (char *)ft_calloc(1000, 1);
 	i = 0;
 	j = 0;
 	pipe_count = 0;
@@ -90,7 +89,7 @@ t_pipe	*get_pipe_list(char *value)
 			if (buffer[0] != NULL)
 			{
 				pipe_list[pipe_count++] = create_new_pipe(buffer);
-				buffer = ft_calloc(sizeof(char), 1000);
+				buffer = (char *)ft_calloc(1000, 1);
 				j = 0;
 			}
 		}
