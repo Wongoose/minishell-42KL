@@ -30,7 +30,7 @@ typedef enum e_bool
 
 typedef enum e_operator
 {
-	UNSET = 0,
+	UNDEFINED = 0,
 	AND = 1,
 	OR = 2,
 }	t_operator;
@@ -46,6 +46,24 @@ typedef enum e_function
 	E_EXIT = 6,
 }	t_function;
 
+typedef enum e_redirect
+{
+	IN = 0, // <
+	OUT = 1, // >
+	HEREDOC = 2, // <<
+	APPEND = 3, // >>
+}	t_redirect;
+
+typedef struct s_pipe
+{
+	char		*infile;
+	char		*outfile;
+	char		*cmd;
+	char		**arg;
+	t_bool		has_redirect;
+	t_redirect	redirect_type;
+}	t_pipe;
+
 typedef struct s_vars
 {
 	char			**envp;
@@ -59,43 +77,46 @@ typedef struct s_token
 	struct s_token	*parent;
 	struct s_token	*left;
 	struct s_token	*right;
-	char			*value;
-	char			*command;
-	char			**arguments;
+	char			*value; // raw value (e.g. "echo z")
+	char			*command; // not used, may be deleted
+	char			**arguments; // formatted value (e.g. {"echo", "z"})
 	int				exit_status;
-	t_bool			has_pipe;
+	t_pipe			*pipe_list;
+	int				pipe_num;
 	t_operator		operator;
 }	t_token;
 
-void	print_startup(void);
-void	init_signal(void);
-char	**dup_envp(char **envp);
+void		print_startup(void);
+void		init_signal(void);
+char		**dup_envp(char **envp);
 
 // built_in_functions
-int		func_echo(t_vars *vars, char **argv);
-int		func_cd(t_vars *vars, char **args);
-int		func_pwd(t_vars *vars, char **args);
-int		func_exit(t_vars *vars, char **args);
-int		func_env(t_vars *vars, char **args);
-int		func_export(t_vars *vars, char **args);
-int		export_unset_error(int condition, char *var, char *name);
-void	print_envp(t_vars *vars);
-char	**equal_split(char *str);
-t_bool	verify_variable(char *variable);
+int			func_echo(t_vars *vars, char **argv);
+int			func_cd(t_vars *vars, char **args);
+int			func_pwd(t_vars *vars, char **args);
+int			func_exit(t_vars *vars, char **args);
+int			func_env(t_vars *vars, char **args);
+int			func_export(t_vars *vars, char **args);
+int			export_unset_error(int condition, char *var, char *name);
+void		print_envp(t_vars *vars);
+char		**equal_split(char *str);
+t_bool		verify_variable(char *variable);
 
-int		func_unset(t_vars *vars, char **args);
-t_bool	verify_variable(char *variable);
-int		export_unset_error(int condition, char *var, char *name);
-t_bool	validate_unset(char *variable);
-char	*get_envp_value(char **envp, char *key);
-void	free_doublearray(char **data);
+int			func_unset(t_vars *vars, char **args);
+t_bool		verify_variable(char *variable);
+int			export_unset_error(int condition, char *var, char *name);
+t_bool		validate_unset(char *variable);
+char		*get_envp_value(char **envp, char *key);
+void		free_doublearray(char **data);
 
 // tokenization
-t_token	*tokenize_input(char *input);
-int is_operator(char *token);
-int is_left_paren(char *token);
-int is_right_paren(char *token);
-void print_token_tree(t_token *token, int level, char *direction); // temporary
-t_operator  get_operator_type(char *value);
+t_token		*tokenize_input(char *input);
+int 		is_operator(char *token);
+int 		is_left_paren(char *token);
+int 		is_right_paren(char *token);
+void		print_token_tree(t_token *token, int level, char *direction); // temporary
+t_operator	get_operator_type(char *value);
+t_pipe	create_new_pipe(char *value);
+int	get_pipe_num(t_pipe *pipe_list);
 
 #endif

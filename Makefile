@@ -26,7 +26,8 @@ FILES		=	print_start				\
 				shared_envp				\
 				free					\
 				token_main				\
-				token_utils
+				token_utils				\
+				token_parse
 
 FOBJS		= $(addprefix $(DOBJS), $(addsuffix .o, $(FILES:.c=.o)))
 

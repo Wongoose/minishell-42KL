@@ -6,13 +6,13 @@ t_token *create_token(char *value) {
         ft_putstr_fd("Memory allocation failed\n", 2);
         exit(1);
     }
-    new_token->value = ft_strdup(value);
-    new_token->operator = get_operator_type(value);
     new_token->left = NULL;
     new_token->right = NULL;
-    new_token->command = NULL;
-    new_token->arguments = NULL;
-    new_token->has_pipe = FALSE;
+    new_token->value = ft_strdup(value);
+    new_token->operator = get_operator_type(value);
+    new_token->arguments = ft_split(value, ' ');
+    new_token->pipe_list = get_pipe_list(value);
+    new_token->pipe_num = get_pipe_num(new_token->pipe_list);
     new_token->exit_status = 0;
     return (new_token);
 }
@@ -148,7 +148,6 @@ t_token *tokenize_input(char *input) {
     char **tokens;
 	t_token *root;
 
-	// NEXT: Create format_input function (ft_split is just for testing)
 	tokens = format_input(input);
     int i = 0;
 	while (tokens[i] != 0)
