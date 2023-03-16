@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 20:22:23 by chenlee           #+#    #+#             */
-/*   Updated: 2023/03/16 14:18:26 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/03/16 15:05:38 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,24 +22,40 @@ typedef struct s_pipe
 	char	*infile;
 	char	*outfile;
 	char	*cmd;
-	char	*arguments;
+	char	*arg;
+	t_bool	is_append;
 }			t_pipe;
 
-int	error(char *str)
+int	error(char *cmd, char *str)
 {
 	printf("%s\n", str);
 	return (1);
 }
 
+char	**create_args(t_pipe cmdlst)
+{
+	char	**output;
+	int		size;
+
+	size = 3;
+	output = ft_calloc(size, sizeof(char *));
+	return (output);
+}
+
 int	execution(t_vars *vars, t_pipe cmdlst)
 {
 	int		i;
+	char	**args;
 
+	args = create_args(cmdlst);
 	i = -1;
 	while (vars->path[++i] != NULL)
 	{
-		if (execve(vars->path[i], cmdlst))
+		if (execve(vars->path[i], args, NULL) != -1)
+			break ;
 	}
+	if (vars->path[i] == NULL)
+		return (error(cmdlst.cmd, ))
 }
 
 int	first_child(t_vars *vars, t_pipe cmdlst, int pipefd[2], pid_t *pid)
