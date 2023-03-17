@@ -17,6 +17,15 @@
 struct s_vars;
 typedef int	(*t_func)(struct s_vars *vars, char **args);
 
+typedef enum e_redirect
+{
+	NOTHING = -1,
+	IN = 0,
+	OUT = 1,
+	HEREDOC = 2,
+	APPEND = 3,
+}	t_redirect;
+
 typedef enum e_bool
 {
 	TRUE = 1,
@@ -34,13 +43,24 @@ typedef enum e_function
 	E_EXIT = 6,
 }	t_function;
 
+typedef struct s_pipe
+{
+	char		*infile;
+	char		*outfile;
+	char		*cmd;
+	char		**arg;
+	t_bool		has_redirect;
+	t_redirect	redirect_type;
+}				t_pipe;
+
 typedef struct s_vars
 {
 	char	**envp;
 	char	**functions;
 	char	**path;
+	t_pipe	*cmdlst;
 	t_func	func[7];
-}	t_vars;
+}			t_vars;
 
 void	print_startup(void);
 void	init_signal(void);
@@ -64,5 +84,7 @@ int		export_unset_error(int condition, char *var, char *name);
 t_bool	validate_unset(char *variable);
 char	*get_envp_value(char **envp, char *key);
 void	free_doublearray(char **data);
+
+void	test_piping(t_vars *vars);
 
 #endif

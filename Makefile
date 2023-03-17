@@ -1,7 +1,7 @@
 NAME		= minishell
 
 CC			= gcc
-CFLAGS		= -Wall -Wextra -Werror -fsanitize=address -g3 -I/usr/local/opt/readline/include
+CFLAGS		= -Wall -Wextra -Werror -I/usr/local/opt/readline/include
 READLINE	= -lreadline -L/usr/local/opt/readline/lib
 
 DSRCS		= src			\
@@ -23,6 +23,7 @@ FILES		=	print_start				\
 				func_export_unset_utils	\
 				func_unset				\
 				shared_envp				\
+				piping					\
 				free
 
 FOBJS		= $(addprefix $(DOBJS), $(addsuffix .o, $(FILES:.c=.o)))

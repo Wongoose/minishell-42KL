@@ -73,7 +73,8 @@ int	main(int argc, char **argv, char **envp)
 
 	print_startup();
 	init_vars(&vars, envp);
-	while (1)
-		read_terminal(&vars);
+	test_piping(&vars);
+	// while (1)
+	// 	read_terminal(&vars);
 	return (0);
 }
