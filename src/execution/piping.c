@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 20:22:23 by chenlee           #+#    #+#             */
-/*   Updated: 2023/03/17 21:20:56 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/03/21 21:24:01 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,149 +21,88 @@ int	error(char *cmd, char *str)
 {
 	if (cmd != NULL)
 		printf("%s: %s\n", cmd, str);
+	else
+		printf("%s\n", str);
 	return (1);
 }
 
-int	execution(t_vars *vars, t_pipe cmdlst)
+int	wait_for_pid(t_vars *vars, int *pid, int n_cmds)
 {
-	int		i;
-	int		ret;
-	char	*pathname;
-	char	*temp;
+	int	status;
+	int	i;
 
 	i = -1;
-	while (vars->path[++i] != NULL)
-	{
-		temp = ft_strjoin(vars->path[i], "/");
-		pathname = ft_strjoin(temp, cmdlst.cmd);
-		ret = execve(pathname, cmdlst.arg, NULL);
-		free(temp);
-		free(pathname);
-		if (ret != -1)
-			break ;
-	}
-	if (vars->path[i] == NULL)
-		return (error(cmdlst.cmd, "command not found"));
-	return (0);
-}
-
-void	ft_dup(char *cmd, int fd_one, int fd_two)
-{
-	if (dup2(fd_one, fd_two) == -1)
-	{
-		write(2, cmd, ft_strlen(cmd));
-		write(2, ": ", 2);
-		perror("dup2 failed");
-		exit(1);
-	}
-}
-
-void	ft_dup_inoutfile(t_pipe cmdlst, int *fd_in, int *fd_out)
-{
-	if (cmdlst.infile != NULL)
-	{
-		*(fd_in) = open(cmdlst.infile, O_RDWR);
-		if (*(fd_in) == -1)
-			exit(error(cmdlst.cmd, "open error"));
-		ft_dup("infile", *(fd_in), STDIN_FILENO);
-	}
-	if (cmdlst.outfile != NULL)
-	{
-		*(fd_out) = open(cmdlst.outfile, O_RDWR);
-		if (*(fd_out) == -1)
-			exit(error(cmdlst.cmd, "open error"));
-		ft_dup("outfile", *(fd_out), STDOUT_FILENO);
-	}
-}
-
-int	last_child(t_vars *vars, t_pipe cmdlst, int pipefd[2][2], pid_t *pid)
-{
-	int	fd_in;
-	int	fd_out;
-
-	printf("LAST CHILD @ %s\n", cmdlst.cmd);
-	*(pid) = fork();
-	if (*(pid) == -1)
-		exit (error(cmdlst.cmd, "fork failed"));
-	else if (*(pid) == 0)
-	{
-		ft_dup(cmdlst.cmd, pipefd[1][0], STDIN_FILENO);
-		close(pipefd[0][0]);
-		close(pipefd[0][1]);
-		ft_dup_inoutfile(cmdlst, &fd_in, &fd_out);
-		execution(vars, cmdlst);
-		exit(0);
-	}
-	return (0);
-}
-
-int	middle_child(t_vars *vars, t_pipe cmdlst, int pipefd[2][2], pid_t *pid)
-{
-	int	fd_in;
-	int	fd_out;
-
-	printf("MIDDLE CHILD @ %s\n", cmdlst.cmd);
-	*(pid) = fork();
-	if (*(pid) == -1)
-		exit (error(cmdlst.cmd, "fork failed"));
-	else if (*(pid) == 0)
-	{
-		ft_dup(cmdlst.cmd, pipefd[0][1], STDOUT_FILENO);
-		ft_dup(cmdlst.cmd, pipefd[1][0], STDIN_FILENO);
-		close(pipefd[0][0]);
-		close(pipefd[0][1]);
-		ft_dup_inoutfile(cmdlst, &fd_in, &fd_out);
-		execution(vars, cmdlst);
-	}
-	return (0);
-}
-
-int	first_child(t_vars *vars, t_pipe cmdlst, int pipefd[2][2], pid_t *pid)
-{
-	int	fd_in;
-	int	fd_out;
-
-	printf("FIRST CHILD @ %s\n", cmdlst.cmd);
-	*(pid) = fork();
-	if (*(pid) == -1)
-		exit (error(cmdlst.cmd, "fork failed"));
-	else if (*(pid) == 0)
-	{
-		ft_dup(cmdlst.cmd, pipefd[0][1], STDOUT_FILENO);
-		close(pipefd[0][0]);
-		close(pipefd[0][1]);
-		ft_dup_inoutfile(cmdlst, &fd_in, &fd_out);
-		execution(vars, cmdlst);
-		exit(0);
-	}
-	return (0);
-}
-
-int	piping(t_vars *vars, t_pipe *cmdlst, int n_cmds)
-{
-	int		pipefd[2][2];
-	int		i;
-	int		ret;
-	pid_t	pid;
-
-	i = -1;
-	pid = 0;
 	while (++i < n_cmds)
 	{
-		if (pipe(pipefd[0]) == -1)
-			return (error(cmdlst->cmd, "pipe failed"));
+		if (waitpid(pid[i], &status, 0) == -1)
+			return (error(vars->cmdlst[i].cmd, "waitpid"));
+		if (WEXITSTATUS(status) != 0)
+			return (error(vars->cmdlst[i].cmd, "Child process terminated abnormally"));
+	}
+	return (0);
+}
+
+int	multiple_child(t_vars *vars, int n_cmds, int pipefd[2][2], int *pid)
+{
+	int	i;
+	int	ret;
+
+	i = -1;
+	while (++i < n_cmds)
+	{
+		if (i < n_cmds - 1 && pipe(pipefd[0]) == -1)
+			return (error(vars->cmdlst->cmd, "pipe failed"));
 		if (i == 0)
-			ret = first_child(vars, cmdlst[i], pipefd, &pid);
+			ret = first_child(vars, vars->cmdlst[i], pipefd, &pid[i]);
 		else if (i == n_cmds - 1)
-			ret = last_child(vars, cmdlst[i], pipefd, &pid);
+			ret = last_child(vars, vars->cmdlst[i], pipefd, &pid[i]);
 		else
-			ret = middle_child(vars, cmdlst[i], pipefd, &pid);
+			ret = middle_child(vars, vars->cmdlst[i], pipefd, &pid[i]);
 		if (ret == 1)
 			return (1);
-		pipefd[1][0] = dup(pipefd[0][0]);
-		pipefd[1][1] = dup(pipefd[0][1]);
+		ft_close_pipe(i, n_cmds, pipefd);
+	}
+	return (0);
+}
+
+int	one_child(t_vars *vars, t_pipe cmdlst, int pipefd[2][2], pid_t *pid)
+{
+	int	fd_in;
+	int	fd_out;
+
+	pid[0] = fork();
+	if (pid[0] == -1)
+		exit (error(cmdlst.cmd, "fork failed"));
+	else if (pid[0] == 0)
+	{
 		close(pipefd[0][0]);
 		close(pipefd[0][1]);
+		ft_dup_inoutfile(cmdlst, &fd_in, &fd_out);
+		execution(vars, cmdlst);
+		exit(0);
+	}
+	return (0);
+}
+
+int	piping(t_vars *vars, int n_cmds)
+{
+	int		pipefd[2][2];
+	int		ret;
+	int		ret_pid;
+	pid_t	*pid;
+
+	pid = ft_calloc(n_cmds, sizeof(int));
+	if (n_cmds == 1)
+		ret = one_child(vars, vars->cmdlst[0], pipefd, pid);
+	else
+	{
+		ret = multiple_child(vars, n_cmds, pipefd, pid);
+		ret_pid = wait_for_pid(vars, pid, n_cmds);
+	}
+	if (ret == 1 || ret_pid == 1)
+	{
+		free(pid);
+		return (1);
 	}
 	return (0);
 }
@@ -183,9 +122,10 @@ t_pipe	bruh(char *in, char *out, char *cmd, char *arg, t_bool has_red, t_redirec
 
 void	test_piping(t_vars *vars)
 {
-	vars->cmdlst = malloc(sizeof(t_pipe) * 4);
+	vars->cmdlst = ft_calloc(4, sizeof(t_pipe));
 	vars->cmdlst[0] = bruh(NULL, NULL, "cat", "cat", 0, -1);
-	vars->cmdlst[1] = bruh(NULL, NULL, "cat", "cat", 0, -1);
-	vars->cmdlst[2] = bruh(NULL, NULL, "ls", "ls -l", 0, -1);
-	piping(vars, vars->cmdlst, 3);
+	vars->cmdlst[1] = bruh(NULL, NULL, "ls", "ls -l", 0, -1);
+	vars->cmdlst[2] = bruh(NULL, NULL, "cat", "cat", 0, -1);
+	vars->cmdlst[3] = bruh(NULL, NULL, "grep", "grep minishell", 0, -1);
+	piping(vars, 4);
 }

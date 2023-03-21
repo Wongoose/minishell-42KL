@@ -85,6 +85,17 @@ t_bool	validate_unset(char *variable);
 char	*get_envp_value(char **envp, char *key);
 void	free_doublearray(char **data);
 
+// piping
 void	test_piping(t_vars *vars);
+void	ft_dup_inoutfile(t_pipe cmdlst, int *fd_in, int *fd_out);
+void	ft_dup(char *cmd, int fd_one, int fd_two);
+void	ft_close_pipe(int index, int n_cmds, int pipefd[2][2]);
+int		first_child(t_vars *vars, t_pipe cmdlst, int pipefd[2][2], pid_t *pid);
+int		middle_child(t_vars *vars, t_pipe cmdlst, int pipefd[2][2], pid_t *pid);
+int		last_child(t_vars *vars, t_pipe cmdlst, int pipefd[2][2], pid_t *pid);
+int		error(char *cmd, char *str);
+
+// execution
+int		execution(t_vars *vars, t_pipe cmdlst);
 
 #endif

@@ -24,6 +24,9 @@ FILES		=	print_start				\
 				func_unset				\
 				shared_envp				\
 				piping					\
+				piping_utils			\
+				piping_utils_2			\
+				execution				\
 				free
 
 FOBJS		= $(addprefix $(DOBJS), $(addsuffix .o, $(FILES:.c=.o)))
