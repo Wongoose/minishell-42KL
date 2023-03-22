@@ -5,66 +5,93 @@ t_pipe	create_new_pipe(char *value)
 	t_pipe	pipe;
 	int		i;
 	int		j;
+	int		rdr_i;
 	char	*formatted;
 	char	*head;
-
+	
 	formatted = (char *)ft_calloc(ft_strlen(value), 1);
+	pipe.rdr_list = (t_redirect *)ft_calloc(1000, sizeof(t_redirect));
 	head = formatted;
 	i = 0;
-	pipe.has_redirect = FALSE;
+	rdr_i = 0;
+	printf("\n=====\n\nCreating new pipe for: %s\n", value);
 	while (value[i] != 0)
 	{
 		if (value[i] == '>')
 		{
-			pipe.has_redirect = TRUE;
-			pipe.redirect_type = OUT;
+			pipe.rdr_list[rdr_i] = OUT;
 			if (value[++i] == '>')
-				pipe.redirect_type = APPEND;
+				pipe.rdr_list[rdr_i] = APPEND;
 			else if (value[i] == ' ')
 				i++;
+			rdr_i++;
 			j = i;
 			while (value[j] != 0)
 			{
-				if (value[j + 1] = ' ')
-					pipe.outfile = ft_substr(value, i, j);
+				if (value[j + 1] == ' ')
+				{
+					if (pipe.outfile)
+						free(pipe.outfile);
+					pipe.outfile = ft_substr(value, i, j++ - i + 1);
+					break ;
+				}
+				j++;
 			}
 			i = j;
 		}
 		else if (value[i] == '<')
 		{
-			pipe.has_redirect = TRUE;
-			pipe.redirect_type = IN;
+			pipe.rdr_list[rdr_i] = IN;
 			if (value[++i] == '<')
-				pipe.redirect_type = HEREDOC;
+				pipe.rdr_list[rdr_i] = HEREDOC;
 			else if (value[i] == ' ')
 				i++;
+			rdr_i++;
 			j = i;
 			while (value[j] != 0)
 			{
-				if (value[j + 1] = ' ')
-					pipe.infile = ft_substr(value, i, j);
+				if (value[j + 1] == ' ')
+				{
+					if (pipe.rdr_list[rdr_i] == HEREDOC)
+					{
+						if (pipe.delim)
+							free(pipe.delim);
+						pipe.delim = ft_substr(value, i, j++ - i + 1);
+					}
+					else
+					{
+						if (pipe.infile)
+							free(pipe.infile);
+						pipe.infile = ft_substr(value, i, j++ - i + 1);
+					}
+					break ;
+				}
+				j++;
 			}
 			i = j;
 		}
 		else
+		{
 			ft_memset(formatted++, value[i], 1);
+		}
 		i++;
 	}
-	free(value);
 	pipe.arg = ft_split(head, ' ');
 	pipe.cmd = pipe.arg[0];
+	printf("=NEW PIPE: '%s', '%s', '%s'\n", pipe.cmd, pipe.arg[1], pipe.arg[2]);
 	return (pipe);
 }
 
-t_pipe	*get_pipe_list(char *value)
+t_pipe	*generate_pipe_list(char *value, t_token *token)
 {
 	int		i;
 	int		j;
 	int		pipe_count;
 	t_pipe	*pipe_list;
-	char	**args;
 	char	*buffer;
 
+	if (is_operator(value))
+		return (NULL);
 	i = 0;
 	pipe_count = 0;
 	while (value[i] != 0)
@@ -75,7 +102,7 @@ t_pipe	*get_pipe_list(char *value)
 	}
 	if (pipe_count == 0)
 		return (NULL);
-	pipe_list = (t_pipe *)malloc(sizeof(t_pipe) * (pipe_count + 2));
+	pipe_list = (t_pipe *)malloc(sizeof(t_pipe) * (pipe_count + 1));
 	buffer = (char *)ft_calloc(1000, 1);
 	i = 0;
 	j = 0;
@@ -86,7 +113,7 @@ t_pipe	*get_pipe_list(char *value)
 		{
 			if (i == 0)
 				ft_printf("minishell: syntax error near unexpected token '|'\n");
-			if (buffer[0] != NULL)
+			if (buffer[0] != 0)
 			{
 				pipe_list[pipe_count++] = create_new_pipe(buffer);
 				buffer = (char *)ft_calloc(1000, 1);
@@ -95,27 +122,18 @@ t_pipe	*get_pipe_list(char *value)
 		}
 		else
 		{
-			if (buffer[0] == NULL && value[i] == ' ')
+			if (buffer[0] == 0 && value[i] == ' ')
+			{
+				i++;
 				continue ;
+			}
 			buffer[j++] = value[i];
 		}
 		i++;
 	}
-	if (buffer[0] != NULL)
-		pipe_list[pipe_count++] = create_new_pipe(buffer);
-	pipe_list[pipe_count] = 0;
+	if (buffer[0] != 0)
+		pipe_list[pipe_count] = create_new_pipe(buffer);
+	token->pipe_num = pipe_count;
 	free(buffer);
 	return (pipe_list);
-}
-
-int	get_pipe_num(t_pipe *pipe_list)
-{
-	int	i;
-
-	i = 0;
-	if (!pipe_list)
-		return (0);
-	while (pipe_list[i] != 0)
-		i++;
-	return (i);
 }

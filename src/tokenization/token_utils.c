@@ -26,7 +26,7 @@ t_operator  get_operator_type(char *value)
     else if (ft_strcmp(value, "||") == 0)
         return (OR);
     else
-        return (UNSET);
+        return (UNDEFINED);
 }
 
 void print_token_tree(t_token *token, int level, char *direction)

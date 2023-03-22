@@ -2,17 +2,14 @@
 
 t_token *create_token(char *value) {
     t_token *new_token = malloc(sizeof(t_token));
-    if (!new_token) {
-        ft_putstr_fd("Memory allocation failed\n", 2);
+    if (!new_token)
         exit(1);
-    }
     new_token->left = NULL;
     new_token->right = NULL;
     new_token->value = ft_strdup(value);
     new_token->operator = get_operator_type(value);
     new_token->arguments = ft_split(value, ' ');
-    new_token->pipe_list = get_pipe_list(value);
-    new_token->pipe_num = get_pipe_num(new_token->pipe_list);
+    new_token->pipe_list = generate_pipe_list(value, new_token);
     new_token->exit_status = 0;
     return (new_token);
 }

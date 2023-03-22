@@ -48,26 +48,27 @@ typedef enum e_function
 
 typedef enum e_redirect
 {
-	IN = 0, // <
-	OUT = 1, // >
-	HEREDOC = 2, // <<
-	APPEND = 3, // >>
+	IN = 1, // <
+	OUT = 2, // >
+	HEREDOC = 3, // <<
+	APPEND = 4, // >>
 }	t_redirect;
 
 typedef struct s_pipe
 {
 	char		*infile;
 	char		*outfile;
+	char		*delim;
 	char		*cmd;
 	char		**arg;
-	t_bool		has_redirect;
-	t_redirect	redirect_type;
+	t_redirect	*rdr_list;
 }	t_pipe;
 
 typedef struct s_vars
 {
 	char			**envp;
 	char			**functions;
+	char			**path;
 	struct s_token	*tokens;
 	t_func			func[7];
 }	t_vars;
@@ -118,5 +119,6 @@ void		print_token_tree(t_token *token, int level, char *direction); // temporary
 t_operator	get_operator_type(char *value);
 t_pipe	create_new_pipe(char *value);
 int	get_pipe_num(t_pipe *pipe_list);
+t_pipe	*generate_pipe_list(char *value, t_token *token);
 
 #endif
