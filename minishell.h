@@ -17,14 +17,6 @@
 struct s_vars;
 typedef int	(*t_func)(struct s_vars *vars, char **args);
 
-typedef enum s_redirect
-{
-	IN = 1,		 // <
-	OUT = 2,	 // >
-	HEREDOC = 3, // <<
-	APPEND = 4,	 // >>
-}	t_redirect;
-
 typedef enum e_bool
 {
 	TRUE = 1,
@@ -42,14 +34,25 @@ typedef enum e_function
 	E_EXIT = 6,
 }	t_function;
 
+typedef enum s_rdrtype
+{
+	IN = 1,		 // <
+	OUT = 2,	 // >
+	HEREDOC = 3, // <<
+	APPEND = 4,	 // >>
+}	t_rdrtype;
+
+typedef struct s_rdrinfo
+{
+	char		*filename;
+	t_rdrtype	rdr_type;
+}				t_rdrinfo;
+
 typedef struct s_pipe
 {
-	char		*infile;
-	char		*outfile;
-	char		*delim;
 	char		*cmd;
 	char		**arg;
-	t_redirect	*rdr_list;
+	t_rdrinfo	*rdr_info;
 }				t_pipe;
 
 typedef struct s_vars
