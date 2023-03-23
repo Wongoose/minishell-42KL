@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 20:22:23 by chenlee           #+#    #+#             */
-/*   Updated: 2023/03/21 21:24:01 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/03/22 15:46:00 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,8 @@ int	wait_for_pid(t_vars *vars, int *pid, int n_cmds)
 	{
 		if (waitpid(pid[i], &status, 0) == -1)
 			return (error(vars->cmdlst[i].cmd, "waitpid"));
-		if (WEXITSTATUS(status) != 0)
-			return (error(vars->cmdlst[i].cmd, "Child process terminated abnormally"));
+		// if (WEXITSTATUS(status) != 0)
+		// 	return (error(vars->cmdlst[i].cmd, "Child process terminated abnormally"));
 	}
 	return (0);
 }
@@ -107,7 +107,23 @@ int	piping(t_vars *vars, int n_cmds)
 	return (0);
 }
 
-t_pipe	bruh(char *in, char *out, char *cmd, char *arg, t_bool has_red, t_redirect type)
+t_redirect	init_rdrlst(char *rdr)
+{
+	t_redirect	ret;
+	int			i;
+	char		**lmao;
+
+	lmao = ft_split(rdr);
+	i = -1;
+	while (lmao[++i] != NULL)
+	{
+		
+	}
+	free(lmao);
+	return (ret);
+}
+
+t_pipe	bruh(char *in, char *out, char *cmd, char *arg, t_bool has_red, char *rdr)
 {
 	t_pipe	ret;
 
@@ -115,17 +131,16 @@ t_pipe	bruh(char *in, char *out, char *cmd, char *arg, t_bool has_red, t_redirec
 	ret.outfile = out;
 	ret.cmd = cmd;
 	ret.arg = ft_split(arg, ' ');
-	ret.has_redirect = has_red;
-	ret.redirect_type = type;
+	ret.rdr_list = init_rdrlst(rdr);
 	return (ret);
 }
 
 void	test_piping(t_vars *vars)
 {
-	vars->cmdlst = ft_calloc(4, sizeof(t_pipe));
-	vars->cmdlst[0] = bruh(NULL, NULL, "cat", "cat", 0, -1);
-	vars->cmdlst[1] = bruh(NULL, NULL, "ls", "ls -l", 0, -1);
-	vars->cmdlst[2] = bruh(NULL, NULL, "cat", "cat", 0, -1);
-	vars->cmdlst[3] = bruh(NULL, NULL, "grep", "grep minishell", 0, -1);
-	piping(vars, 4);
+	vars->cmdlst = ft_calloc(10, sizeof(t_pipe));
+	vars->cmdlst[0] = bruh(NULL, "outfile", "ls", "ls -l src/", 0, "NULL");
+	vars->cmdlst[1] = bruh("infile", "outfile", "cat", "cat", 0, "NULL");
+	// vars->cmdlst[2] = bruh(NULL, NULL, "cat", "cat", 0, -1);
+	// vars->cmdlst[1] = bruh(NULL, NULL, "wc", "wc -l", 0, -1);
+	piping(vars, 2);
 }

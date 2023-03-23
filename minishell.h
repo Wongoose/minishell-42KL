@@ -17,13 +17,12 @@
 struct s_vars;
 typedef int	(*t_func)(struct s_vars *vars, char **args);
 
-typedef enum e_redirect
+typedef enum s_redirect
 {
-	NOTHING = -1,
-	IN = 0,
-	OUT = 1,
-	HEREDOC = 2,
-	APPEND = 3,
+	IN = 1,		 // <
+	OUT = 2,	 // >
+	HEREDOC = 3, // <<
+	APPEND = 4,	 // >>
 }	t_redirect;
 
 typedef enum e_bool
@@ -47,10 +46,10 @@ typedef struct s_pipe
 {
 	char		*infile;
 	char		*outfile;
+	char		*delim;
 	char		*cmd;
 	char		**arg;
-	t_bool		has_redirect;
-	t_redirect	redirect_type;
+	t_redirect	*rdr_list;
 }				t_pipe;
 
 typedef struct s_vars

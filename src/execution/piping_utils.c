@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 19:00:06 by chenlee           #+#    #+#             */
-/*   Updated: 2023/03/21 15:55:59 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/03/22 15:06:34 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,10 @@ void	ft_dup_inoutfile(t_pipe cmdlst, int *fd_in, int *fd_out)
 	}
 	if (cmdlst.outfile != NULL)
 	{
-		*(fd_out) = open(cmdlst.outfile, O_RDWR);
+		if (check_append(cmdlst.rdr_list))
+			*(fd_out) = open(cmdlst.outfile, O_APPEND);
+		else
+			*(fd_out) = open(cmdlst.outfile, O_RDWR);
 		if (*(fd_out) == -1)
 			exit(error(cmdlst.cmd, "open error"));
 		ft_dup("outfile", *(fd_out), STDOUT_FILENO);
