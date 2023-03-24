@@ -24,8 +24,8 @@ FILES		=	print_start				\
 				func_unset				\
 				shared_envp				\
 				piping					\
+				piping_child			\
 				piping_utils			\
-				piping_utils_2			\
 				execution				\
 				free
 
