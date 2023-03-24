@@ -29,6 +29,21 @@ t_operator  get_operator_type(char *value)
         return (UNDEFINED);
 }
 
+int count_paren(char *input)
+{
+    int i;
+
+    i = 0;
+    while (*input)
+    {
+        if (*input == '(' || *input == ')')
+            i++;
+        input++;
+    }
+    return (i);
+}
+
+// EXTRA
 void print_token_tree(t_token *token, int level, char *direction)
 {
     if (token == NULL)
@@ -36,7 +51,7 @@ void print_token_tree(t_token *token, int level, char *direction)
         return;
     }
 
-    // Print the current token with appropriate indentation
+    // Prints the current token with appropriate indentation
     for (int i = 0; i < level; i++) {
         printf("    ");
     }

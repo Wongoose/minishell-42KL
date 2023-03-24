@@ -46,22 +46,26 @@ typedef enum e_function
 	E_EXIT = 6,
 }	t_function;
 
-typedef enum e_redirect
+typedef enum s_rdrtype
 {
-	IN = 1, // <
-	OUT = 2, // >
-	HEREDOC = 3, // <<
-	APPEND = 4, // >>
-}	t_redirect;
+    IN = 1,         // <
+    OUT = 2,     // >
+    HEREDOC = 3, // <<
+    APPEND = 4,     // >>
+}	t_rdrtype;
+
+typedef struct s_rdrinfo
+{
+    char		*rdr_str;
+    t_rdrtype	rdr_type;
+}	t_rdrinfo;
 
 typedef struct s_pipe
 {
-	char		*infile;
-	char		*outfile;
-	char		*delim;
-	char		*cmd;
-	char		**arg;
-	t_redirect	*rdr_list;
+    char		*cmd;
+    char		**arg;
+	int			rdr_count;
+    t_rdrinfo	*rdr_info;
 }	t_pipe;
 
 typedef struct s_vars
@@ -82,7 +86,7 @@ typedef struct s_token
 	char			*command; // not used, may be deleted
 	char			**arguments; // formatted value (e.g. {"echo", "z"})
 	int				exit_status;
-	t_pipe			*pipe_list;
+	t_pipe			*pipelst;
 	int				pipe_num;
 	t_operator		operator;
 }	t_token;
@@ -115,10 +119,18 @@ t_token		*tokenize_input(char *input);
 int 		is_operator(char *token);
 int 		is_left_paren(char *token);
 int 		is_right_paren(char *token);
+int 		count_paren(char *input);
 void		print_token_tree(t_token *token, int level, char *direction); // temporary
 t_operator	get_operator_type(char *value);
-t_pipe	create_new_pipe(char *value);
-int	get_pipe_num(t_pipe *pipe_list);
-t_pipe	*generate_pipe_list(char *value, t_token *token);
+
+// parsing
+t_pipe		create_new_pipe(char *value);
+int			get_pipe_num(t_pipe *pipe_list);
+t_token 	*build_token_tree(char **tokens, int start, int end);
+t_pipe		*generate_pipe_list(char *value, t_token *token);
+int			count_pipes(char *value);
+void		print_pipe_info(t_pipe pipe);
+int			handle_rdr_out(int i, char *value, t_rdrinfo *rdr_info);
+int			handle_rdr_in(int i, char *value, t_rdrinfo *rdr_info);
 
 #endif
