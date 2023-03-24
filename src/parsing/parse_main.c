@@ -39,7 +39,7 @@ t_pipe	*generate_pipe_list(char *value, t_token *token)
 	t_pipe	*pipelst;
 	char	*buffer;
 
-	if (is_operator(value) || count_pipes(value) == 0)
+	if (is_operator(value))
 		return (NULL);
 	pipelst = (t_pipe *)malloc(sizeof(t_pipe) * (count_pipes(value) + 1));
 	buffer = (char *)ft_calloc(1000, 1);
@@ -71,7 +71,7 @@ t_pipe	*generate_pipe_list(char *value, t_token *token)
 		i++;
 	}
 	if (buffer[0] != 0)
-		pipelst[pipe_count] = create_new_pipe(buffer);
+		pipelst[pipe_count++] = create_new_pipe(buffer);
 	token->pipe_num = pipe_count;
 	free(buffer);
 	return (pipelst);

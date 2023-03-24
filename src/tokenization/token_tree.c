@@ -8,8 +8,7 @@ t_token *create_token(char *value) {
     new_token->right = NULL;
     new_token->value = ft_strdup(value);
     new_token->operator = get_operator_type(value);
-    new_token->arguments = ft_split(value, ' ');
-    new_token->pipelst = generate_pipe_list(value, new_token);
+    new_token->cmdlst = generate_pipe_list(value, new_token);
     new_token->exit_status = 0;
     return (new_token);
 }

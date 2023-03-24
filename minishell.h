@@ -83,10 +83,8 @@ typedef struct s_token
 	struct s_token	*left;
 	struct s_token	*right;
 	char			*value; // raw value (e.g. "echo z")
-	char			*command; // not used, may be deleted
-	char			**arguments; // formatted value (e.g. {"echo", "z"})
 	int				exit_status;
-	t_pipe			*pipelst;
+	t_pipe			*cmdlst;
 	int				pipe_num;
 	t_operator		operator;
 }	t_token;
