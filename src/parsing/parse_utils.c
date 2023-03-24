@@ -52,7 +52,7 @@ int	handle_rdr_out(int i, char *value, t_rdrinfo *rdr_info)
 	j = i;
 	while (value[j] != 0)
 	{
-		if (value[j + 1] == ' ')
+		if (value[j + 1] == ' ' || value[j + 1] == '\0')
 		{
 			if (rdr_info->rdr_str)
 				free(rdr_info->rdr_str);
@@ -80,7 +80,7 @@ int	handle_rdr_in(int i, char *value, t_rdrinfo *rdr_info)
 	j = i;
 	while (value[j] != 0)
 	{
-		if (value[j + 1] == ' ')
+		if (value[j + 1] == ' ' || value[j + 1] == '\0')
 		{
 			if (rdr_info->rdr_str)
 				free(rdr_info->rdr_str);
