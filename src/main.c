@@ -59,11 +59,6 @@ void	read_terminal(t_vars *vars)
 		vars->tokens = tokenize_input(input);
 		// print_token_tree(vars->tokens, 0, "ROOT");
 
-		int	i = -1;
-		dprintf(2, "cmd=%s\n", vars->tokens[0].cmdlst[0].cmd);
-		i = -1;
-		while (vars->tokens[0].cmdlst[0].arg[++i] != NULL)
-			dprintf(2, "args[%d]=%s\n", i, vars->tokens[0].cmdlst[0].arg[i]);
 		// TEST CODE >>>
 		// test_args = ft_split(input, ' ');
 		if (cmdgroup(vars, vars->tokens[0]) == 1)
