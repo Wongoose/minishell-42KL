@@ -4,6 +4,7 @@
 void	init_vars(t_vars *vars, char **envp)
 {
 	vars->envp = dup_envp(envp);
+	vars->path = ft_split(get_envp_value(vars->envp, "PATH"), ':');
 	vars->functions = ft_split("echo cd pwd export unset env exit", ' ');
 	// below are all function pointers (not yet define functions)
 	vars->func[E_ECHO] = func_echo;
@@ -42,7 +43,7 @@ void	init_vars(t_vars *vars, char **envp)
 void	read_terminal(t_vars *vars)
 {
 	char	*input;
-	char	**test_args;
+	// char	**test_args;
 
 	init_signal();
 	input = readline("$> ");
@@ -58,10 +59,17 @@ void	read_terminal(t_vars *vars)
 		vars->tokens = tokenize_input(input);
 		// print_token_tree(vars->tokens, 0, "ROOT");
 
+		int	i = -1;
+		dprintf(2, "cmd=%s\n", vars->tokens[0].cmdlst[0].cmd);
+		i = -1;
+		while (vars->tokens[0].cmdlst[0].arg[++i] != NULL)
+			dprintf(2, "args[%d]=%s\n", i, vars->tokens[0].cmdlst[0].arg[i]);
 		// TEST CODE >>>
-		test_args = ft_split(input, ' ');
-		if (ft_strcmp(test_args[0], "exit") == 0)
-			vars->func[E_EXIT](vars, test_args);
+		// test_args = ft_split(input, ' ');
+		if (cmdgroup(vars, vars->tokens[0]) == 1)
+			write(2, "error!\n", 8);
+		// if (ft_strcmp(test_args[0], "exit") == 0)
+		// 	vars->func[E_EXIT](vars, test_args);
 		// vars->func[E_EXPORT](vars, test_args);
 	}
 	free(input);

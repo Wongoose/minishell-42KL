@@ -48,10 +48,10 @@ typedef enum e_function
 
 typedef enum s_rdrtype
 {
-    IN = 1,         // <
-    OUT = 2,     // >
-    HEREDOC = 3, // <<
-    APPEND = 4,     // >>
+	IN = 1,		 // <
+	OUT = 2,	 // >
+	HEREDOC = 3, // <<
+	APPEND = 4,	 // >>
 }	t_rdrtype;
 
 typedef struct s_rdrinfo
@@ -68,15 +68,6 @@ typedef struct s_pipe
     t_rdrinfo	*rdr_info;
 }	t_pipe;
 
-typedef struct s_vars
-{
-	char			**envp;
-	char			**functions;
-	char			**path;
-	struct s_token	*tokens;
-	t_func			func[7];
-}	t_vars;
-
 typedef struct s_token
 {
 	struct s_token	*parent;
@@ -84,10 +75,19 @@ typedef struct s_token
 	struct s_token	*right;
 	char			*value; // raw value (e.g. "echo z")
 	int				exit_status;
-	t_pipe			*cmdlst;
 	int				pipe_num;
+	t_pipe			*cmdlst;
 	t_operator		operator;
 }	t_token;
+
+typedef struct s_vars
+{
+	char			**envp;
+	char			**functions;
+	char			**path;
+	t_token			*tokens;
+	t_func			func[7];
+}	t_vars;
 
 void		print_startup(void);
 void		init_signal(void);
@@ -130,5 +130,20 @@ int			count_pipes(char *value);
 void		print_pipe_info(t_pipe pipe);
 int			handle_rdr_out(int i, char *value, t_rdrinfo *rdr_info);
 int			handle_rdr_in(int i, char *value, t_rdrinfo *rdr_info);
+
+// piping
+// void	test_piping(t_vars *vars);
+int		cmdgroup(t_vars *vars, t_token group);
+void	ft_dup_inoutfile(t_pipe cmdlst, int *fd_in, int *fd_out);
+void	ft_dup(char *cmd, int fd_one, int fd_two);
+void	ft_close_pipe(int index, int n_cmds, int pipefd[2][2]);
+void	ft_open(char *cmd, t_rdrinfo info, int *fd_in, int *fd_out);
+int		first_child(t_vars *vars, t_pipe cmdlst, int pipefd[2][2], pid_t *pid);
+int		middle_child(t_vars *vars, t_pipe cmdlst, int pipefd[2][2], pid_t *pid);
+int		last_child(t_vars *vars, t_pipe cmdlst, int pipefd[2][2], pid_t *pid);
+int		error(char *cmd, char *str);
+
+// execution
+int		execution(t_vars *vars, t_pipe cmdlst);
 
 #endif

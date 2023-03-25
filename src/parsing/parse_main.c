@@ -36,12 +36,12 @@ t_pipe	*generate_pipe_list(char *value, t_token *token)
 	int		i;
 	int		j;
 	int		pipe_count;
-	t_pipe	*pipelst;
+	t_pipe	*cmdlst;
 	char	*buffer;
 
 	if (is_operator(value))
 		return (NULL);
-	pipelst = (t_pipe *)malloc(sizeof(t_pipe) * (count_pipes(value) + 1));
+	cmdlst = (t_pipe *)malloc(sizeof(t_pipe) * (count_pipes(value) + 1));
 	buffer = (char *)ft_calloc(1000, 1);
 	i = 0;
 	j = 0;
@@ -54,7 +54,7 @@ t_pipe	*generate_pipe_list(char *value, t_token *token)
 				ft_printf("minishell: syntax error near unexpected token '|'\n");
 			if (buffer[0] != 0)
 			{
-				pipelst[pipe_count++] = create_new_pipe(buffer);
+				cmdlst[pipe_count++] = create_new_pipe(buffer);
 				buffer = (char *)ft_calloc(1000, 1);
 				j = 0;
 			}
@@ -71,8 +71,8 @@ t_pipe	*generate_pipe_list(char *value, t_token *token)
 		i++;
 	}
 	if (buffer[0] != 0)
-		pipelst[pipe_count++] = create_new_pipe(buffer);
+		cmdlst[pipe_count++] = create_new_pipe(buffer);
 	token->pipe_num = pipe_count;
 	free(buffer);
-	return (pipelst);
+	return (cmdlst);
 }

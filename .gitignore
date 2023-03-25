@@ -55,5 +55,4 @@ dkms.conf
 minishell
 objects/
 .vscode
-test_pipe.c
-test.c
+test*
