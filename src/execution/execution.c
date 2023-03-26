@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 16:00:08 by chenlee           #+#    #+#             */
-/*   Updated: 2023/03/25 18:01:35 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/03/26 23:11:19 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	call_execve(t_vars *vars, t_pipe cmdlst)
 	int		ret;
 	char	*pathname;
 	char	*temp;
-	
+
 	i = -1;
 	while (vars->path[++i] != NULL)
 	{

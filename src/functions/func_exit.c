@@ -32,7 +32,7 @@ int	func_exit(t_vars *vars, char **args)
 	if (!args[1])
 	{
 		status = 0;
-		// status = struct->exit_status;
+		exit(status);
 	}
 	else
 		status = ft_atoi(args[1]);

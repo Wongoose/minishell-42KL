@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 20:22:23 by chenlee           #+#    #+#             */
-/*   Updated: 2023/03/25 18:13:04 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/03/26 23:09:46 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,6 @@ int	one_child(t_vars *vars, t_pipe cmdlst, pid_t *pid)
 		exit (error(cmdlst.cmd, "fork failed"));
 	else if (pid[0] == 0)
 	{
-		write(2, "runs\n", 5);
 		ft_dup_inoutfile(cmdlst, &fd_in, &fd_out);
 		execution(vars, cmdlst);
 		exit(0);

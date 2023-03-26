@@ -58,7 +58,7 @@ void	read_terminal(t_vars *vars)
 		add_history(input);
 		vars->tokens = tokenize_input(input);
 		// print_token_tree(vars->tokens, 0, "ROOT");
-
+		
 		// TEST CODE >>>
 		// test_args = ft_split(input, ' ');
 		if (cmdgroup(vars, vars->tokens[0]) == 1)

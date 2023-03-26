@@ -7,8 +7,8 @@ t_pipe	create_new_pipe(char *value)
 	int		rdr_i;
 	char	*formatted;
 	char	*head;
-	
-	formatted = (char *)ft_calloc(ft_strlen(value), 1);
+
+	formatted = (char *)ft_calloc(ft_strlen(value) + 1, sizeof(char));
 	pipe.rdr_info = (t_rdrinfo *)ft_calloc(1000, sizeof(t_rdrinfo));
 	head = formatted;
 	i = -1;
