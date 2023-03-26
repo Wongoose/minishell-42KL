@@ -68,6 +68,7 @@ void	read_terminal(t_vars *vars)
 		// vars->func[E_EXPORT](vars, test_args);
 	}
 	free(input);
+	usleep(150000);
 }
 
 int	main(int argc, char **argv, char **envp)
