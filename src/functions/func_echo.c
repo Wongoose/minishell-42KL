@@ -6,7 +6,7 @@ int	count_flags(char **argv)
 	int	j;
 	int	flag_count;
 
-	i = 0;
+	i = 1;
 	flag_count = 0;
 	while (argv[i])
 	{
@@ -22,6 +22,8 @@ int	count_flags(char **argv)
 			if (argv[i][j] == '\0')
 				flag_count++;
 		}
+		else
+			break ;
 		i++;
 	}
 	return (flag_count);
@@ -47,5 +49,7 @@ int	func_echo(t_vars *vars, char **argv)
 			ft_printf(" ");
 		i++;
 	}
+	if (flag_count == 0)
+		ft_printf("\n");
 	return (0);
 }
