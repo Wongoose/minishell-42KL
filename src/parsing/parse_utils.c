@@ -91,3 +91,41 @@ int	handle_rdr_in(int i, char *value, t_rdrinfo *rdr_info)
 	}
 	return (j);
 }
+
+t_rdrinfo	*remove_rdr_from_list(t_rdrinfo *list, int index, int item_count)
+{
+	int			i;
+	int			j;
+	t_rdrinfo	*new_list;
+
+	new_list = malloc(sizeof(t_rdrinfo) * (item_count + 1));
+	i = -1;
+	j = 0;
+	while (++i < item_count)
+	{
+		if (i != index)
+			new_list[j++] = list[i];
+	}
+	return (new_list);
+}
+
+void	filter_exceptions(t_pipe *pipe)
+{
+	int	i;
+
+	if (ft_strcmp(pipe->cmd, "cat"))
+	{
+		if (pipe->arg[1] != 0)
+		{
+			i = -1;
+			while (++i < pipe->rdr_count)
+			{
+				if (pipe->rdr_info[i].rdr_type == IN)
+				{
+					free(pipe->rdr_info);
+					pipe->rdr_info = remove_rdr_from_list(pipe->rdr_info, i, pipe->rdr_count);
+				}
+			}
+		}
+	}
+}

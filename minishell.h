@@ -130,6 +130,7 @@ int			count_pipes(char *value);
 void		print_pipe_info(t_pipe pipe);
 int			handle_rdr_out(int i, char *value, t_rdrinfo *rdr_info);
 int			handle_rdr_in(int i, char *value, t_rdrinfo *rdr_info);
+void		filter_exceptions(t_pipe *pipe);
 
 // piping
 // void	test_piping(t_vars *vars);

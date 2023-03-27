@@ -13,7 +13,6 @@ t_pipe	create_new_pipe(char *value)
 	head = formatted;
 	i = -1;
 	rdr_i = 0;
-	// printf("\n=====\n\nCreating new pipe for: %s\n", value);
 	while (value[++i] != 0)
 	{
 		if (value[i] == '>')
@@ -26,8 +25,7 @@ t_pipe	create_new_pipe(char *value)
 	pipe.rdr_count = rdr_i;
 	pipe.arg = ft_split(head, ' ');
 	pipe.cmd = pipe.arg[0];
-	// printf("=NEW PIPE: '%s', '%s', '%s'\n", pipe.cmd, pipe.arg[1], pipe.arg[2]);
-	// print_pipe_info(pipe);
+	filter_exceptions(&pipe);
 	return (pipe);
 }
 

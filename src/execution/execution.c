@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 16:00:08 by chenlee           #+#    #+#             */
-/*   Updated: 2023/03/26 23:11:19 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/03/27 13:57:50 by zwong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	call_execve(t_vars *vars, t_pipe cmdlst)
 	{
 		temp = ft_strjoin(vars->path[i], "/");
 		pathname = ft_strjoin(temp, cmdlst.cmd);
-		ret = execve(pathname, cmdlst.arg, NULL);
+		ret = execve(pathname, cmdlst.arg, vars->envp);
 		free(temp);
 		free(pathname);
 		if (ret != -1)
