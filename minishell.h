@@ -20,6 +20,8 @@ struct s_vars;
 struct s_token;
 typedef int	(*t_func)(struct s_vars *vars, char **args);
 
+int			g_errno;
+
 #define MAX_TOKENS 1024
 
 typedef enum e_bool

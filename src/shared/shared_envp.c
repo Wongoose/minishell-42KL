@@ -65,12 +65,17 @@ char	*expand_env_dollar(t_vars *vars, char *str)
 	{
 		if (str[i] == '$')
 		{
-			j = ++i;
-			while (ft_isalnum(str[j]))
-				j++;
-			expanded = get_envp_value(vars->envp, ft_substr(str, i, j - i));
-			if (expanded)
-				new_str = ft_strjoin(new_str, expanded);
+			if (str[++i] == '?')
+				new_str = ft_strjoin(new_str, ft_itoa(g_errno));
+			else
+			{
+				j = i;
+				while (ft_isalnum(str[j]))
+					j++;
+				expanded = get_envp_value(vars->envp, ft_substr(str, i, j - i));
+				if (expanded)
+					new_str = ft_strjoin(new_str, expanded);
+			}
 		}
 		i++;
 	}
