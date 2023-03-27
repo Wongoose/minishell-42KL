@@ -68,7 +68,7 @@ char	*expand_env_dollar(t_vars *vars, char *str)
 			j = ++i;
 			while (ft_isalnum(str[j]))
 				j++;
-			expanded = get_envp_value(vars->envp, ft_substr(str, i, j - i + 1));
+			expanded = get_envp_value(vars->envp, ft_substr(str, i, j - i));
 			if (expanded)
 				new_str = ft_strjoin(new_str, expanded);
 		}
