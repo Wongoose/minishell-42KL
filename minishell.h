@@ -113,13 +113,14 @@ char		*get_envp_value(char **envp, char *key);
 void		free_doublearray(char **data);
 
 // tokenization
-t_token		*tokenize_input(char *input);
+t_token		*tokenize_input(t_vars *vars, char *input);
 int 		is_operator(char *token);
 int 		is_left_paren(char *token);
 int 		is_right_paren(char *token);
 int 		count_paren(char *input);
 void		print_token_tree(t_token *token, int level, char *direction); // temporary
 t_operator	get_operator_type(char *value);
+char		*expand_env_dollar(t_vars *vars, char *str);
 
 // parsing
 t_pipe		create_new_pipe(char *value);

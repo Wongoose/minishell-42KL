@@ -51,3 +51,29 @@ char	**dup_envp(char **envp)
 	}
 	return(new_envp);
 }
+
+char	*expand_env_dollar(t_vars *vars, char *str)
+{
+	int		i;
+	int		j;
+	char	*new_str;
+	char	*expanded;
+
+	new_str = ft_calloc(1, 1);
+	i = 0;
+	while (str[i] != '\0')
+	{
+		if (str[i] == '$')
+		{
+			j = ++i;
+			while (ft_isalnum(str[j]))
+				j++;
+			expanded = get_envp_value(vars->envp, ft_substr(str, i, j - i + 1));
+			if (expanded)
+				new_str = ft_strjoin(new_str, expanded);
+		}
+		i++;
+	}
+	free(str);
+	return (new_str);
+}

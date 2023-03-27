@@ -56,7 +56,7 @@ void	read_terminal(t_vars *vars)
 	if (ft_strlen(input) != 0)
 	{
 		add_history(input);
-		vars->tokens = tokenize_input(input);
+		vars->tokens = tokenize_input(vars, input);
 		// print_token_tree(vars->tokens, 0, "ROOT");
 		
 		// TEST CODE >>>

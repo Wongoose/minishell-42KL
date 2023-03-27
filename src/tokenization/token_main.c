@@ -32,10 +32,12 @@ void    space_at_paren(char *copy, char *input)
     copy[j] = '\0';
 }
 
-char    *add_to_buffer(char *buffer, char *value)
+char    *add_to_buffer(t_vars *vars,char *buffer, char *value)
 {
     char    *tmp;
 
+    if (ft_strchr(value, '$'))
+        value = expand_env_dollar(vars, value);
     tmp = buffer;
     if (tmp == NULL)
         tmp = ft_strdup(value);
@@ -50,7 +52,7 @@ char    *add_to_buffer(char *buffer, char *value)
 
 // Adding spaces between parenthesis and cmds for ft_split later
 // Format correctly (e.g. "echo", "z" becomes "echo z")
-char **format_input(char *input) {
+char **format_input(t_vars *vars, char *input) {
     char    **tokens = malloc(MAX_TOKENS * sizeof(char *));
     char    **split;
     char    *buffer;
@@ -79,7 +81,7 @@ char **format_input(char *input) {
             continue ;
         }
         else
-            buffer = add_to_buffer(buffer, split[i]);
+            buffer = add_to_buffer(vars, buffer, split[i]);
         i++;
     }
     if (buffer)
@@ -91,11 +93,11 @@ char **format_input(char *input) {
     return (tokens);
 }
 
-t_token *tokenize_input(char *input) {
+t_token *tokenize_input(t_vars *vars, char *input) {
     char **tokens;
 	t_token *root;
 
-	tokens = format_input(input);
+	tokens = format_input(vars, input);
     int i = 0;
 	while (tokens[i] != 0)
 		i++;
