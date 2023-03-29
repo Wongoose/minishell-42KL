@@ -20,8 +20,6 @@ struct s_vars;
 struct s_token;
 typedef int	(*t_func)(struct s_vars *vars, char **args);
 
-int			g_errno;
-
 #define MAX_TOKENS 1024
 
 typedef enum e_bool
@@ -87,6 +85,7 @@ typedef struct s_vars
 	char			**envp;
 	char			**functions;
 	char			**path;
+	int				last_errno;
 	t_token			*tokens;
 	t_func			func[7];
 }	t_vars;
@@ -138,10 +137,10 @@ void		filter_exceptions(t_pipe *pipe);
 // piping
 // void	test_piping(t_vars *vars);
 int		cmdgroup(t_vars *vars, t_token group);
-void	ft_dup_inoutfile(t_pipe cmdlst, int *fd_in, int *fd_out);
+void	ft_dup_inoutfile(t_pipe cmdlst, int temp, int *fd_in, int *fd_out);
 void	ft_dup(char *cmd, int fd_one, int fd_two);
 void	ft_close_pipe(int index, int n_cmds, int pipefd[2][2]);
-void	ft_open(char *cmd, t_rdrinfo info, int *fd_in, int *fd_out);
+void	ft_open(int temp, t_rdrinfo info, int *fd_in, int *fd_out);
 int		first_child(t_vars *vars, t_pipe cmdlst, int pipefd[2][2], pid_t *pid);
 int		middle_child(t_vars *vars, t_pipe cmdlst, int pipefd[2][2], pid_t *pid);
 int		last_child(t_vars *vars, t_pipe cmdlst, int pipefd[2][2], pid_t *pid);
@@ -149,5 +148,6 @@ int		error(char *cmd, char *str);
 
 // execution
 int		execution(t_vars *vars, t_pipe cmdlst);
+int		wait_for_pid(t_vars *vars, t_token group, int *pid);
 
 #endif

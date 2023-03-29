@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 20:22:23 by chenlee           #+#    #+#             */
-/*   Updated: 2023/03/26 23:09:46 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/03/29 16:08:45 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,18 +26,30 @@ int	error(char *cmd, char *str)
 	return (1);
 }
 
-int	wait_for_pid(t_token group, int *pid, int n_cmds)
+int	wait_for_pid(t_vars *vars, t_token group, int *pid)
 {
 	int	status;
 	int	i;
 
 	i = -1;
-	while (++i < n_cmds)
+	while (++i < group.pipe_num)
 	{
+		dprintf(2, "pid=%d\n", pid[i]);
 		if (waitpid(pid[i], &status, 0) == -1)
 			return (error(group.cmdlst[i].cmd, "waitpid"));
-		// if (WEXITSTATUS(status) != 0)
-		// 	return (error(vars->cmdlst[i].cmd, "Child process terminated abnormally"));
+		if (WIFEXITED(status))
+		{
+			vars->last_errno = WEXITSTATUS(status);
+			write(2, "returning 1\n", 12);
+			return (vars->last_errno);
+		}
+		else if (WIFSIGNALED(status))
+		{
+			vars->last_errno = WTERMSIG(status);
+			dprintf(2, "last_errno=%d\n", vars->last_errno);
+			write(2, "returning 2\n", 12);
+			return (vars->last_errno);
+		}
 	}
 	return (0);
 }
@@ -48,6 +60,7 @@ int	multiple_child(t_vars *vars, t_token group, int *pid)
 	int	i;
 	int	ret;
 
+	printf("heredoc=%s && cmd=%s\n", group.cmdlst[0].rdr_info->rdr_str, group.cmdlst[0].cmd);
 	i = -1;
 	while (++i < group.pipe_num)
 	{
@@ -66,18 +79,21 @@ int	multiple_child(t_vars *vars, t_token group, int *pid)
 	return (0);
 }
 
-int	one_child(t_vars *vars, t_pipe cmdlst, pid_t *pid)
+int	one_child(t_vars *vars, t_token group, pid_t *pid)
 {
 	int	fd_in;
 	int	fd_out;
+	int	temp;
 
 	pid[0] = fork();
+	dprintf(2, "pid=%d\n", pid[0]);
 	if (pid[0] == -1)
-		exit (error(cmdlst.cmd, "fork failed"));
+		exit (error(group.cmdlst[0].cmd, "fork failed"));
 	else if (pid[0] == 0)
 	{
-		ft_dup_inoutfile(cmdlst, &fd_in, &fd_out);
-		execution(vars, cmdlst);
+		temp = dup(STDOUT_FILENO);
+		ft_dup_inoutfile(group.cmdlst[0], temp, &fd_in, &fd_out);
+		execution(vars, group.cmdlst[0]);
 		exit(0);
 	}
 	return (0);
@@ -93,17 +109,13 @@ int	cmdgroup(t_vars *vars, t_token group)
 	ret_pid = 0;
 	pid = ft_calloc(group.pipe_num, sizeof(int));
 	if (group.pipe_num == 1)
-		ret = one_child(vars, group.cmdlst[0], pid);
+		ret = one_child(vars, group, pid);
 	else
-	{
 		ret = multiple_child(vars, group, pid);
-		ret_pid = wait_for_pid(group, pid, group.pipe_num);
-	}
+	ret_pid = wait_for_pid(vars, group, pid);
+	free(pid);
 	if (ret == 1 || ret_pid == 1)
-	{
-		free(pid);
 		return (1);
-	}
 	return (0);
 }
 

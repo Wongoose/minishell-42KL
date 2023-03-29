@@ -8,7 +8,7 @@ void	sigint_handler(int signo)
 	rl_replace_line("", 0);
 	rl_on_new_line();
 	rl_redisplay();
-	// g_errno = 1;
+	// vars->last_errno = 1;
 }
 
 void	init_signal(void)

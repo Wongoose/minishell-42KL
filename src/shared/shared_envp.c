@@ -66,7 +66,7 @@ char	*expand_env_dollar(t_vars *vars, char *str)
 		if (str[i] == '$')
 		{
 			if (str[++i] == '?')
-				new_str = ft_strjoin(new_str, ft_itoa(g_errno));
+				new_str = ft_strjoin(new_str, ft_itoa(vars->last_errno));
 			else
 			{
 				j = i;

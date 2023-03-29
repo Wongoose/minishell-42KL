@@ -77,6 +77,8 @@ int	main(int argc, char **argv, char **envp)
 	(void)argv;
 	t_vars	vars;
 
+	g_global = 1;
+	printf("global=%d\n", g_global);
 	print_startup();
 	init_vars(&vars, envp);
 	while (1)

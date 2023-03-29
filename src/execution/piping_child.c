@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 19:00:06 by chenlee           #+#    #+#             */
-/*   Updated: 2023/03/26 15:37:49 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/03/29 16:03:24 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	ft_dup(char *cmd, int fd_one, int fd_two)
 	}
 }
 
-void	ft_dup_inoutfile(t_pipe cmdlst, int *fd_in, int *fd_out)
+void	ft_dup_inoutfile(t_pipe cmdlst, int temp, int *fd_in, int *fd_out)
 {
 	int	i;
 
@@ -38,7 +38,7 @@ void	ft_dup_inoutfile(t_pipe cmdlst, int *fd_in, int *fd_out)
 	*(fd_out) = -42;
 	i = -1;
 	while (++i < cmdlst.rdr_count)
-		ft_open(cmdlst.cmd, cmdlst.rdr_info[i], fd_in, fd_out);
+		ft_open(temp, cmdlst.rdr_info[i], fd_in, fd_out);
 	// if (cmdlst.infile != NULL)
 	// {
 	// 	*(fd_in) = open(cmdlst.infile, O_RDWR);
@@ -64,16 +64,18 @@ int	last_child(t_vars *vars, t_pipe cmdlst, int pipefd[2][2], pid_t *pid)
 {
 	int	fd_in;
 	int	fd_out;
+	int	temp;
 
 	*(pid) = fork();
 	if (*(pid) == -1)
 		exit (error(cmdlst.cmd, "fork failed"));
 	else if (*(pid) == 0)
 	{
+		temp = dup(STDOUT_FILENO);
 		ft_dup(cmdlst.cmd, pipefd[1][0], STDIN_FILENO);
 		close(pipefd[0][0]);
 		close(pipefd[0][1]);
-		ft_dup_inoutfile(cmdlst, &fd_in, &fd_out);
+		ft_dup_inoutfile(cmdlst, temp, &fd_in, &fd_out);
 		execution(vars, cmdlst);
 		exit(0);
 	}
@@ -84,17 +86,19 @@ int	middle_child(t_vars *vars, t_pipe cmdlst, int pipefd[2][2], pid_t *pid)
 {
 	int	fd_in;
 	int	fd_out;
+	int	temp;
 	
 	*(pid) = fork();
 	if (*(pid) == -1)
 		exit (error(cmdlst.cmd, "fork failed"));
 	else if (*(pid) == 0)
 	{
+		temp = dup(STDOUT_FILENO);
 		ft_dup(cmdlst.cmd, pipefd[0][1], STDOUT_FILENO);
 		ft_dup(cmdlst.cmd, pipefd[1][0], STDIN_FILENO);
 		close(pipefd[0][0]);
 		close(pipefd[0][1]);
-		ft_dup_inoutfile(cmdlst, &fd_in, &fd_out);
+		ft_dup_inoutfile(cmdlst, temp, &fd_in, &fd_out);
 		execution(vars, cmdlst);
 	}
 	return (0);
@@ -104,16 +108,18 @@ int	first_child(t_vars *vars, t_pipe cmdlst, int pipefd[2][2], pid_t *pid)
 {
 	int	fd_in;
 	int	fd_out;
+	int	temp;
 
 	*(pid) = fork();
 	if (*(pid) == -1)
 		return (error(cmdlst.cmd, "fork failed"));
 	else if (*(pid) == 0)
 	{
+		// temp = dup(STDOUT_FILENO);
 		ft_dup(cmdlst.cmd, pipefd[0][1], STDOUT_FILENO);
 		close(pipefd[0][0]);
 		close(pipefd[0][1]);
-		ft_dup_inoutfile(cmdlst, &fd_in, &fd_out);
+		ft_dup_inoutfile(cmdlst, temp, &fd_in, &fd_out);
 		execution(vars, cmdlst);
 		exit(0);
 	}
