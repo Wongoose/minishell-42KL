@@ -1,28 +1,80 @@
 #include "minishell.h"
 
-// t_bool  validate_parenthesis(char *input)
-// {
+char    **prompt_close_paren(char **tokens) // nEXT: Fix prompt when missing 2 closing brackets
+{
+    char    *input;
+    char    **new_tokens;
+    int     i;
+    int     j;
 
-// }
+    input = readline("> ");
+    i = 0;
+    j = 0;
+    while (tokens[i] != 0)
+        i++;
+    new_tokens = malloc(sizeof(char *) * (i + 2));
+    i = 0;
+    while (tokens[i] != 0)
+        new_tokens[j++] = tokens[i++];
+    new_tokens[j++] = ft_strdup(input);
+    new_tokens[j] = 0;
+    if (ft_strcmp(input, ")") == 0)
+        return (new_tokens);
+    else   
+        return (prompt_close_paren(new_tokens));
+}
 
-void    space_at_paren(char *copy, char *input)
+char    **validate_parenthesis(char **tokens)
+{
+    int paren_level;
+    int i;
+
+    paren_level = 0;
+    i = -1;
+
+    while (tokens[++i] != 0)
+    {
+        if (is_left_paren(tokens[i]))
+            paren_level++;
+        else if(is_right_paren(tokens[i]))
+        {
+            paren_level--;
+            if (!is_right_paren(tokens[i + 1]) && !is_operator(tokens[i + 1]))
+            {
+                printf("Found unexpected token near '%s'\n", tokens[i + 1]);
+                return (tokens);
+            }
+        } // also validate after paren (must be operator OR closing paren)
+    }
+    if (paren_level > 0)
+        tokens = prompt_close_paren(tokens);
+    else if (paren_level < 0)
+        ft_printf("Found extra ')'");
+    return (tokens);
+}
+
+char    *space_at_paren(char *input)
 {
     int i;
     int j;
+    char *copy;
 
     i = 0;
     j = 0;
+    copy = (char *)malloc(ft_strlen(input) + count_paren(input) * 2 + 1);
     while (input[i] != 0)
     {
         if (input[i] == '(')
         {
-            copy[j] = input[i];
-            copy[++j] = ' ';
+            copy[j++] = ' ';
+            copy[j++] = input[i];
+            copy[j] = ' ';
         }
         else if (input[i] == ')')
         {
+            copy[j++] = ' ';
+            copy[j++] = input[i];
             copy[j] = ' ';
-            copy[++j] = input[i];
         }
         else
             copy[j] = input[i];
@@ -30,6 +82,7 @@ void    space_at_paren(char *copy, char *input)
         i++;
     }
     copy[j] = '\0';
+    return (copy);
 }
 
 char    *add_to_buffer(t_vars *vars,char *buffer, char *value)
@@ -60,9 +113,7 @@ char **format_input(t_vars *vars, char *input) {
     int     i;
     int     j;
 
-    // NEXT: Validate input
-    copy = (char *)malloc(ft_strlen(input) + count_paren(input) + 1);
-    space_at_paren(copy, input);
+    copy = space_at_paren(input);
     split = ft_split(copy, ' ');
     i = 0;
     j = 0;
@@ -81,8 +132,7 @@ char **format_input(t_vars *vars, char *input) {
             continue ;
         }
         else
-            buffer = add_to_buffer(vars, buffer, split[i]);
-        i++;
+            buffer = add_to_buffer(vars, buffer, split[i++]);
     }
     if (buffer)
     {
@@ -94,12 +144,14 @@ char **format_input(t_vars *vars, char *input) {
 }
 
 t_token *tokenize_input(t_vars *vars, char *input) {
-    char **tokens;
+    int     i;
+    char    **tokens;
 	t_token *root;
 
 	tokens = format_input(vars, input);
-    int i = 0;
-	while (tokens[i] != 0)
+    // tokens = validate_parenthesis(tokens); // NEXT: Stop if invalid
+	i = 0;
+    while (tokens[i] != 0)
 		i++;
     root = build_token_tree(tokens, 0, i - 1);
     free_doublearray(tokens);
