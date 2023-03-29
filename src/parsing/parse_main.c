@@ -24,7 +24,8 @@ t_pipe	create_new_pipe(char *value)
 	}
 	pipe.rdr_count = rdr_i;
 	pipe.arg = ft_split(head, ' ');
-	pipe.cmd = pipe.arg[0];
+	if (!pipe.arg)
+		pipe.cmd = pipe.arg[0];
 	filter_exceptions(&pipe);
 	return (pipe);
 }
