@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   piping_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 15:22:35 by chenlee           #+#    #+#             */
-/*   Updated: 2023/03/24 19:29:26 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/03/29 13:37:07 by zwong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ void	ft_open(char *cmd, t_rdrinfo info, int *fd_in, int *fd_out)
 		if (*(fd_out) != -42)
 			close(*(fd_out));
 		if (info.rdr_type == OUT)
-			*(fd_out) = open(info.rdr_str, O_CREAT | O_TRUNC | O_WRONLY);
+			*(fd_out) = open(info.rdr_str, O_CREAT | O_TRUNC | O_WRONLY, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 		else if (info.rdr_type == APPEND)
 			*(fd_out) = open(info.rdr_str, O_CREAT | O_APPEND);
 		if (*(fd_out) == -1)
