@@ -49,8 +49,8 @@ void	read_terminal(t_vars *vars)
 	input = readline("$> ");
 	if (input == NULL) // handles Ctrl-D (Ctrl-D is EOF in terminal which return value of NULL)
 	{
-		ft_printf("exit");
-		exit(1);
+		ft_printf("exit\n");
+		exit(0);
 	}
 	// Below is PIPEX
 	if (ft_strlen(input) != 0)
