@@ -33,6 +33,7 @@ FILES		=	print_start				\
 				piping					\
 				piping_child			\
 				piping_utils			\
+				piping_heredoc_utils	\
 				execution				\
 				free
 

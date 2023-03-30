@@ -61,7 +61,6 @@ void	read_terminal(t_vars *vars)
 			exit(1);
 		// print_token_tree(vars->tokens, 0, "ROOT");
 		
-		printf("cmd=%s\n", vars->tokens[0].cmdlst[0].cmd);
 		// TEST CODE >>>
 		// test_args = ft_split(input, ' ');
 		if (cmdgroup(vars, vars->tokens[0]) == 1)
@@ -83,6 +82,8 @@ int	main(int argc, char **argv, char **envp)
 	print_startup();
 	init_vars(&vars, envp);
 	while (1)
+	{
 		read_terminal(&vars);
+	}
 	return (0);
 }

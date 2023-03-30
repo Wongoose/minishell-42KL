@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 15:22:35 by chenlee           #+#    #+#             */
-/*   Updated: 2023/03/30 13:46:27 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/03/30 19:37:47 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,98 +17,7 @@
 #include <sys/wait.h>
 #include <fcntl.h>
 
-int	wait_heredoc_pid(char *cmd, int pid)
-{
-	int	status;
-
-	if (waitpid(pid, &status, 0) == -1)
-		return (error(cmd, "waitpid failed"));
-	if (WIFEXITED(status))
-		return (WEXITSTATUS(status));
-	else if (WIFSIGNALED(status))
-		return (WTERMSIG(status));
-	else
-		return (-1);
-}
-
-/**
- * Function creates a backup of current pipefd which will be used for the next
- * function, if there is an existing backup, function closes them, then close
- * the current pipefd.
- * 
- * @param index The current command list
- * @param n_cmds Total number of commands
- * @param pipefd The file 
-*/
-void	ft_close_pipe(int index, int n_cmds, int pipefd[2][2])
-{
-	if (index != 0)
-		close(pipefd[1][0]);
-	if (index != n_cmds - 1)
-		pipefd[1][0] = pipefd[0][0];
-	close(pipefd[0][1]);
-	if (index == n_cmds - 1)
-		close(pipefd[0][0]);
-}
-
-char	*get_readline(char *rdr_str)
-{
-	char	*temp_one;
-	char	*temp_two;
-	char	*str;
-
-	str = ft_strdup("");
-	while (1)
-	{
-		write(2, "while runs\n", 11);
-		temp_one = readline("> ");
-		if (ft_strncmp(temp_one, rdr_str, ft_strlen(rdr_str)) == 0)
-		{
-			write(2, "breaking\n", 9);
-			break ;
-		}
-		write(2, "pass strncmp\n", 13);
-		temp_two = ft_strjoin(temp_one, "\n");
-		free(temp_one);
-		temp_one = ft_strjoin(str, temp_two);
-		free(str);
-		free(temp_two);
-		str = ft_strdup(temp_one);
-		free(temp_one);
-	}
-	write(2, "BRUH\n", 5);
-	return (str);
-}
-
-int	do_heredoc(char *cmd, t_rdrinfo info, int temp)
-{
-	char	*gnl;
-	int		hdoc_pid;
-	int		current_fd;
-	int		pipefd[2];
-	
-	if (pipe(pipefd) == -1)
-		exit(error(NULL, "pipe failed"));
-	hdoc_pid = fork();
-	if (hdoc_pid == -1)
-		exit(error(cmd, "heredoc fork failed"));
-	else if (hdoc_pid == 0)
-	{
-		current_fd = dup(STDOUT_FILENO);
-		ft_dup(cmd, temp, STDOUT_FILENO);
-		gnl = get_readline(info.rdr_str);
-		ft_dup(cmd, current_fd, STDOUT_FILENO);
-		write(pipefd[1], gnl, ft_strlen(gnl));
-		close(pipefd[1]);
-		exit(0);
-	}
-	else
-		if (wait_heredoc_pid(cmd, hdoc_pid) != 0)
-			return (-1);
-	return (pipefd[0]);
-}
-
-void	ft_open(char *cmd, t_rdrinfo info, int fd_inout[2], int temp)
+void	ft_open(char *cmd, t_rdrinfo info, int fd_inout[2], int std_fd[2])
 {
 	if ((info.rdr_type == IN || info.rdr_type == HEREDOC))
 	{
@@ -117,10 +26,7 @@ void	ft_open(char *cmd, t_rdrinfo info, int fd_inout[2], int temp)
 		if (info.rdr_type == IN)
 			fd_inout[0] = open(info.rdr_str, O_RDONLY);
 		else if (info.rdr_type == HEREDOC)
-		{
-			write(2, "heredoc runs\n", 13);
-			fd_inout[0] = do_heredoc(cmd, info, temp);
-		}
+			fd_inout[0] = do_heredoc(cmd, info, std_fd);
 		if (fd_inout[0] == -1)
 			exit(error(cmd, "open error"));
 	}
@@ -137,4 +43,21 @@ void	ft_open(char *cmd, t_rdrinfo info, int fd_inout[2], int temp)
 		if (fd_inout[1] == -1)
 			exit(error(cmd, "open error"));
 	}
+}
+
+void	ft_dup_inoutfile(t_pipe cmdlst, int fd_inout[2], int std_fd[2])
+{
+	int	i;
+
+	fd_inout[0] = -42;
+	fd_inout[1] = -42;
+	i = -1;
+	while (++i < cmdlst.rdr_count)
+		ft_open(cmdlst.cmd, cmdlst.rdr_info[i], fd_inout, std_fd);
+	if (fd_inout[0] != -42)
+		ft_dup("infile", fd_inout[0], STDIN_FILENO);
+	if (fd_inout[1] != -42)
+		ft_dup("outfile", fd_inout[1], STDOUT_FILENO);
+	close(fd_inout[0]);
+	close(fd_inout[1]);
 }

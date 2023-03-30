@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 19:00:06 by chenlee           #+#    #+#             */
-/*   Updated: 2023/03/30 13:43:00 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/03/30 19:15:04 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,26 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <fcntl.h>
+
+/**
+ * Function creates a backup of current pipefd which will be used for the next
+ * function, if there is an existing backup, function closes them, then close
+ * the current pipefd.
+ * 
+ * @param index The current command list
+ * @param n_cmds Total number of commands
+ * @param pipefd The file 
+*/
+void	ft_close_pipe(int index, int n_cmds, int pipefd[2][2])
+{
+	if (index != 0)
+		close(pipefd[1][0]);
+	if (index != n_cmds - 1)
+		pipefd[1][0] = pipefd[0][0];
+	close(pipefd[0][1]);
+	if (index == n_cmds - 1)
+		close(pipefd[0][0]);
+}
 
 void	ft_dup(char *cmd, int fd_one, int fd_two)
 {
@@ -30,51 +50,22 @@ void	ft_dup(char *cmd, int fd_one, int fd_two)
 	}
 }
 
-void	ft_dup_inoutfile(t_pipe cmdlst, int fd_inout[2], int temp)
-{
-	int	i;
-
-	fd_inout[0] = -42;
-	fd_inout[1] = -42;
-	i = -1;
-	while (++i < cmdlst.rdr_count)
-		ft_open(cmdlst.cmd, cmdlst.rdr_info[i], fd_inout, temp);
-	// if (cmdlst.infile != NULL)
-	// {
-	// 	*(fd_in) = open(cmdlst.infile, O_RDWR);
-	// if (*(fd_in) == -1 )
-	// 	exit(error(cmdlst.cmd, "open error"));
-	if (fd_inout[0] != -42)
-		ft_dup("infile", fd_inout[0], STDIN_FILENO);
-	if (fd_inout[1] != -42)
-		ft_dup("outfile", fd_inout[1], STDOUT_FILENO);
-	// }
-	// if (cmdlst.outfile != NULL)
-	// {
-	// 	if (check_append(cmdlst.rdr_list))
-	// 		*(fd_out) = open(cmdlst.outfile, O_APPEND);
-	// 	else
-	// 		*(fd_out) = open(cmdlst.outfile, O_RDWR);
-	// if (*(fd_out) == -1)
-	// 	exit(error(cmdlst.cmd, "open error"));
-	// }
-}
-
 int	last_child(t_vars *vars, t_pipe cmdlst, int pipefd[2][2], pid_t *pid)
 {
 	int	fd_inout[2];
-	int	temp;
+	int	std_fd[2];
 
 	*(pid) = fork();
 	if (*(pid) == -1)
 		exit (error(cmdlst.cmd, "fork failed"));
 	else if (*(pid) == 0)
 	{
-		temp = dup(STDOUT_FILENO);
+		std_fd[1] = dup(STDOUT_FILENO);
+		std_fd[0] = dup(STDIN_FILENO);
 		ft_dup(cmdlst.cmd, pipefd[1][0], STDIN_FILENO);
 		close(pipefd[0][0]);
 		close(pipefd[0][1]);
-		ft_dup_inoutfile(cmdlst, fd_inout, temp);
+		ft_dup_inoutfile(cmdlst, fd_inout, std_fd);
 		execution(vars, cmdlst);
 		exit(0);
 	}
@@ -84,19 +75,20 @@ int	last_child(t_vars *vars, t_pipe cmdlst, int pipefd[2][2], pid_t *pid)
 int	middle_child(t_vars *vars, t_pipe cmdlst, int pipefd[2][2], pid_t *pid)
 {
 	int	fd_inout[2];
-	int	temp;
+	int	std_fd[2];
 	
 	*(pid) = fork();
 	if (*(pid) == -1)
 		exit (error(cmdlst.cmd, "fork failed"));
 	else if (*(pid) == 0)
 	{
-		temp = dup(STDOUT_FILENO);
+		std_fd[1] = dup(STDOUT_FILENO);
+		std_fd[0] = dup(STDIN_FILENO);
 		ft_dup(cmdlst.cmd, pipefd[0][1], STDOUT_FILENO);
 		ft_dup(cmdlst.cmd, pipefd[1][0], STDIN_FILENO);
 		close(pipefd[0][0]);
 		close(pipefd[0][1]);
-		ft_dup_inoutfile(cmdlst, fd_inout, temp);
+		ft_dup_inoutfile(cmdlst, fd_inout, std_fd);
 		execution(vars, cmdlst);
 	}
 	return (0);
@@ -105,18 +97,19 @@ int	middle_child(t_vars *vars, t_pipe cmdlst, int pipefd[2][2], pid_t *pid)
 int	first_child(t_vars *vars, t_pipe cmdlst, int pipefd[2][2], pid_t *pid)
 {
 	int	fd_inout[2];
-	int	temp;
+	int	std_fd[2];
 
 	*(pid) = fork();
 	if (*(pid) == -1)
 		return (error(cmdlst.cmd, "fork failed"));
 	else if (*(pid) == 0)
 	{
-		temp = dup(STDOUT_FILENO);
+		std_fd[1] = dup(STDOUT_FILENO);
+		std_fd[0] = dup(STDIN_FILENO);
 		ft_dup(cmdlst.cmd, pipefd[0][1], STDOUT_FILENO);
 		close(pipefd[0][0]);
 		close(pipefd[0][1]);
-		ft_dup_inoutfile(cmdlst, fd_inout, temp);
+		ft_dup_inoutfile(cmdlst, fd_inout, std_fd);
 		execution(vars, cmdlst);
 		exit(0);
 	}
