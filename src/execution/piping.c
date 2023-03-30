@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 20:22:23 by chenlee           #+#    #+#             */
-/*   Updated: 2023/03/29 16:08:45 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/03/30 13:45:11 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int	wait_for_pid(t_vars *vars, t_token group, int *pid)
 	{
 		dprintf(2, "pid=%d\n", pid[i]);
 		if (waitpid(pid[i], &status, 0) == -1)
-			return (error(group.cmdlst[i].cmd, "waitpid"));
+			return (error(group.cmdlst[i].cmd, "waitpid failed"));
 		if (WIFEXITED(status))
 		{
 			vars->last_errno = WEXITSTATUS(status);
@@ -81,8 +81,7 @@ int	multiple_child(t_vars *vars, t_token group, int *pid)
 
 int	one_child(t_vars *vars, t_token group, pid_t *pid)
 {
-	int	fd_in;
-	int	fd_out;
+	int	fd_inout[2];
 	int	temp;
 
 	pid[0] = fork();
@@ -92,7 +91,7 @@ int	one_child(t_vars *vars, t_token group, pid_t *pid)
 	else if (pid[0] == 0)
 	{
 		temp = dup(STDOUT_FILENO);
-		ft_dup_inoutfile(group.cmdlst[0], temp, &fd_in, &fd_out);
+		ft_dup_inoutfile(group.cmdlst[0], fd_inout, temp);
 		execution(vars, group.cmdlst[0]);
 		exit(0);
 	}

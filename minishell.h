@@ -137,10 +137,10 @@ void		filter_exceptions(t_pipe *pipe);
 // piping
 // void	test_piping(t_vars *vars);
 int		cmdgroup(t_vars *vars, t_token group);
-void	ft_dup_inoutfile(t_pipe cmdlst, int temp, int *fd_in, int *fd_out);
+void	ft_dup_inoutfile(t_pipe cmdlst, int fd_inout[2], int temp);
 void	ft_dup(char *cmd, int fd_one, int fd_two);
 void	ft_close_pipe(int index, int n_cmds, int pipefd[2][2]);
-void	ft_open(int temp, t_rdrinfo info, int *fd_in, int *fd_out);
+void	ft_open(char *cmd, t_rdrinfo info, int fd_inout[2], int temp);
 int		first_child(t_vars *vars, t_pipe cmdlst, int pipefd[2][2], pid_t *pid);
 int		middle_child(t_vars *vars, t_pipe cmdlst, int pipefd[2][2], pid_t *pid);
 int		last_child(t_vars *vars, t_pipe cmdlst, int pipefd[2][2], pid_t *pid);

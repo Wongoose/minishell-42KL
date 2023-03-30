@@ -50,7 +50,7 @@ t_pipe	*generate_pipe_list(char *value, t_token *token)
 		if (value[i] == '|')
 		{
 			if (i == 0)
-				ft_printf("minishell: syntax error near unexpected token '|'\n");
+				write(2, "minishell: syntax error near unexpected token '|'\n", 50);
 			if (buffer[0] != 0)
 			{
 				cmdlst[pipe_count++] = create_new_pipe(buffer);

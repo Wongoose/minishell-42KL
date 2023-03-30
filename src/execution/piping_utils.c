@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 15:22:35 by chenlee           #+#    #+#             */
-/*   Updated: 2023/03/29 16:12:35 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/03/30 13:46:27 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,20 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <fcntl.h>
+
+int	wait_heredoc_pid(char *cmd, int pid)
+{
+	int	status;
+
+	if (waitpid(pid, &status, 0) == -1)
+		return (error(cmd, "waitpid failed"));
+	if (WIFEXITED(status))
+		return (WEXITSTATUS(status));
+	else if (WIFSIGNALED(status))
+		return (WTERMSIG(status));
+	else
+		return (-1);
+}
 
 /**
  * Function creates a backup of current pipefd which will be used for the next
@@ -66,50 +80,61 @@ char	*get_readline(char *rdr_str)
 	return (str);
 }
 
-int	do_heredoc(int temp, t_rdrinfo info)
+int	do_heredoc(char *cmd, t_rdrinfo info, int temp)
 {
 	char	*gnl;
-	int		huh;
+	int		hdoc_pid;
+	int		current_fd;
 	int		pipefd[2];
 	
 	if (pipe(pipefd) == -1)
 		exit(error(NULL, "pipe failed"));
-	huh = dup(STDOUT_FILENO);
-	ft_dup(NULL, temp, STDOUT_FILENO);
-	gnl = get_readline(info.rdr_str);
-	ft_dup(NULL, huh, STDOUT_FILENO);
-	write(pipefd[1], gnl, ft_strlen(gnl));
-	close(pipefd[1]);
+	hdoc_pid = fork();
+	if (hdoc_pid == -1)
+		exit(error(cmd, "heredoc fork failed"));
+	else if (hdoc_pid == 0)
+	{
+		current_fd = dup(STDOUT_FILENO);
+		ft_dup(cmd, temp, STDOUT_FILENO);
+		gnl = get_readline(info.rdr_str);
+		ft_dup(cmd, current_fd, STDOUT_FILENO);
+		write(pipefd[1], gnl, ft_strlen(gnl));
+		close(pipefd[1]);
+		exit(0);
+	}
+	else
+		if (wait_heredoc_pid(cmd, hdoc_pid) != 0)
+			return (-1);
 	return (pipefd[0]);
 }
 
-void	ft_open(int temp, t_rdrinfo info, int *fd_in, int *fd_out)
+void	ft_open(char *cmd, t_rdrinfo info, int fd_inout[2], int temp)
 {
 	if ((info.rdr_type == IN || info.rdr_type == HEREDOC))
 	{
-		if (*(fd_in) != -42)
-			close(*(fd_in));
+		if (fd_inout[0] != -42)
+			close(fd_inout[0]);
 		if (info.rdr_type == IN)
-			*(fd_in) = open(info.rdr_str, O_RDONLY);
+			fd_inout[0] = open(info.rdr_str, O_RDONLY);
 		else if (info.rdr_type == HEREDOC)
 		{
 			write(2, "heredoc runs\n", 13);
-			*(fd_in) = do_heredoc(temp, info);
+			fd_inout[0] = do_heredoc(cmd, info, temp);
 		}
-		if (*(fd_in) == -1)
-			exit(error(NULL, "open error"));
+		if (fd_inout[0] == -1)
+			exit(error(cmd, "open error"));
 	}
 	else if ((info.rdr_type == OUT || info.rdr_type == APPEND))
 	{
-		if (*(fd_out) != -42)
-			close(*(fd_out));
+		if (fd_inout[1] != -42)
+			close(fd_inout[1]);
 		if (info.rdr_type == OUT)
-			*(fd_out) = open(info.rdr_str, O_CREAT | O_TRUNC | O_RDWR,
+			fd_inout[1] = open(info.rdr_str, O_CREAT | O_TRUNC | O_RDWR,
 					S_IRWXU | S_IRGRP | S_IROTH);
 		else if (info.rdr_type == APPEND)
-			*(fd_out) = open(info.rdr_str, O_CREAT | O_APPEND | O_RDWR,
+			fd_inout[1] = open(info.rdr_str, O_CREAT | O_APPEND | O_RDWR,
 					S_IRWXU | S_IRGRP | S_IROTH);
-		if (*(fd_out) == -1)
-			exit(error(NULL, "open error"));
+		if (fd_inout[1] == -1)
+			exit(error(cmd, "open error"));
 	}
 }

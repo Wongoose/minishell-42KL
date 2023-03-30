@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 19:00:06 by chenlee           #+#    #+#             */
-/*   Updated: 2023/03/29 16:03:24 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/03/30 13:43:00 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,24 +30,24 @@ void	ft_dup(char *cmd, int fd_one, int fd_two)
 	}
 }
 
-void	ft_dup_inoutfile(t_pipe cmdlst, int temp, int *fd_in, int *fd_out)
+void	ft_dup_inoutfile(t_pipe cmdlst, int fd_inout[2], int temp)
 {
 	int	i;
 
-	*(fd_in) = -42;
-	*(fd_out) = -42;
+	fd_inout[0] = -42;
+	fd_inout[1] = -42;
 	i = -1;
 	while (++i < cmdlst.rdr_count)
-		ft_open(temp, cmdlst.rdr_info[i], fd_in, fd_out);
+		ft_open(cmdlst.cmd, cmdlst.rdr_info[i], fd_inout, temp);
 	// if (cmdlst.infile != NULL)
 	// {
 	// 	*(fd_in) = open(cmdlst.infile, O_RDWR);
 	// if (*(fd_in) == -1 )
 	// 	exit(error(cmdlst.cmd, "open error"));
-	if (*(fd_in) != -42)
-		ft_dup("infile", *(fd_in), STDIN_FILENO);
-	if (*(fd_out) != -42)
-		ft_dup("outfile", *(fd_out), STDOUT_FILENO);
+	if (fd_inout[0] != -42)
+		ft_dup("infile", fd_inout[0], STDIN_FILENO);
+	if (fd_inout[1] != -42)
+		ft_dup("outfile", fd_inout[1], STDOUT_FILENO);
 	// }
 	// if (cmdlst.outfile != NULL)
 	// {
@@ -62,8 +62,7 @@ void	ft_dup_inoutfile(t_pipe cmdlst, int temp, int *fd_in, int *fd_out)
 
 int	last_child(t_vars *vars, t_pipe cmdlst, int pipefd[2][2], pid_t *pid)
 {
-	int	fd_in;
-	int	fd_out;
+	int	fd_inout[2];
 	int	temp;
 
 	*(pid) = fork();
@@ -75,7 +74,7 @@ int	last_child(t_vars *vars, t_pipe cmdlst, int pipefd[2][2], pid_t *pid)
 		ft_dup(cmdlst.cmd, pipefd[1][0], STDIN_FILENO);
 		close(pipefd[0][0]);
 		close(pipefd[0][1]);
-		ft_dup_inoutfile(cmdlst, temp, &fd_in, &fd_out);
+		ft_dup_inoutfile(cmdlst, fd_inout, temp);
 		execution(vars, cmdlst);
 		exit(0);
 	}
@@ -84,8 +83,7 @@ int	last_child(t_vars *vars, t_pipe cmdlst, int pipefd[2][2], pid_t *pid)
 
 int	middle_child(t_vars *vars, t_pipe cmdlst, int pipefd[2][2], pid_t *pid)
 {
-	int	fd_in;
-	int	fd_out;
+	int	fd_inout[2];
 	int	temp;
 	
 	*(pid) = fork();
@@ -98,7 +96,7 @@ int	middle_child(t_vars *vars, t_pipe cmdlst, int pipefd[2][2], pid_t *pid)
 		ft_dup(cmdlst.cmd, pipefd[1][0], STDIN_FILENO);
 		close(pipefd[0][0]);
 		close(pipefd[0][1]);
-		ft_dup_inoutfile(cmdlst, temp, &fd_in, &fd_out);
+		ft_dup_inoutfile(cmdlst, fd_inout, temp);
 		execution(vars, cmdlst);
 	}
 	return (0);
@@ -106,8 +104,7 @@ int	middle_child(t_vars *vars, t_pipe cmdlst, int pipefd[2][2], pid_t *pid)
 
 int	first_child(t_vars *vars, t_pipe cmdlst, int pipefd[2][2], pid_t *pid)
 {
-	int	fd_in;
-	int	fd_out;
+	int	fd_inout[2];
 	int	temp;
 
 	*(pid) = fork();
@@ -115,11 +112,11 @@ int	first_child(t_vars *vars, t_pipe cmdlst, int pipefd[2][2], pid_t *pid)
 		return (error(cmdlst.cmd, "fork failed"));
 	else if (*(pid) == 0)
 	{
-		// temp = dup(STDOUT_FILENO);
+		temp = dup(STDOUT_FILENO);
 		ft_dup(cmdlst.cmd, pipefd[0][1], STDOUT_FILENO);
 		close(pipefd[0][0]);
 		close(pipefd[0][1]);
-		ft_dup_inoutfile(cmdlst, temp, &fd_in, &fd_out);
+		ft_dup_inoutfile(cmdlst, fd_inout, temp);
 		execution(vars, cmdlst);
 		exit(0);
 	}
