@@ -38,6 +38,11 @@ char    **validate_tokens(char **tokens)
         else if (is_right_paren(tokens[i]))
         {
             paren_level--;
+			if (paren_level < 0)
+			{
+                printf("Found unexpected token near '%s'\n", tokens[i]);
+                return (NULL);
+			}
             if (tokens[i + 1] == 0)
                 continue ;
             if (!is_right_paren(tokens[i + 1]) && !is_operator(tokens[i + 1]))
