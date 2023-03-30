@@ -57,6 +57,8 @@ void	read_terminal(t_vars *vars)
 	{
 		add_history(input);
 		vars->tokens = tokenize_input(vars, input);
+		if (vars->tokens == NULL)
+			exit(1);
 		// print_token_tree(vars->tokens, 0, "ROOT");
 		
 		// TEST CODE >>>
@@ -77,8 +79,6 @@ int	main(int argc, char **argv, char **envp)
 	(void)argv;
 	t_vars	vars;
 
-	g_global = 1;
-	printf("global=%d\n", g_global);
 	print_startup();
 	init_vars(&vars, envp);
 	while (1)

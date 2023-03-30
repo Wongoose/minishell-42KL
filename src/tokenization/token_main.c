@@ -1,6 +1,8 @@
 #include "minishell.h"
 
-char    **prompt_close_paren(char **tokens) // nEXT: Fix prompt when missing 2 closing brackets
+char    **validate_tokens(char **tokens);
+
+char  **prompt_input(char **tokens)
 {
     char    *input;
     char    **new_tokens;
@@ -18,13 +20,10 @@ char    **prompt_close_paren(char **tokens) // nEXT: Fix prompt when missing 2 c
         new_tokens[j++] = tokens[i++];
     new_tokens[j++] = ft_strdup(input);
     new_tokens[j] = 0;
-    if (ft_strcmp(input, ")") == 0)
-        return (new_tokens);
-    else   
-        return (prompt_close_paren(new_tokens));
+    return (validate_tokens(new_tokens));
 }
 
-char    **validate_parenthesis(char **tokens)
+char    **validate_tokens(char **tokens)
 {
     int paren_level;
     int i;
@@ -36,20 +35,22 @@ char    **validate_parenthesis(char **tokens)
     {
         if (is_left_paren(tokens[i]))
             paren_level++;
-        else if(is_right_paren(tokens[i]))
+        else if (is_right_paren(tokens[i]))
         {
             paren_level--;
+            if (tokens[i + 1] == 0)
+                continue ;
             if (!is_right_paren(tokens[i + 1]) && !is_operator(tokens[i + 1]))
             {
                 printf("Found unexpected token near '%s'\n", tokens[i + 1]);
-                return (tokens);
+                return (NULL);
             }
-        } // also validate after paren (must be operator OR closing paren)
+        }
+        else if (is_operator(tokens[i]) && tokens[i + 1] == 0)
+            tokens = prompt_input(tokens);
     }
     if (paren_level > 0)
-        tokens = prompt_close_paren(tokens);
-    else if (paren_level < 0)
-        ft_printf("Found extra ')'");
+        tokens = prompt_input(tokens);
     return (tokens);
 }
 
@@ -149,7 +150,11 @@ t_token *tokenize_input(t_vars *vars, char *input) {
 	t_token *root;
 
 	tokens = format_input(vars, input);
-    // tokens = validate_parenthesis(tokens); // NEXT: Stop if invalid
+    tokens = validate_tokens(tokens);
+    if (!tokens)
+	{
+    	return (NULL);
+	}
 	i = 0;
     while (tokens[i] != 0)
 		i++;
