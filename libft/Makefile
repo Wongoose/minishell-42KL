@@ -23,30 +23,27 @@ SRCS	= ft_isascii.c ft_isprint.c ft_isalpha.c ft_isdigit.c ft_isalnum.c \
 			ft_memchr.c ft_memcmp.c ft_calloc.c ft_strdup.c ft_substr.c \
 			ft_strjoin.c ft_strtrim.c ft_split.c ft_itoa.c ft_strmapi.c \
 			ft_striteri.c ft_putchar_fd.c ft_putstr_fd.c ft_putendl_fd.c \
-			ft_putnbr_fd.c
-OBJS	= $(SRCS:.c=.o) #create OBJECTS from all .c files to .o
-BONUS_S	= ft_lstnew.c ft_lstadd_front.c ft_lstsize.c \
+			ft_putnbr_fd.c ft_lstnew.c ft_lstadd_front.c ft_lstsize.c \
 			ft_lstlast.c ft_lstadd_back.c ft_lstdelone.c \
 			ft_lstclear.c ft_lstiter.c ft_lstmap.c
-BONUS_O	= $(BONUS_S:.c=.o)
+
+OBJS_DIR= objects/
+OBJS	= $(addprefix $(OBJS_DIR), $(SRCS:.c=.o))
 
 all:		$(NAME)
 
-$(NAME):	$(OBJS) $(INCLUDE)
+$(NAME):	$(OBJS)
 	@ar rcs	$(NAME) $(OBJS)
 
-bonus:		$(NAME) $(BONUS_O)
-	@ar rcs	$(NAME) $(BONUS_O)
-
-# .c.o:
-# 	$(CC) $(CFLAGS) -I$(INCLUDE) -c $< -o $(<:.c=.o)
+$(OBJS_DIR)%.o: %.c
+	@mkdir -p $(OBJS_DIR)
+	@echo "Compiling: $<"
+	@$(CC) $(CFLAGS) -I. -c $< -o $@
 
 clean:
-	@rm -rf $(OBJS) $(BONUS_O) #clean OBJS and BONUS_O
+	@rm -rf $(OBJS_DIR)
 
 fclean:		clean
-	@rm -rf $(NAME) #deletes libft.a as well
+	@rm -rf $(NAME)
 
 re:			fclean all
-
-rebonus:	fclean bonus

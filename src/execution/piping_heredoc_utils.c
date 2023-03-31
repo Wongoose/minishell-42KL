@@ -6,11 +6,13 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/30 18:59:27 by chenlee           #+#    #+#             */
-/*   Updated: 2023/03/30 19:37:50 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/03/31 20:53:32 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int	start_heredoc_count = 0;
 
 int	wait_heredoc_pid(char *cmd, int pid)
 {
@@ -65,15 +67,19 @@ char	*get_readline(char *rdr_str)
 	return (str);
 }
 
-int	do_heredoc(char *cmd, t_rdrinfo info, int std_fd[2])
+void	start_signal(int signal)
+{
+	if (signal == SIGUSR1)
+		start_heredoc_count = 1;
+	return ;
+}
+
+int	start_heredoc(char *cmd, t_rdrinfo info, int pipefd[2], int std_fd[2])
 {
 	char	*gnl;
 	int		hdoc_pid;
 	int		curr_fd[2];
-	int		pipefd[2];
-		
-	if (pipe(pipefd) == -1)
-		exit(error(NULL, "pipe failed"));
+
 	hdoc_pid = fork();
 	if (hdoc_pid == -1)
 		exit(error(cmd, "heredoc fork failed"));
@@ -91,4 +97,25 @@ int	do_heredoc(char *cmd, t_rdrinfo info, int std_fd[2])
 	if (wait_heredoc_pid(cmd, hdoc_pid) >= 0)
 		return (pipefd[0]);
 	return (-1);
+}
+
+int	do_heredoc(int i, char *cmd, t_rdrinfo info, int std_fd[2])
+{
+	int					pipefd[2];
+	struct sigaction	sig_act;
+
+	if (pipe(pipefd) == -1)
+	exit(error(NULL, "pipe failed"));
+	if (i != 0)
+	{
+		sig_act.sa_handler = &start_signal;
+		sigaction(SIGUSR1, &sig_act, NULL);
+		while (1)
+		{
+			if (start_heredoc_count == 1)
+				break ;
+			usleep(50);
+		}
+	}
+	return (start_heredoc(cmd, info, pipefd, std_fd));
 }

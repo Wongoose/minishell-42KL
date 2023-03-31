@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 19:00:06 by chenlee           #+#    #+#             */
-/*   Updated: 2023/03/30 19:15:04 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/03/31 19:51:08 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,68 +50,57 @@ void	ft_dup(char *cmd, int fd_one, int fd_two)
 	}
 }
 
-int	last_child(t_vars *vars, t_pipe cmdlst, int pipefd[2][2], pid_t *pid)
+void	last_child(t_vars *vars, t_token group, int index, int pipefd[2][2])
 {
-	int	fd_inout[2];
-	int	std_fd[2];
+	int	rdr_inout[2][2];
 
-	*(pid) = fork();
-	if (*(pid) == -1)
-		exit (error(cmdlst.cmd, "fork failed"));
-	else if (*(pid) == 0)
-	{
-		std_fd[1] = dup(STDOUT_FILENO);
-		std_fd[0] = dup(STDIN_FILENO);
-		ft_dup(cmdlst.cmd, pipefd[1][0], STDIN_FILENO);
-		close(pipefd[0][0]);
-		close(pipefd[0][1]);
-		ft_dup_inoutfile(cmdlst, fd_inout, std_fd);
-		execution(vars, cmdlst);
-		exit(0);
-	}
-	return (0);
+	(void)index;
+	rdr_inout[1][0] = dup(STDIN_FILENO);
+	rdr_inout[1][1] = dup(STDOUT_FILENO);
+	ft_dup(group.cmdlst[index].cmd, pipefd[1][0], STDIN_FILENO);
+	close(pipefd[0][0]);
+	close(pipefd[0][1]);
+	ft_dup_inoutfile(index, group.cmdlst[index], rdr_inout);
+	execution(vars, group.cmdlst[index]);
+	exit(0);
 }
 
-int	middle_child(t_vars *vars, t_pipe cmdlst, int pipefd[2][2], pid_t *pid)
+void	middle_child(t_vars *vars, t_token group, int index, int pipefd[2][2])
 {
-	int	fd_inout[2];
-	int	std_fd[2];
-	
-	*(pid) = fork();
-	if (*(pid) == -1)
-		exit (error(cmdlst.cmd, "fork failed"));
-	else if (*(pid) == 0)
+	int	rdr_inout[2][2];
+
+	(void)index;
+	rdr_inout[1][0] = dup(STDIN_FILENO);
+	rdr_inout[1][1] = dup(STDOUT_FILENO);
+	ft_dup(group.cmdlst[index].cmd, pipefd[0][1], STDOUT_FILENO);
+	ft_dup(group.cmdlst[index].cmd, pipefd[1][0], STDIN_FILENO);
+	close(pipefd[0][0]);
+	close(pipefd[0][1]);
+	ft_dup_inoutfile(index, group.cmdlst[index], rdr_inout);
+	if (heredoc_in_next(group, index))
 	{
-		std_fd[1] = dup(STDOUT_FILENO);
-		std_fd[0] = dup(STDIN_FILENO);
-		ft_dup(cmdlst.cmd, pipefd[0][1], STDOUT_FILENO);
-		ft_dup(cmdlst.cmd, pipefd[1][0], STDIN_FILENO);
-		close(pipefd[0][0]);
-		close(pipefd[0][1]);
-		ft_dup_inoutfile(cmdlst, fd_inout, std_fd);
-		execution(vars, cmdlst);
+		write(2, "killing second\n", 16);
+		ft_kill(index, group.pipe_num, group.cmdlst);
 	}
-	return (0);
+	execution(vars, group.cmdlst[index]);
 }
 
-int	first_child(t_vars *vars, t_pipe cmdlst, int pipefd[2][2], pid_t *pid)
+void	first_child(t_vars *vars, t_token group, int index, int pipefd[2][2])
 {
-	int	fd_inout[2];
-	int	std_fd[2];
+	int	rdr_inout[2][2];
 
-	*(pid) = fork();
-	if (*(pid) == -1)
-		return (error(cmdlst.cmd, "fork failed"));
-	else if (*(pid) == 0)
+	(void)index;
+	rdr_inout[1][0] = dup(STDIN_FILENO);
+	rdr_inout[1][1] = dup(STDOUT_FILENO);
+	ft_dup(group.cmdlst[index].cmd, pipefd[0][1], STDOUT_FILENO);
+	close(pipefd[0][0]);
+	close(pipefd[0][1]);
+	ft_dup_inoutfile(index, group.cmdlst[index], rdr_inout);
+	if (heredoc_in_next(group, index))
 	{
-		std_fd[1] = dup(STDOUT_FILENO);
-		std_fd[0] = dup(STDIN_FILENO);
-		ft_dup(cmdlst.cmd, pipefd[0][1], STDOUT_FILENO);
-		close(pipefd[0][0]);
-		close(pipefd[0][1]);
-		ft_dup_inoutfile(cmdlst, fd_inout, std_fd);
-		execution(vars, cmdlst);
-		exit(0);
+		write(2, "killing first\n", 15);
+		ft_kill(index, group.pipe_num, group.cmdlst);
 	}
-	return (0);
+	execution(vars, group.cmdlst[index]);
+	exit(0);
 }

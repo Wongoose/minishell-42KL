@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 20:22:23 by chenlee           #+#    #+#             */
-/*   Updated: 2023/03/30 19:08:43 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/03/31 19:55:56 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,6 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <fcntl.h>
-
-int	error(char *cmd, char *str)
-{
-	if (cmd != NULL)
-		printf("%s: %s\n", cmd, str);
-	else
-		printf("%s\n", str);
-	return (1);
-}
 
 int	wait_for_pid(t_vars *vars, t_token group, int *pid)
 {
@@ -39,60 +30,64 @@ int	wait_for_pid(t_vars *vars, t_token group, int *pid)
 		if (WIFEXITED(status))
 		{
 			vars->last_errno = WEXITSTATUS(status);
-			// write(2, "returning 1\n", 12);
 			return (vars->last_errno);
 		}
 		else if (WIFSIGNALED(status))
 		{
 			vars->last_errno = WTERMSIG(status);
-			// dprintf(2, "last_errno=%d\n", vars->last_errno);
-			// write(2, "returning 2\n", 12);
 			return (vars->last_errno);
 		}
 	}
 	return (0);
+}
+
+void	ft_fork(char *cmd, int *pid)
+{
+	*(pid) = fork();
+	if (*(pid) == -1)
+		exit (error(cmd, "fork failed"));
 }
 
 int	multiple_child(t_vars *vars, t_token group, int *pid)
 {	
 	int	pipefd[2][2];
 	int	i;
-	int	ret;
 
-	// printf("heredoc=%s && cmd=%s\n", group.cmdlst[0].rdr_info->rdr_str, group.cmdlst[0].cmd);
 	i = -1;
 	while (++i < group.pipe_num)
 	{
-		if (i < group.pipe_num - 1 && pipe(pipefd[0]) == -1)
+		if (i < group.pipe_num && pipe(pipefd[0]) == -1)
 			return (error(group.cmdlst[i].cmd, "pipe failed"));
-		if (i == 0)
-			ret = first_child(vars, group.cmdlst[i], pipefd, &pid[i]);
-		else if (i == group.pipe_num - 1)
-			ret = last_child(vars, group.cmdlst[i], pipefd, &pid[i]);
+		ft_fork(group.cmdlst[i].cmd, &(pid[i]));
+		if (pid[i] == 0)
+		{
+			if (i == 0)
+				first_child(vars, group, i, pipefd);
+			else if (i == group.pipe_num - 1)
+				last_child(vars, group, i, pipefd);
+			else
+				middle_child(vars, group, i, pipefd);
+		}
 		else
-			ret = middle_child(vars, group.cmdlst[i], pipefd, &pid[i]);
-		if (ret == 1)
-			return (1);
-		ft_close_pipe(i, group.pipe_num, pipefd);
+			ft_close_pipe(i, group.pipe_num, pipefd);
 	}
 	return (0);
 }
 
 int	one_child(t_vars *vars, t_token group, pid_t *pid)
 {
-	int	fd_inout[2];
-	int	std_fd[2];
+	int	rdr_inout[2][2];
 
 	pid[0] = fork();
 	if (pid[0] == -1)
 		exit (error(group.cmdlst[0].cmd, "fork failed"));
 	else if (pid[0] == 0)
 	{
-		std_fd[1] = dup(STDOUT_FILENO);
-		std_fd[0] = dup(STDIN_FILENO);
-		ft_dup_inoutfile(group.cmdlst[0], fd_inout, std_fd);
-		close(fd_inout[0]);
-		close(fd_inout[1]);
+		rdr_inout[1][0] = dup(STDIN_FILENO);
+		rdr_inout[1][1] = dup(STDOUT_FILENO);
+		ft_dup_inoutfile(0, group.cmdlst[0], rdr_inout);
+		close(rdr_inout[0][0]);
+		close(rdr_inout[0][1]);
 		execution(vars, group.cmdlst[0]);
 		exit(0);
 	}

@@ -2,6 +2,7 @@ NAME		= minishell
 
 CC			= gcc
 CFLAGS		= -Wall -Wextra -Werror -I/usr/local/opt/readline/include
+FSANS		= -fsanitize=address -g3
 READLINE	= -lreadline -L/usr/local/opt/readline/lib
 
 DSRCS		= src			\
@@ -54,8 +55,6 @@ PRINTFD		= ft_printf
 PRINTFA		= libftprintf.a
 
 all:		$(NAME)
-# @mkdir -p ${ODIRS}
-# @make ${NAME}
 
 $(DOBJS)%.o: %.c
 	@mkdir -p objs/

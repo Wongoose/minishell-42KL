@@ -15,6 +15,9 @@
 # include <term.h>
 # include <limits.h>
 # include <string.h>
+# include <fcntl.h>
+# include <stdio.h>
+# include <stdlib.h>
 
 struct s_vars;
 struct s_token;
@@ -56,6 +59,7 @@ typedef enum s_rdrtype
 
 typedef struct s_rdrinfo
 {
+	pid_t		rdr_pid;
     char		*rdr_str;
     t_rdrtype	rdr_type;
 }	t_rdrinfo;
@@ -135,18 +139,20 @@ int			handle_rdr_in(int i, char *value, t_rdrinfo *rdr_info);
 void		filter_exceptions(t_pipe *pipe);
 
 // piping
-int		cmdgroup(t_vars *vars, t_token group);
-int		first_child(t_vars *vars, t_pipe cmdlst, int pipefd[2][2], pid_t *pid);
-int		middle_child(t_vars *vars, t_pipe cmdlst, int pipefd[2][2], pid_t *pid);
-int		last_child(t_vars *vars, t_pipe cmdlst, int pipefd[2][2], pid_t *pid);
 int		error(char *cmd, char *str);
-void	ft_dup_inoutfile(t_pipe cmdlst, int fd_inout[2], int std_fd[2]);
+int		cmdgroup(t_vars *vars, t_token group);
+void	first_child(t_vars *vars, t_token group, int index, int pipefd[2][2]);
+void	middle_child(t_vars *vars, t_token group, int index, int pipefd[2][2]);
+void	last_child(t_vars *vars, t_token group, int index, int pipefd[2][2]);
+void	ft_dup_inoutfile(int i, t_pipe cmdlst, int rdr_inout[2][2]);
 void	ft_dup(char *cmd, int fd_one, int fd_two);
-void	ft_open(char *cmd, t_rdrinfo info, int fd_inout[2], int std_fd[2]);
+void	ft_open(int i, char *cmd, t_rdrinfo info, int rdr_inout[2][2]);
 void	ft_close_pipe(int index, int n_cmds, int pipefd[2][2]);
+void	ft_kill(int index, int total_num, t_pipe *cmdlst);
 
 // heredoc utils in piping
-int		do_heredoc(char *cmd, t_rdrinfo info, int std_fd[2]);
+int		do_heredoc(int i, char *cmd, t_rdrinfo info, int std_fd[2]);
+int		heredoc_in_next(t_token group, int index);
 void	dup_heredoc(char *cmd, int curr_fd[2], int std_fd[2], int situation);
 
 // execution

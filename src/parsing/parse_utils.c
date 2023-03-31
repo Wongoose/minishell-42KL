@@ -41,6 +41,7 @@ int	handle_rdr_out(int i, char *value, t_rdrinfo *rdr_info)
 {
 	int	j;
 
+	rdr_info->rdr_pid = -1;
 	rdr_info->rdr_type = OUT;
 	if (value[++i] == '>')
 	{
@@ -69,6 +70,7 @@ int	handle_rdr_in(int i, char *value, t_rdrinfo *rdr_info)
 {
 	int	j;
 
+	rdr_info->rdr_pid = -1;
 	rdr_info->rdr_type = IN;
 	if (value[++i] == '<')
 	{
