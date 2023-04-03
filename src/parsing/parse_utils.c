@@ -20,8 +20,11 @@ void	print_pipe_info(t_pipe pipe)
 {
 	int	i;
 
-	i = 0;
+	i = -1;
 	printf("RDR_COUNT is: %d\n", pipe.rdr_count);
+	while (pipe.arg[++i])
+		printf("Arg [%d]: %s\n", i, pipe.arg[i]);
+	i = 0;
 	while (i < pipe.rdr_count)
 	{
 		printf("INFO %d: %s", i, pipe.rdr_info[i].rdr_str);

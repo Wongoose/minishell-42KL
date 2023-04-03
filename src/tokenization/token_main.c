@@ -23,19 +23,52 @@ char  **prompt_input(char **tokens)
     return (validate_tokens(new_tokens));
 }
 
+char    *validate_quote(char *value)
+{
+    int     quote_level;
+    int     i;
+    char    quote_type;
+    char    *input;
+
+    quote_level = 1;
+    i = 0;
+    while (value[i])
+    {
+        if ((!quote_type && (value[i] == '"' || value[i] == '\'')) || value[i] == quote_type)
+        {
+            quote_type = value[i];
+            quote_level *= -1;
+        }
+        i++;
+    }
+    if (quote_level == -1)
+    {
+        input = readline("> ");
+        if (ft_strcmp(input, &quote_type) != 0)
+            value = ft_strjoin(value, "\n");
+        value = ft_strjoin(value, input);
+        return (validate_quote(value));
+    }
+    else
+        return (value);
+}
+
+// NEXT: Handle quotes
 char    **validate_tokens(char **tokens)
 {
     int paren_level;
+    int quote_level;
     int i;
 
     paren_level = 0;
-    i = -1;
+    quote_level = 1;
 
+    i = -1;
     while (tokens[++i] != 0)
     {
-        if (is_left_paren(tokens[i]))
+        if (is_left_paren(tokens[i]) && quote_level == 1)
             paren_level++;
-        else if (is_right_paren(tokens[i]))
+        else if (is_right_paren(tokens[i]) && quote_level == 1)
         {
             paren_level--;
 			if (paren_level < 0)
@@ -53,8 +86,12 @@ char    **validate_tokens(char **tokens)
         }
         else if (is_operator(tokens[i]) && tokens[i + 1] == 0)
             tokens = prompt_input(tokens);
+        else
+            tokens[i] = validate_quote(tokens[i]);
     }
-    if (paren_level > 0)
+    if (quote_level == -1)
+        tokens = prompt_input(tokens);
+    else if (paren_level > 0)
         tokens = prompt_input(tokens);
     return (tokens);
 }
@@ -70,13 +107,7 @@ char    *space_at_paren(char *input)
     copy = (char *)malloc(ft_strlen(input) + count_paren(input) * 2 + 1);
     while (input[i] != 0)
     {
-        if (input[i] == '(')
-        {
-            copy[j++] = ' ';
-            copy[j++] = input[i];
-            copy[j] = ' ';
-        }
-        else if (input[i] == ')')
+        if (input[i] == '(' || input[i] == ')')
         {
             copy[j++] = ' ';
             copy[j++] = input[i];
