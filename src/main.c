@@ -63,7 +63,7 @@ void	read_terminal(t_vars *vars)
 		
 		// TEST CODE >>>
 		// test_args = ft_split(input, ' ');
-		if (cmdgroup(vars, vars->tokens[0]) == 1)
+		if (cmdgroup(vars, &(vars->tokens[0])) == 1)
 			write(2, "error!\n", 8);
 		// if (ft_strcmp(test_args[0], "exit") == 0)
 		// 	vars->func[E_EXIT](vars, test_args);

@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 19:00:06 by chenlee           #+#    #+#             */
-/*   Updated: 2023/03/31 19:51:08 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/04/03 15:42:54 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,57 +50,38 @@ void	ft_dup(char *cmd, int fd_one, int fd_two)
 	}
 }
 
-void	last_child(t_vars *vars, t_token group, int index, int pipefd[2][2])
+void	last_child(t_vars *vars, t_token *group, int index, int pipefd[2][2])
 {
-	int	rdr_inout[2][2];
+	int	rdr_inout[2];
 
-	(void)index;
-	rdr_inout[1][0] = dup(STDIN_FILENO);
-	rdr_inout[1][1] = dup(STDOUT_FILENO);
-	ft_dup(group.cmdlst[index].cmd, pipefd[1][0], STDIN_FILENO);
+	ft_dup(group->cmdlst[index].cmd, pipefd[1][0], STDIN_FILENO);
 	close(pipefd[0][0]);
 	close(pipefd[0][1]);
-	ft_dup_inoutfile(index, group.cmdlst[index], rdr_inout);
-	execution(vars, group.cmdlst[index]);
+	ft_dup_inoutfile(index, group->cmdlst[index], group->hdoc_str, rdr_inout);
+	execution(vars, group->cmdlst[index]);
 	exit(0);
 }
 
-void	middle_child(t_vars *vars, t_token group, int index, int pipefd[2][2])
+void	middle_child(t_vars *vars, t_token *group, int index, int pipefd[2][2])
 {
-	int	rdr_inout[2][2];
+	int	rdr_inout[2];
 
-	(void)index;
-	rdr_inout[1][0] = dup(STDIN_FILENO);
-	rdr_inout[1][1] = dup(STDOUT_FILENO);
-	ft_dup(group.cmdlst[index].cmd, pipefd[0][1], STDOUT_FILENO);
-	ft_dup(group.cmdlst[index].cmd, pipefd[1][0], STDIN_FILENO);
+	ft_dup(group->cmdlst[index].cmd, pipefd[0][1], STDOUT_FILENO);
+	ft_dup(group->cmdlst[index].cmd, pipefd[1][0], STDIN_FILENO);
 	close(pipefd[0][0]);
 	close(pipefd[0][1]);
-	ft_dup_inoutfile(index, group.cmdlst[index], rdr_inout);
-	if (heredoc_in_next(group, index))
-	{
-		write(2, "killing second\n", 16);
-		ft_kill(index, group.pipe_num, group.cmdlst);
-	}
-	execution(vars, group.cmdlst[index]);
+	ft_dup_inoutfile(index, group->cmdlst[index], group->hdoc_str, rdr_inout);
+	execution(vars, group->cmdlst[index]);
 }
 
-void	first_child(t_vars *vars, t_token group, int index, int pipefd[2][2])
+void	first_child(t_vars *vars, t_token *group, int index, int pipefd[2][2])
 {
-	int	rdr_inout[2][2];
+	int	rdr_inout[2];
 
-	(void)index;
-	rdr_inout[1][0] = dup(STDIN_FILENO);
-	rdr_inout[1][1] = dup(STDOUT_FILENO);
-	ft_dup(group.cmdlst[index].cmd, pipefd[0][1], STDOUT_FILENO);
+	ft_dup(group->cmdlst[index].cmd, pipefd[0][1], STDOUT_FILENO);
 	close(pipefd[0][0]);
 	close(pipefd[0][1]);
-	ft_dup_inoutfile(index, group.cmdlst[index], rdr_inout);
-	if (heredoc_in_next(group, index))
-	{
-		write(2, "killing first\n", 15);
-		ft_kill(index, group.pipe_num, group.cmdlst);
-	}
-	execution(vars, group.cmdlst[index]);
+	ft_dup_inoutfile(index, group->cmdlst[index], group->hdoc_str, rdr_inout);
+	execution(vars, group->cmdlst[index]);
 	exit(0);
 }

@@ -80,6 +80,7 @@ typedef struct s_token
 	char			*value; // raw value (e.g. "echo z")
 	int				exit_status;
 	int				pipe_num;
+	char			**hdoc_str;
 	t_pipe			*cmdlst;
 	t_operator		operator;
 }	t_token;
@@ -140,23 +141,20 @@ void		filter_exceptions(t_pipe *pipe);
 
 // piping
 int		error(char *cmd, char *str);
-int		cmdgroup(t_vars *vars, t_token group);
-void	first_child(t_vars *vars, t_token group, int index, int pipefd[2][2]);
-void	middle_child(t_vars *vars, t_token group, int index, int pipefd[2][2]);
-void	last_child(t_vars *vars, t_token group, int index, int pipefd[2][2]);
-void	ft_dup_inoutfile(int i, t_pipe cmdlst, int rdr_inout[2][2]);
+int		cmdgroup(t_vars *vars, t_token *group);
+void	first_child(t_vars *vars, t_token *group, int index, int pipefd[2][2]);
+void	middle_child(t_vars *vars, t_token *group, int index, int pipefd[2][2]);
+void	last_child(t_vars *vars, t_token *group, int index, int pipefd[2][2]);
+void	ft_dup_inoutfile(int i, t_pipe cmdlst, char **hdoc, int rdr_inout[2]);
 void	ft_dup(char *cmd, int fd_one, int fd_two);
-void	ft_open(int i, char *cmd, t_rdrinfo info, int rdr_inout[2][2]);
+void	ft_open(int i, t_rdrinfo info, char **hdoc, int rdr_inout[2]);
 void	ft_close_pipe(int index, int n_cmds, int pipefd[2][2]);
-void	ft_kill(int index, int total_num, t_pipe *cmdlst);
 
-// heredoc utils in piping
-int		do_heredoc(int i, char *cmd, t_rdrinfo info, int std_fd[2]);
-int		heredoc_in_next(t_token group, int index);
-void	dup_heredoc(char *cmd, int curr_fd[2], int std_fd[2], int situation);
+// heredoc
+char	**handle_heredoc(t_token *group);
 
 // execution
 int		execution(t_vars *vars, t_pipe cmdlst);
-int		wait_for_pid(t_vars *vars, t_token group, int *pid);
+int		wait_for_pid(t_vars *vars, t_token *group, int *pid);
 
 #endif

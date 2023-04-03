@@ -32,9 +32,9 @@ FILES		=	print_start				\
 				parse_main				\
 				parse_utils				\
 				piping					\
+				heredoc_handler			\
 				piping_child			\
 				piping_utils			\
-				piping_heredoc_utils	\
 				execution				\
 				free
 
