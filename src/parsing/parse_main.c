@@ -1,5 +1,65 @@
 #include "../../minishell.h"
 
+static size_t	count_words(char const *s)
+{
+	size_t	words;
+	int		quote;
+
+	quote = 1;
+	words = 0;
+	while (*s)
+	{
+		while (*s == ' ')
+			s++;
+		if (*s == '"')
+			quote *= -1;
+		if (*s)
+			words++;
+		while ((*s != ' ' || (*s != '"' && quote == -1)) && *s)
+			s++;
+	}
+	return (words);
+}
+
+char	**parse_split_args(char const *s)
+{
+	char	**splitstr;
+	char	quote_type;
+	size_t	start;
+	size_t	end;
+	size_t	i;
+
+	splitstr = (char **)malloc(sizeof(char *) * (count_words(s) + 1));
+	if (!s || !splitstr)
+		return (0);
+	start = 0;
+	end = 0;
+	i = 0;
+	while (i < count_words(s))
+	{
+		while (s[start] == ' ')
+			start++;
+		if ((!quote_type && (s[start] == '"' || s[start] == '\'')) || s[start] == quote_type)
+		{
+			quote_type = s[start];
+			end = ++start;
+			while (s[end] != quote_type && s[end])
+				end++;
+		}
+		else
+		{
+			end = start;
+			while (s[end] != ' ' && s[end])
+				end++;
+		}
+		splitstr[i] = ft_substr(s, start, end - start);
+		start = end;
+		i++;
+	}
+	splitstr[i] = 0;
+	return (splitstr);
+}
+
 t_pipe	create_new_pipe(char *value)
 {
 	t_pipe	pipe;
@@ -23,8 +83,9 @@ t_pipe	create_new_pipe(char *value)
 			ft_memset(formatted++, value[i], 1);
 	}
 	pipe.rdr_count = rdr_i;
-	pipe.arg = ft_split(head, ' ');
+	pipe.arg = parse_split_args(head); // this is where you intepret quotes
 	pipe.cmd = pipe.arg[0];
+	// print_pipe_info(pipe);
 	filter_exceptions(&pipe);
 	return (pipe);
 }
