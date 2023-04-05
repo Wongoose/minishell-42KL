@@ -95,8 +95,10 @@ typedef struct s_vars
 	t_func			func[7];
 }	t_vars;
 
+/* utils */
 void		print_startup(void);
 char		**dup_envp(char **envp);
+void		ft_free(t_vars *vars);
 
 /* signals */
 void		init_signal(void);
@@ -143,7 +145,7 @@ void		filter_exceptions(t_pipe *pipe);
 
 /* piping */
 int		error(char *cmd, char *str);
-int		cmdgroup(t_vars *vars, t_token *group);
+void	cmdgroup(t_vars *vars, t_token *group);
 void	first_child(t_vars *vars, t_token *group, int index, int pipefd[2][2]);
 void	middle_child(t_vars *vars, t_token *group, int index, int pipefd[2][2]);
 void	last_child(t_vars *vars, t_token *group, int index, int pipefd[2][2]);
@@ -157,6 +159,6 @@ char	**handle_heredoc(t_token *group);
 
 /* execution */
 int		execution(t_vars *vars, t_pipe cmdlst);
-int		wait_for_pid(t_vars *vars, t_token *group, int *pid);
+void	wait_for_pid(t_vars *vars, t_token *group, int *pid);
 
 #endif

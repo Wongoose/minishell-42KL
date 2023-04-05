@@ -63,11 +63,11 @@ void	read_terminal(t_vars *vars)
 		
 		// TEST CODE >>>
 		// test_args = ft_split(input, ' ');
-		if (cmdgroup(vars, &(vars->tokens[0])) == 1)
-			write(2, "error!\n", 8);
+		cmdgroup(vars, &(vars->tokens[0]));
 		// if (ft_strcmp(test_args[0], "exit") == 0)
 		// 	vars->func[E_EXIT](vars, test_args);
 		// vars->func[E_EXPORT](vars, test_args);
+		ft_free(vars);
 	}
 	free(input);
 	usleep(10000);

@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 20:22:23 by chenlee           #+#    #+#             */
-/*   Updated: 2023/04/05 18:52:52 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/04/05 19:13:24 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #include <sys/wait.h>
 #include <fcntl.h>
 
-int	wait_for_pid(t_vars *vars, t_token *group, int *pid)
+void	wait_for_pid(t_vars *vars, t_token *group, int *pid)
 {
 	int	status;
 	int	i;
@@ -26,21 +26,17 @@ int	wait_for_pid(t_vars *vars, t_token *group, int *pid)
 	while (++i < group->pipe_num)
 	{
 		if (group->cmdlst[i].cmd == NULL)
-			return (0);
+			return ;
 		if (waitpid(pid[i], &status, 0) == -1)
-			return (error(group->cmdlst[i].cmd, "waitpid failed"));
+			error(group->cmdlst[i].cmd, "waitpid failed");
 		if (WIFEXITED(status))
-		{
 			vars->last_errno = WEXITSTATUS(status);
-			return (vars->last_errno);
-		}
 		else if (WIFSIGNALED(status))
 		{
-			vars->last_errno = WTERMSIG(status);
-			return (vars->last_errno);
+			if (WTERMSIG(status) == 2)
+				vars->last_errno = 130;
 		}
 	}
-	return (0);
 }
 
 void	ft_fork(char *cmd, int *pid)
@@ -50,7 +46,7 @@ void	ft_fork(char *cmd, int *pid)
 		exit (error(cmd, "fork failed"));
 }
 
-int	multiple_child(t_vars *vars, t_token *group, int *pid)
+void	multiple_child(t_vars *vars, t_token *group, int *pid)
 {	
 	int	pipefd[2][2];
 	int	i;
@@ -59,7 +55,7 @@ int	multiple_child(t_vars *vars, t_token *group, int *pid)
 	while (++i < group->pipe_num)
 	{
 		if (i < group->pipe_num && pipe(pipefd[0]) == -1)
-			return (error(group->cmdlst[i].cmd, "pipe failed"));
+			exit (error(group->cmdlst[i].cmd, "pipe failed"));
 		ft_fork(group->cmdlst[i].cmd, &(pid[i]));
 		if (pid[i] == 0)
 		{
@@ -73,10 +69,9 @@ int	multiple_child(t_vars *vars, t_token *group, int *pid)
 		else
 			ft_close_pipe(i, group->pipe_num, pipefd);
 	}
-	return (0);
 }
 
-int	one_child(t_vars *vars, t_token *group, pid_t *pid)
+void	one_child(t_vars *vars, t_token *group, pid_t *pid)
 {
 	int	rdr_inout[2];
 
@@ -89,29 +84,26 @@ int	one_child(t_vars *vars, t_token *group, pid_t *pid)
 		execution(vars, group->cmdlst[0]);
 		exit(0);
 	}
-	return (0);
 }
 
-int	cmdgroup(t_vars *vars, t_token *group)
+void	cmdgroup(t_vars *vars, t_token *group)
 {
-	int		ret;
-	int		ret_pid;
 	pid_t	*pid;
 
 	signal(SIGINT, SIG_IGN);
-	ret = 0;
-	ret_pid = 0;
 	pid = ft_calloc(group->pipe_num, sizeof(int));
 	group->hdoc_str = handle_heredoc(group);
+	if (group->hdoc_str == NULL)
+	{
+		vars->last_errno = 0;
+		return ;
+	}
 	if (group->pipe_num == 1)
-		ret = one_child(vars, group, pid);
+		one_child(vars, group, pid);
 	else
-		ret = multiple_child(vars, group, pid);
-	ret_pid = wait_for_pid(vars, group, pid);
+		multiple_child(vars, group, pid);
+	wait_for_pid(vars, group, pid);
 	free(pid);
-	if (ret == 1 || ret_pid == 1)
-		return (1);
-	return (0);
 }
 
 // t_redirect	init_rdrlst(char *rdr)

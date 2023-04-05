@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 14:46:29 by chenlee           #+#    #+#             */
-/*   Updated: 2023/04/05 18:16:25 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/04/05 19:14:51 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ char	*get_readline(char *rdr_str)
 	while (1)
 	{
 		temp_one = readline("> ");
+		if (temp_one == NULL)
+			return (NULL);
 		if (ft_strncmp(temp_one, rdr_str, ft_strlen(rdr_str)) == 0)
 			break ;
 		temp_two = ft_strjoin(temp_one, "\n");
@@ -40,7 +42,7 @@ char	*handle_per_cmdlst(t_pipe cmdlst)
 	int		i;
 	char	*ret;
 
-	ret = NULL;
+	ret = ft_strdup(" ");
 	i = -1;
 	while (++i < cmdlst.rdr_count)
 	{
@@ -49,6 +51,8 @@ char	*handle_per_cmdlst(t_pipe cmdlst)
 			if (ret != NULL)
 				free(ret);
 			ret = get_readline(cmdlst.rdr_info[i].rdr_str);
+			if (ret == NULL)
+				return (NULL);
 		}
 	}
 	return (ret);
@@ -62,6 +66,10 @@ char	**handle_heredoc(t_token *group)
 	hdoc_str = ft_calloc(group->pipe_num, sizeof(char *));
 	i = -1;
 	while (++i < group->pipe_num)
+	{
 		hdoc_str[i] = handle_per_cmdlst(group->cmdlst[i]);
+		if (hdoc_str[i] == NULL)
+			return (NULL);
+	}
 	return (hdoc_str);
 }
