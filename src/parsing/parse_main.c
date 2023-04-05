@@ -85,8 +85,12 @@ t_pipe	create_new_pipe(char *value)
 	pipe.rdr_count = rdr_i;
 	pipe.arg = parse_split_args(head); // this is where you intepret quotes
 	if (pipe.arg && pipe.arg[0])
+	{
 		pipe.cmd = pipe.arg[0];
-	filter_exceptions(&pipe);
+		filter_exceptions(&pipe);
+	}
+	else
+		pipe.cmd = NULL;
 	return (pipe);
 }
 
