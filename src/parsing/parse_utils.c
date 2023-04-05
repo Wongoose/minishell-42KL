@@ -43,7 +43,9 @@ void	print_pipe_info(t_pipe pipe)
 int	handle_rdr_out(int i, char *value, t_rdrinfo *rdr_info)
 {
 	int	j;
+	char	quote_type;
 
+	quote_type = 0;
 	rdr_info->rdr_type = OUT;
 	if (value[++i] == '>')
 	{
@@ -52,10 +54,12 @@ int	handle_rdr_out(int i, char *value, t_rdrinfo *rdr_info)
 	}
 	while (value[i] == ' ')
 		i++;
+	if (!quote_type && (value[i] == '\'' || value[i] == '"'))
+		quote_type = value[i++];
 	j = i;
 	while (value[j] != 0)
 	{
-		if (value[j + 1] == ' ' || value[j + 1] == '\0')
+		if ((!quote_type && (value[j + 1] == ' ' || value[j + 1] == '\0')) || value[j + 1] == quote_type)
 		{
 			if (rdr_info->rdr_str)
 				free(rdr_info->rdr_str);
@@ -71,7 +75,9 @@ int	handle_rdr_out(int i, char *value, t_rdrinfo *rdr_info)
 int	handle_rdr_in(int i, char *value, t_rdrinfo *rdr_info)
 {
 	int	j;
+	char	quote_type;
 
+	quote_type = 0;
 	rdr_info->rdr_type = IN;
 	if (value[++i] == '<')
 	{
@@ -80,10 +86,12 @@ int	handle_rdr_in(int i, char *value, t_rdrinfo *rdr_info)
 	}
 	while (value[i] == ' ')
 		i++;
+	if (!quote_type && (value[i] == '\'' || value[i] == '"'))
+		quote_type = value[i++];
 	j = i;
 	while (value[j] != 0)
 	{
-		if (value[j + 1] == ' ' || value[j + 1] == '\0')
+		if ((!quote_type && (value[j + 1] == ' ' || value[j + 1] == '\0')) || value[j + 1] == quote_type)
 		{
 			if (rdr_info->rdr_str)
 				free(rdr_info->rdr_str);
