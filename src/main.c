@@ -46,7 +46,7 @@ void	read_terminal(t_vars *vars)
 	// char	**test_args;
 
 	init_signal();
-	input = readline("$> ");
+	input = readline("minihell$> ");
 	if (input == NULL) // handles Ctrl-D (Ctrl-D is EOF in terminal which return value of NULL)
 	{
 		ft_printf("exit\n");
@@ -70,7 +70,7 @@ void	read_terminal(t_vars *vars)
 		// vars->func[E_EXPORT](vars, test_args);
 	}
 	free(input);
-	usleep(150000);
+	usleep(10000);
 }
 
 int	main(int argc, char **argv, char **envp)

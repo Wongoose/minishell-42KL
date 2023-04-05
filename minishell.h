@@ -96,10 +96,12 @@ typedef struct s_vars
 }	t_vars;
 
 void		print_startup(void);
-void		init_signal(void);
 char		**dup_envp(char **envp);
 
-// built_in_functions
+/* signals */
+void		init_signal(void);
+
+/* built_in_functions */
 int			func_echo(t_vars *vars, char **argv);
 int			func_cd(t_vars *vars, char **args);
 int			func_pwd(t_vars *vars, char **args);
@@ -118,7 +120,7 @@ t_bool		validate_unset(char *variable);
 char		*get_envp_value(char **envp, char *key);
 void		free_doublearray(char **data);
 
-// tokenization
+/* tokenization */
 t_token		*tokenize_input(t_vars *vars, char *input);
 int 		is_operator(char *token);
 int 		is_left_paren(char *token);
@@ -128,7 +130,7 @@ void		print_token_tree(t_token *token, int level, char *direction); // temporary
 t_operator	get_operator_type(char *value);
 char		*expand_env_dollar(t_vars *vars, char *str);
 
-// parsing
+/* parsing */
 t_pipe		create_new_pipe(char *value);
 int			get_pipe_num(t_pipe *pipe_list);
 t_token 	*build_token_tree(char **tokens, int start, int end);
@@ -139,7 +141,7 @@ int			handle_rdr_out(int i, char *value, t_rdrinfo *rdr_info);
 int			handle_rdr_in(int i, char *value, t_rdrinfo *rdr_info);
 void		filter_exceptions(t_pipe *pipe);
 
-// piping
+/* piping */
 int		error(char *cmd, char *str);
 int		cmdgroup(t_vars *vars, t_token *group);
 void	first_child(t_vars *vars, t_token *group, int index, int pipefd[2][2]);
@@ -150,10 +152,10 @@ void	ft_dup(char *cmd, int fd_one, int fd_two);
 void	ft_open(int i, t_rdrinfo info, char **hdoc, int rdr_inout[2]);
 void	ft_close_pipe(int index, int n_cmds, int pipefd[2][2]);
 
-// heredoc
+/* heredoc */
 char	**handle_heredoc(t_token *group);
 
-// execution
+/* execution */
 int		execution(t_vars *vars, t_pipe cmdlst);
 int		wait_for_pid(t_vars *vars, t_token *group, int *pid);
 

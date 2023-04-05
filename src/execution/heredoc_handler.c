@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   heredoc.c                                          :+:      :+:    :+:   */
+/*   heredoc_handler.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 14:46:29 by chenlee           #+#    #+#             */
-/*   Updated: 2023/04/03 15:06:39 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/04/05 18:16:25 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,8 @@ char	*handle_per_cmdlst(t_pipe cmdlst)
 
 char	**handle_heredoc(t_token *group)
 {
-	int		i;
-	char	**hdoc_str;
+	int					i;
+	char				**hdoc_str;
 
 	hdoc_str = ft_calloc(group->pipe_num, sizeof(char *));
 	i = -1;

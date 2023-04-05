@@ -4,7 +4,7 @@ void	sigint_handler(int signo)
 {
 	if (signo != SIGINT)
 		return ;
-	ft_printf("$>\n");
+	ft_printf("\n");
 	rl_replace_line("", 0);
 	rl_on_new_line();
 	rl_redisplay();

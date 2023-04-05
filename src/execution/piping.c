@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 20:22:23 by chenlee           #+#    #+#             */
-/*   Updated: 2023/04/03 15:40:23 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/04/05 18:52:52 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ int	wait_for_pid(t_vars *vars, t_token *group, int *pid)
 	i = -1;
 	while (++i < group->pipe_num)
 	{
+		if (group->cmdlst[i].cmd == NULL)
+			return (0);
 		if (waitpid(pid[i], &status, 0) == -1)
 			return (error(group->cmdlst[i].cmd, "waitpid failed"));
 		if (WIFEXITED(status))
@@ -96,6 +98,7 @@ int	cmdgroup(t_vars *vars, t_token *group)
 	int		ret_pid;
 	pid_t	*pid;
 
+	signal(SIGINT, SIG_IGN);
 	ret = 0;
 	ret_pid = 0;
 	pid = ft_calloc(group->pipe_num, sizeof(int));

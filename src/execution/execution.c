@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 16:00:08 by chenlee           #+#    #+#             */
-/*   Updated: 2023/03/27 13:57:50 by zwong            ###   ########.fr       */
+/*   Updated: 2023/04/05 18:53:07 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ int	call_execve(t_vars *vars, t_pipe cmdlst)
 	char	*pathname;
 	char	*temp;
 
+	signal(SIGINT, SIG_DFL);
 	i = -1;
 	while (vars->path[++i] != NULL)
 	{
@@ -44,6 +45,8 @@ int	execution(t_vars *vars, t_pipe cmdlst)
 {
 	int		i;
 
+	if (cmdlst.cmd == NULL)
+		exit(0);
 	i = -1;
 	while (vars->functions[++i] != NULL)
 	{

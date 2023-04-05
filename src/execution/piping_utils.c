@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 15:22:35 by chenlee           #+#    #+#             */
-/*   Updated: 2023/04/03 15:43:15 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/04/05 18:52:24 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	ft_open(int i, t_rdrinfo info, char **hdoc, int rdr_inout[2])
 		else if (info.rdr_type == HEREDOC)
 			rdr_inout[0] = do_heredoc(i, hdoc);
 		if (rdr_inout[0] == -1)
-			exit(error(NULL, "Redirection: open error"));
+			exit(error(info.rdr_str, "No such file or directory"));
 	}
 	else if ((info.rdr_type == OUT || info.rdr_type == APPEND))
 	{
@@ -56,7 +56,7 @@ void	ft_open(int i, t_rdrinfo info, char **hdoc, int rdr_inout[2])
 			rdr_inout[1] = open(info.rdr_str, O_CREAT | O_APPEND | O_RDWR,
 					S_IRWXU | S_IRGRP | S_IROTH);
 		if (rdr_inout[1] == -1)
-			exit(error(NULL, "Redirection: open error"));
+			exit(error(info.rdr_str, "No such file or directory"));
 	}
 }
 
