@@ -84,8 +84,8 @@ t_pipe	create_new_pipe(char *value)
 	}
 	pipe.rdr_count = rdr_i;
 	pipe.arg = parse_split_args(head); // this is where you intepret quotes
-	pipe.cmd = pipe.arg[0];
-	// print_pipe_info(pipe);
+	if (pipe.arg && pipe.arg[0])
+		pipe.cmd = pipe.arg[0];
 	filter_exceptions(&pipe);
 	return (pipe);
 }
