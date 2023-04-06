@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 15:22:35 by chenlee           #+#    #+#             */
-/*   Updated: 2023/04/05 18:52:24 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/04/06 15:33:11 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,4 +76,26 @@ void	ft_dup_inoutfile(int i, t_pipe cmdlst, char **hdoc, int rdr_inout[2])
 		ft_dup("outfile", rdr_inout[1], STDOUT_FILENO);
 	close(rdr_inout[0]);
 	close(rdr_inout[1]);
+}
+
+void	wait_for_pid(t_vars *vars, t_token *group, int *pid)
+{
+	int	status;
+	int	i;
+
+	i = -1;
+	while (++i < group->pipe_num)
+	{
+		if (group->cmdlst[i].cmd == NULL)
+			return ;
+		if (waitpid(pid[i], &status, 0) == -1)
+			error(group->cmdlst[i].cmd, "waitpid failed");
+		if (WIFEXITED(status))
+			vars->last_errno = WEXITSTATUS(status);
+		else if (WIFSIGNALED(status))
+		{
+			if (WTERMSIG(status) == 2)
+				vars->last_errno = 130;
+		}
+	}
 }

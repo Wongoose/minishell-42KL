@@ -145,7 +145,7 @@ void		filter_exceptions(t_pipe *pipe);
 
 /* piping */
 int		error(char *cmd, char *str);
-void	cmdgroup(t_vars *vars, t_token *group);
+int		cmdgroup(t_vars *vars, t_token *group);
 void	first_child(t_vars *vars, t_token *group, int index, int pipefd[2][2]);
 void	middle_child(t_vars *vars, t_token *group, int index, int pipefd[2][2]);
 void	last_child(t_vars *vars, t_token *group, int index, int pipefd[2][2]);
@@ -155,7 +155,7 @@ void	ft_open(int i, t_rdrinfo info, char **hdoc, int rdr_inout[2]);
 void	ft_close_pipe(int index, int n_cmds, int pipefd[2][2]);
 
 /* heredoc */
-char	**handle_heredoc(t_token *group);
+char	**handle_heredoc(t_vars *vars, t_token *group);
 
 /* execution */
 int		execution(t_vars *vars, t_pipe cmdlst);

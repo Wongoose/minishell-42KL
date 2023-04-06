@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 20:22:23 by chenlee           #+#    #+#             */
-/*   Updated: 2023/04/05 19:13:24 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/04/06 20:06:43 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,28 +16,6 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <fcntl.h>
-
-void	wait_for_pid(t_vars *vars, t_token *group, int *pid)
-{
-	int	status;
-	int	i;
-
-	i = -1;
-	while (++i < group->pipe_num)
-	{
-		if (group->cmdlst[i].cmd == NULL)
-			return ;
-		if (waitpid(pid[i], &status, 0) == -1)
-			error(group->cmdlst[i].cmd, "waitpid failed");
-		if (WIFEXITED(status))
-			vars->last_errno = WEXITSTATUS(status);
-		else if (WIFSIGNALED(status))
-		{
-			if (WTERMSIG(status) == 2)
-				vars->last_errno = 130;
-		}
-	}
-}
 
 void	ft_fork(char *cmd, int *pid)
 {
@@ -71,10 +49,19 @@ void	multiple_child(t_vars *vars, t_token *group, int *pid)
 	}
 }
 
-void	one_child(t_vars *vars, t_token *group, pid_t *pid)
+int	parent_exit(t_vars *vars, t_pipe cmdlst)
+{
+	if (cmdlst.arg[1] != NULL)
+		vars->last_errno = ft_atoi(cmdlst.arg[1]);
+	return (1);
+}
+
+int	one_child(t_vars *vars, t_token *group, pid_t *pid)
 {
 	int	rdr_inout[2];
 
+	if (ft_strncmp(group->cmdlst[0].cmd, "exit", 6) == 0)
+		return (parent_exit(vars, group->cmdlst[0]));
 	pid[0] = fork();
 	if (pid[0] == -1)
 		exit (error(group->cmdlst[0].cmd, "fork failed"));
@@ -84,26 +71,31 @@ void	one_child(t_vars *vars, t_token *group, pid_t *pid)
 		execution(vars, group->cmdlst[0]);
 		exit(0);
 	}
+	return (0);
 }
 
-void	cmdgroup(t_vars *vars, t_token *group)
+int	cmdgroup(t_vars *vars, t_token *group)
 {
 	pid_t	*pid;
+	int		ret;
 
+	ret = 0;
 	signal(SIGINT, SIG_IGN);
 	pid = ft_calloc(group->pipe_num, sizeof(int));
-	group->hdoc_str = handle_heredoc(group);
+	group->hdoc_str = handle_heredoc(vars, group);
 	if (group->hdoc_str == NULL)
 	{
 		vars->last_errno = 0;
-		return ;
+		return (0);
 	}
 	if (group->pipe_num == 1)
-		one_child(vars, group, pid);
+		ret = one_child(vars, group, pid);
 	else
 		multiple_child(vars, group, pid);
-	wait_for_pid(vars, group, pid);
+	if (ret != 1)
+		wait_for_pid(vars, group, pid);
 	free(pid);
+	return (ret);
 }
 
 // t_redirect	init_rdrlst(char *rdr)
