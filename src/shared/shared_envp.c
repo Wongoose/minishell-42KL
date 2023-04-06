@@ -58,25 +58,38 @@ char	*expand_env_dollar(t_vars *vars, char *str)
 	int		j;
 	char	*new_str;
 	char	*expanded;
+	char	quote_t;
 
+	quote_t = 0;
 	new_str = ft_calloc(1, 1);
 	i = 0;
+	j = 0;
 	while (str[i] != '\0')
 	{
-		if (str[i] == '$')
+		if (quote_t && quote_t == str[i])
+			quote_t = 0;
+		else if (!quote_t && (str[i] == '"' || str[i] == '\''))
+			quote_t = str[i];
+		else if (str[i] == '$' && quote_t != '\'')
 		{
 			if (str[++i] == '?')
 				new_str = ft_strjoin(new_str, ft_itoa(vars->last_errno));
 			else
 			{
-				j = i;
-				while (ft_isalnum(str[j]))
+				j = 0;
+				while (ft_isalnum(str[j + i]))
 					j++;
-				expanded = get_envp_value(vars->envp, ft_substr(str, i, j - i));
+				expanded = get_envp_value(vars->envp, ft_substr(str, i, j));
+				printf("Expanded: %s\n", expanded);
 				if (expanded)
 					new_str = ft_strjoin(new_str, expanded);
+				i += j - 1;
 			}
 		}
+		if (j)
+			new_str = ft_strjoin(new_str, ft_substr(str, i + 1, 1));
+		else
+			new_str = ft_strjoin(new_str, ft_substr(str, i, 1));
 		i++;
 	}
 	free(str);
