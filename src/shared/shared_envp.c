@@ -80,7 +80,6 @@ char	*expand_env_dollar(t_vars *vars, char *str)
 				while (ft_isalnum(str[j + i]))
 					j++;
 				expanded = get_envp_value(vars->envp, ft_substr(str, i, j));
-				printf("Expanded: %s\n", expanded);
 				if (expanded)
 					new_str = ft_strjoin(new_str, expanded);
 				i += j - 1;
