@@ -51,5 +51,6 @@ int	func_echo(t_vars *vars, char **argv)
 	}
 	if (flag_count == 0)
 		ft_printf("\n");
+	vars->last_errno = 0;
 	return (0);
 }

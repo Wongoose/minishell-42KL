@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 16:00:08 by chenlee           #+#    #+#             */
-/*   Updated: 2023/04/05 18:53:07 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/04/12 16:16:36 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,10 +51,7 @@ int	execution(t_vars *vars, t_pipe cmdlst)
 	while (vars->functions[++i] != NULL)
 	{
 		if (ft_strcmp(cmdlst.cmd, vars->functions[i]) == 0)
-		{
-			vars->func[i](vars, cmdlst.arg);
-			return (0);
-		}
+			exit (vars->func[i](vars, cmdlst.arg));
 	}
 	return (call_execve(vars, cmdlst));
 }

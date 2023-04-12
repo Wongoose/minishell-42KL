@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   piping.c                                           :+:      :+:    :+:   */
+/*   start.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 20:22:23 by chenlee           #+#    #+#             */
-/*   Updated: 2023/04/07 14:07:42 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/04/12 16:07:13 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,29 +49,29 @@ void	multiple_child(t_vars *vars, t_token *group, int *pid)
 	}
 }
 
-int	parent_exit(t_vars *vars, t_pipe cmdlst)
-{
-	if (cmdlst.arg[1] != NULL)
-		vars->last_errno = ft_atoi(cmdlst.arg[1]);
-	return (1);
-}
-
 int	one_child(t_vars *vars, t_token *group, pid_t *pid)
 {
+	int	ret;
 	int	rdr_inout[2];
 
-	if (ft_strncmp(group->cmdlst[0].cmd, "exit", 6) == 0)
-		return (parent_exit(vars, group->cmdlst[0]));
-	pid[0] = fork();
-	if (pid[0] == -1)
-		exit (error(group->cmdlst[0].cmd, "fork failed"));
-	else if (pid[0] == 0)
+	ret = do_builtin(vars, group->cmdlst[0]);
+	if (ret == 1)
+		return (2);
+	else if (ret == 0)
+		return (1);
+	else
 	{
-		ft_dup_inoutfile(0, group->cmdlst[0], group->hdoc_str, rdr_inout);
-		execution(vars, group->cmdlst[0]);
-		exit(0);
+		pid[0] = fork();
+		if (pid[0] == -1)
+			exit (error(group->cmdlst[0].cmd, "fork failed"));
+		else if (pid[0] == 0)
+		{
+			ft_dup_inoutfile(0, group->cmdlst[0], group->hdoc_str, rdr_inout);
+			execution(vars, group->cmdlst[0]);
+			exit(0);
+		}
+		return (0);
 	}
-	return (0);
 }
 
 int	cmdgroup(t_vars *vars, t_token *group)
@@ -92,7 +92,7 @@ int	cmdgroup(t_vars *vars, t_token *group)
 		ret = one_child(vars, group, pid);
 	else
 		multiple_child(vars, group, pid);
-	if (ret != 1)
+	if (ret == 0)
 		wait_for_pid(vars, group, pid);
 	free(pid);
 	return (ret);

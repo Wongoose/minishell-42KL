@@ -195,6 +195,7 @@ t_token *tokenize_input(t_vars *vars, char *input) {
     while (tokens[i] != 0)
 		i++;
     root = build_token_tree(tokens, 0, i - 1);
+	root->parent = NULL;
     free_doublearray(tokens);
     return (root);
 }
