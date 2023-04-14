@@ -6,11 +6,25 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 17:39:09 by chenlee           #+#    #+#             */
-/*   Updated: 2023/04/12 16:17:32 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/04/14 21:22:36 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+char	*join_str(char *front, char *middle, char *rear)
+{
+	char	*temp;
+	char	*ret;
+
+	temp = ft_strjoin(front, middle);
+	free(front);
+	free(middle);
+	ret = ft_strjoin(temp, rear);
+	free(temp);
+	free(rear);
+	return (ret);
+}
 
 void	wait_for_pid(t_vars *vars, t_token *group, int *pid)
 {
@@ -77,7 +91,9 @@ int	do_builtin(t_vars *vars, t_pipe cmdlst)
 	int	num;
 	
 	num = -1;
-	if (ft_strncmp(cmdlst.cmd, "export", 7) == 0)
+	if (ft_strncmp(cmdlst.cmd, "cd", 3) == 0)
+		num = 1;
+	else if (ft_strncmp(cmdlst.cmd, "export", 7) == 0)
 		num = 3;
 	else if (ft_strncmp(cmdlst.cmd, "unset", 6) == 0)
 		num = 4;

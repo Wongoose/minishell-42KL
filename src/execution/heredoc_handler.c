@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 14:46:29 by chenlee           #+#    #+#             */
-/*   Updated: 2023/04/07 15:52:32 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/04/14 21:22:17 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,20 +23,6 @@ int	get_len(char *temp_one, char *rdr_str)
 		return (len_one);
 	else
 		return (len_two);
-}
-
-char	*replace_str(char *front, char *middle, char *rear)
-{
-	char	*temp;
-	char	*ret;
-
-	temp = ft_strjoin(front, middle);
-	free(front);
-	free(middle);
-	ret = ft_strjoin(temp, rear);
-	free(temp);
-	free(rear);
-	return (ret);
 }
 
 char	*check_existance(t_vars *vars, char *middle)
@@ -72,7 +58,7 @@ char	*check_and_replace(t_vars *vars, char *str, int start, int end)
 	middle = ft_substr(str, start + 1, end - start - 1);
 	free(str);
 	replace = check_existance(vars, middle);
-	replace = replace_str(front, replace, rear);
+	replace = join_str(front, replace, rear);
 	str = ft_strdup(replace);
 	free(replace);
 	return (str);

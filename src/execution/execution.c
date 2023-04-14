@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 16:00:08 by chenlee           #+#    #+#             */
-/*   Updated: 2023/04/12 16:16:36 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/04/14 21:53:26 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ int	execution(t_vars *vars, t_pipe cmdlst)
 {
 	int		i;
 
+	cmdlst.arg = handle_wildcard(cmdlst.arg);
 	if (cmdlst.cmd == NULL)
 		exit(0);
 	i = -1;

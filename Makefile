@@ -33,6 +33,7 @@ FILES		=	print_start				\
 				parse_utils				\
 				start					\
 				heredoc_handler			\
+				wildcard_handler		\
 				piping_child			\
 				piping_utils			\
 				execution				\
