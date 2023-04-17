@@ -31,12 +31,13 @@ FILES		=	print_start				\
 				token_tree				\
 				parse_main				\
 				parse_utils				\
-				parse_split_args		\
-				piping					\
+				start					\
 				heredoc_handler			\
+				wildcard_handler		\
 				piping_child			\
 				piping_utils			\
 				execution				\
+				execution_utils			\
 				free
 
 FOBJS		= $(addprefix $(DOBJS), $(addsuffix .o, $(FILES:.c=.o)))

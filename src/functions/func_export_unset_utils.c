@@ -85,7 +85,7 @@ int	export_unset_error(int condition, char *var, char *name)
 /**
  * Function verifies if the key parsed is valid, which the key is made of
  * alphanumericals and underscore (except for the first character which should
- * include alphabets and underscore)
+ * be alphabets or underscore)
  * 
  * @param variable The key parsed for addition or replacement
  * @return Function returns true if verification succeed; otherwise returns
@@ -100,7 +100,7 @@ t_bool	verify_variable(char *variable)
 	{
 		if (i == 0 && !(variable[i] == '_' || ft_isalpha(variable[i])))
 			return (FALSE);
-		else if (variable[i] != '_' || !ft_isalnum(variable[i]))
+		else if (!(variable[i] == '_' || ft_isalnum(variable[i])))
 			return (FALSE);
 	}
 	return (TRUE);

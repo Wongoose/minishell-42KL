@@ -6,16 +6,11 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 16:00:08 by chenlee           #+#    #+#             */
-/*   Updated: 2023/04/05 18:53:07 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/04/16 19:09:18 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/wait.h>
-#include <fcntl.h>
 
 int	call_execve(t_vars *vars, t_pipe cmdlst)
 {
@@ -43,18 +38,24 @@ int	call_execve(t_vars *vars, t_pipe cmdlst)
 
 int	execution(t_vars *vars, t_pipe cmdlst)
 {
-	int		i;
+	int	i;
+	int	j;
 
+	i = -1;
+	while (cmdlst.arg[++i] != NULL)
+	{
+		j = -1;
+		while (cmdlst.arg[i][++j] != '\0')
+			if (cmdlst.arg[i][j] == '*')
+				cmdlst.arg = handle_wildcard(cmdlst.arg);
+	}
 	if (cmdlst.cmd == NULL)
 		exit(0);
 	i = -1;
 	while (vars->functions[++i] != NULL)
 	{
 		if (ft_strcmp(cmdlst.cmd, vars->functions[i]) == 0)
-		{
-			vars->func[i](vars, cmdlst.arg);
-			return (0);
-		}
+			exit (vars->func[i](vars, cmdlst.arg));
 	}
 	return (call_execve(vars, cmdlst));
 }

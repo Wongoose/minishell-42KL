@@ -1,4 +1,4 @@
-#include "../../minishell.h"
+#include "minishell.h"
 
 t_pipe	create_new_pipe(char *value)
 {
@@ -26,7 +26,7 @@ t_pipe	create_new_pipe(char *value)
 	pipe.arg = parse_split_args(head); // this is where you intepret quotes
 	if (pipe.arg && pipe.arg[0])
 	{
-		pipe.cmd = pipe.arg[0];
+		pipe.cmd = ft_strdup(pipe.arg[0]);
 		filter_exceptions(&pipe);
 	}
 	else

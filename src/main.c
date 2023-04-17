@@ -1,4 +1,4 @@
-#include "../minishell.h"
+#include "minishell.h"
 
 // NEXT: Create built-in functions
 void	init_vars(t_vars *vars, char **envp)
@@ -39,6 +39,50 @@ void	init_vars(t_vars *vars, char **envp)
 // 	ms_executor_free(&exec);
 // }
 
+// int	start_left(t_vars *vars, t_token *left_group)
+// {
+// 	int	result;
+
+// 	if (left_group->left != NULL)
+// 		start_left(vars, left_group->left);
+// 	else
+// 	{
+// 		result = cmdgroup(vars, left_group);
+// 		if ()
+// 	}
+// }
+
+int	start_minishell(t_vars *vars, t_token *group)
+{
+	int	ret;
+
+	if (group->parent == NULL && group->left == NULL)
+	{
+		return (cmdgroup(vars, group));
+	}
+	else
+	{
+		if (group->left->left != NULL)
+			start_minishell(vars, group->left);
+		else
+			ret = cmdgroup(vars, group->left);
+		if ((vars->last_errno == 0 && group->operator == 1)
+			|| (vars->last_errno == 1 && group->operator == 2))
+		{
+			if (group->right->left != NULL)
+			{
+				start_minishell(vars, group->right);
+				if ((vars->last_errno == 0 && group->operator == 1)
+					|| (vars->last_errno == 1 && group->operator == 2))
+					ret = cmdgroup(vars, group->right);
+			}
+			else
+				ret = cmdgroup(vars, group->right);
+		}
+	}
+	return (ret);
+}
+
 // NEXT: DO PIPEX
 void	read_terminal(t_vars *vars)
 {
@@ -59,14 +103,20 @@ void	read_terminal(t_vars *vars)
 		vars->tokens = tokenize_input(vars, input);
 		if (vars->tokens == NULL)
 			exit(1);
-		// print_token_tree(vars->tokens, 0, "ROOT");
-		
+		print_token_tree(vars->tokens, 0, "ROOT");
+		printf("\n\n");
+		if (start_minishell(vars, vars->tokens) == 1)
+		{
+			;
+			/* FREE AND EXIT HERE */
+		}
 		// TEST CODE >>>
 		// test_args = ft_split(input, ' ');
-		cmdgroup(vars, &(vars->tokens[0]));
-		// if (ft_strcmp(test_args[0], "exit") == 0)
-		// 	vars->func[E_EXIT](vars, test_args);
-		// vars->func[E_EXPORT](vars, test_args);
+		// if (cmdgroup(vars, &(vars->tokens[0])) == 1)
+		// {
+		// 	;
+		// 	/* FREE AND EXIT HERE */
+		// }
 		ft_free(vars);
 	}
 	free(input);

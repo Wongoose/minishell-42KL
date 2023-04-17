@@ -15,7 +15,6 @@ t_token *create_token(char *value) {
 
 t_token *build_token_tree(char **tokens, int start, int end)
 {
-
     int     i;
     int     parens;
     int     precedence;

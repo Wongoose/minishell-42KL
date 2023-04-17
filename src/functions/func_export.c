@@ -107,7 +107,7 @@ int	add_or_replace(t_vars *vars, char **args)
 	while (args[++i] != NULL)
 	{
 		key_val = equal_split(args[i]);
-		if (verify_variable(key_val[0]))
+		if (verify_variable(key_val[0]) != TRUE)
 			return (export_unset_error(1, key_val[0], "export"));
 		ret = check_occurance(vars->envp, key_val);
 		if (ret != -1 && key_val[1] != NULL)
@@ -136,6 +136,6 @@ int	func_export(t_vars *vars, char **args)
 	if (args[1] == NULL || args[1][0] == '#')
 		print_envp(vars);
 	else
-		ret = add_or_replace(vars, args);
+		vars->last_errno = add_or_replace(vars, args);
 	return (ret);
 }
