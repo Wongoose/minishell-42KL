@@ -53,7 +53,6 @@ char    *validate_quote(char *value)
         return (value);
 }
 
-// NEXT: Handle quotes
 char    **validate_tokens(char **tokens)
 {
     int paren_level;

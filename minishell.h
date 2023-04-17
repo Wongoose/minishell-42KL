@@ -142,6 +142,7 @@ void		print_pipe_info(t_pipe pipe);
 int			handle_rdr_out(int i, char *value, t_rdrinfo *rdr_info);
 int			handle_rdr_in(int i, char *value, t_rdrinfo *rdr_info);
 void		filter_exceptions(t_pipe *pipe);
+char	**parse_split_args(char *s);
 
 /* piping */
 int		error(char *cmd, char *str);
