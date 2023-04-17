@@ -4,12 +4,18 @@ int	count_pipes(char *value)
 {
 	int	i;
 	int	count;
+	int	paren;
 
 	i = 0;
 	count = 0;
+	paren = 0;
 	while (value[i] != 0)
 	{
-		if (value[i] == '|')
+		if (value[i] == '(')
+			paren++;
+		else if (value[i] == ')')
+			paren--;
+		if (value[i] == '|' && paren == 0)
 			count++;
 		i++;
 	}

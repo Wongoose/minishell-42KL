@@ -70,7 +70,7 @@ typedef struct s_pipe
     char		*cmd;
     char		**arg;
 	int			rdr_count;
-	t_bool		has_subshell;
+	t_bool		is_subshell;
     t_rdrinfo	*rdr_info;
 }	t_pipe;
 
@@ -101,6 +101,7 @@ typedef struct s_vars
 void		print_startup(void);
 char		**dup_envp(char **envp);
 void		ft_free(t_vars *vars);
+char		*ft_trim(char *str);
 
 /* signals */
 void		init_signal(void);
@@ -125,7 +126,9 @@ void		free_doublearray(char **data);
 
 /* tokenization */
 t_token		*tokenize_input(t_vars *vars, char *input);
+t_token 	*create_token(char *value);
 int 		is_operator(char *token);
+int 		is_pipe(char *token);
 int 		is_left_paren(char *token);
 int 		is_right_paren(char *token);
 int 		count_paren(char *input);

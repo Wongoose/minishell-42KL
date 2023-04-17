@@ -10,6 +10,13 @@ t_pipe	create_new_pipe(char *value)
 
 	formatted = (char *)ft_calloc(ft_strlen(value) + 1, sizeof(char));
 	pipe.rdr_info = (t_rdrinfo *)ft_calloc(1000, sizeof(t_rdrinfo));
+	if (value[0] == '(' && value[ft_strlen(value) - 1] == ')') // is subshell
+	{
+		pipe.is_subshell = TRUE;
+		pipe.cmd = ft_strdup(value);
+		pipe.rdr_count = 0;
+		return (pipe);
+	}
 	head = formatted;
 	i = -1;
 	rdr_i = 0;
@@ -22,6 +29,7 @@ t_pipe	create_new_pipe(char *value)
 		else
 			ft_memset(formatted++, value[i], 1);
 	}
+	pipe.is_subshell = FALSE;
 	pipe.rdr_count = rdr_i;
 	pipe.arg = parse_split_args(head); // this is where you intepret quotes
 	if (pipe.arg && pipe.arg[0])
@@ -38,6 +46,7 @@ t_pipe	*generate_pipe_list(char *value, t_token *token)
 {
 	int		i;
 	int		j;
+	int		paren;
 	int		pipe_count;
 	t_pipe	*cmdlst;
 	char	*buffer;
@@ -48,16 +57,21 @@ t_pipe	*generate_pipe_list(char *value, t_token *token)
 	buffer = (char *)ft_calloc(1000, 1);
 	i = 0;
 	j = 0;
+	paren = 0;
 	pipe_count = 0;
 	while (value[i] != 0)
 	{
-		if (value[i] == '|')
+		if (value[i] == '(')
+			paren++;
+		else if (value[i] == ')')
+			paren--;
+		if (value[i] == '|' && paren == 0)
 		{
 			if (i == 0)
 				write(2, "minishell: syntax error near unexpected token '|'\n", 50);
 			if (buffer[0] != 0)
 			{
-				cmdlst[pipe_count++] = create_new_pipe(buffer);
+				cmdlst[pipe_count++] = create_new_pipe(ft_trim(buffer));
 				buffer = (char *)ft_calloc(1000, 1);
 				j = 0;
 			}
@@ -74,7 +88,7 @@ t_pipe	*generate_pipe_list(char *value, t_token *token)
 		i++;
 	}
 	if (buffer[0] != 0)
-		cmdlst[pipe_count++] = create_new_pipe(buffer);
+		cmdlst[pipe_count++] = create_new_pipe(ft_trim(buffer));
 	token->pipe_num = pipe_count;
 	free(buffer);
 	return (cmdlst);

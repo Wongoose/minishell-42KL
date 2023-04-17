@@ -77,7 +77,7 @@ char    **validate_tokens(char **tokens)
 			}
             if (tokens[i + 1] == 0)
                 continue ;
-            if (!is_right_paren(tokens[i + 1]) && !is_operator(tokens[i + 1]))
+            if (!is_right_paren(tokens[i + 1]) && !is_operator(tokens[i + 1]) && !is_pipe(tokens[i + 1]))
             {
                 printf("Found unexpected token near '%s'\n", tokens[i + 1]);
                 return (NULL);
@@ -149,15 +149,26 @@ char **format_input(t_vars *vars, char *input) {
     char    *copy;
     int     i;
     int     j;
+    int     paren;
 
     copy = space_at_paren(input);
     split = ft_split(copy, ' ');
     i = 0;
     j = 0;
+    paren = -1;
     buffer = NULL;
     while (split[i] != 0)
     {
-        if (is_left_paren(split[i]) || is_right_paren(split[i]) || is_operator(split[i]))
+        if (is_left_paren(split[i]))
+        {
+            if (paren == -1)
+                paren = 0;
+            paren++;
+        } 
+        else if (is_right_paren(split[i]))   
+            paren--;
+        if (is_left_paren(split[i]) || is_right_paren(split[i]) || is_operator(split[i]) || (is_pipe(split[i])
+            && paren == 0))
         {
             if (buffer)
             {
@@ -180,6 +191,25 @@ char **format_input(t_vars *vars, char *input) {
     return (tokens);
 }
 
+t_bool has_pipe_in_shell(char **tokens)
+{
+    int i;
+    int paren;
+
+    i = -1;
+    paren = 0;
+    while (tokens[++i] != 0)
+    {
+        if (is_left_paren(tokens[i]))   
+            paren++;
+        else if (is_right_paren(tokens[i]))   
+            paren--;
+        if (is_pipe(tokens[i]) && paren == 0)
+            return (TRUE);
+    }
+    return (FALSE);
+}
+
 t_token *tokenize_input(t_vars *vars, char *input) {
     int     i;
     char    **tokens;
@@ -194,7 +224,12 @@ t_token *tokenize_input(t_vars *vars, char *input) {
 	i = 0;
     while (tokens[i] != 0)
 		i++;
-    root = build_token_tree(tokens, 0, i - 1);
+    if (has_pipe_in_shell(tokens))
+        root = create_token(input);
+    else
+    {
+        root = build_token_tree(tokens, 0, i - 1);
+    }
 	root->parent = NULL;
     free_doublearray(tokens);
     return (root);

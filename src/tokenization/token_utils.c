@@ -9,6 +9,11 @@ int is_operator(char *token)
     return (ft_strcmp(token, "&&") == 0 || ft_strcmp(token, "||") == 0);
 }
 
+int is_pipe(char *token)
+{
+    return (ft_strcmp(token, "|") == 0);
+}
+
 int is_left_paren(char *token)
 {
     return (ft_strcmp(token, "(") == 0);

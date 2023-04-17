@@ -17,6 +17,7 @@ DOBJS		= objs/
 
 FILES		=	print_start				\
 				signal					\
+				trim					\
 				func_cd					\
 				func_echo				\
 				func_exit				\
