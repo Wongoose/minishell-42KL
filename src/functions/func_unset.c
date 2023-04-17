@@ -39,11 +39,5 @@ int	func_unset(t_vars *vars, char **args)
 			find_and_delete(vars, args[1]);
 		i++;
 	}
-	i = 0;
-	while (vars->envp[i] != 0)
-	{
-		ft_printf("%s\n", vars->envp[i]);
-		i++;
-	}
 	return (0);
 }
