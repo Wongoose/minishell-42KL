@@ -6,40 +6,19 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 18:41:25 by chenlee           #+#    #+#             */
-/*   Updated: 2023/04/14 22:00:05 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/04/17 01:37:42 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	print_arg(char **arg)
-{
-	int	i;
-
-	dprintf(2, "print_arg starts\n");
-	i = -1;
-	while (arg[++i] != NULL)
-	{
-		dprintf(2, "%d: %s\n", i, arg[i]);
-	}
-}
-
-char	**to_split_or_not(char *bigstr, char **arg, t_bool found)
-{
-	char	**ret;
-	
-	if (found == TRUE)
-	{
-		free_doublearray(arg);
-		ret = ft_split(bigstr, ' ');
-	}
-	else
-		ret = arg;
-	free(bigstr);
-	// print_arg(ret);
-	return (ret);
-}
-
+/**
+ * Function checks if the first i characters of the pattern match the first j
+ * characters of the text. The algorithm handles wildcard
+ * characters in the pattern by considering two cases: either the wildcard
+ * character matches zero characters in the text, or the wildcard character
+ * matches one or more characters in the text.
+*/
 int	is_in_wildcard(char *pattern, char *text, int pattern_len, int text_len)
 {
 	int	i;
@@ -68,6 +47,18 @@ int	is_in_wildcard(char *pattern, char *text, int pattern_len, int text_len)
 	return (dp[pattern_len][text_len]);
 }
 
+/**
+ * Function calls readdir() which gets a pointer to a dirent structure
+ * describing a directory entry in the directory stream, in which contains
+ * character pointer "d_name", which points to a string that gives the name of
+ * a file in the directory. This string will then be compared if it matches the
+ * wildcard pattern.
+ * Every call to readdir() overwrites data produced by its previous call.
+ * 
+ * @param wc_str The wildcard pattern string parsed for comparison.
+ * @return Function returns all matches in the directory, concatenated into a
+ * single string with spaces as delimitation.
+*/
 char	*expand_wildcard(char *wc_str)
 {
 	DIR				*dir;
@@ -86,7 +77,7 @@ char	*expand_wildcard(char *wc_str)
 				ft_strlen(entry->d_name)))
 		{
 			if (expanded_str == NULL)
-				expanded_str = ft_strdup(ft_strjoin(entry->d_name, " "));
+				expanded_str = ft_strjoin(entry->d_name, " ");
 			else
 				expanded_str = join_str(expanded_str, ft_strdup(" "),
 					ft_strdup(entry->d_name));
@@ -96,6 +87,12 @@ char	*expand_wildcard(char *wc_str)
 	return (expanded_str);
 }
 
+/**
+ * Function checks if the string parsed contains wildcard symbol '*'.
+ * 
+ * @param str The string parsed for checking.
+ * @return Returns TRUE upon found; otherwise returns FALSE.
+*/
 t_bool	found_wildcard(char *str)
 {
 	int	i;
@@ -109,28 +106,41 @@ t_bool	found_wildcard(char *str)
 	return (FALSE);
 }
 
+/**
+ * Wildcard handling function, where function will join the double char arrays
+ * containing the commands and options/arguments into a single string with
+ * spaces as its delimination. Should there be a wildcard (*) symbol found,
+ * the dereferenced string of the double char array will be expanded to string
+ * with matching text given the wildcard pattern, before joining them back to
+ * said single string.
+ * 
+ * @param arg The double char array containing the initial commands and options/
+ * arguments.
+ * @return Function will replace the initial double char array with the single
+ * string splitted into double char array, with spaces as its deliminator.
+*/
 char	**handle_wildcard(char **arg)
 {
 	int		i;
-	t_bool	found;
 	char	*expand;
 	char	*bigstr;
 
-	found = FALSE;
 	bigstr = ft_strdup(arg[0]);
 	i = 0;
-	print_arg(arg);
 	while (arg[++i] != NULL)
 	{
-		dprintf(2, "bigstr = [%s]\n", bigstr);
 		if (found_wildcard(arg[i]) == TRUE)
 		{
-			found = TRUE;
 			expand = expand_wildcard(arg[i]);
-			bigstr = join_str(bigstr, " ", expand);
+			if (expand != NULL)
+			{
+				bigstr = join_str(bigstr, ft_strdup(" "), expand);
+				continue ;
+			}
 		}
-		else
-			bigstr = join_str(bigstr, " ", ft_strdup(arg[i]));
+		bigstr = join_str(bigstr, ft_strdup(" "), ft_strdup(arg[i]));
 	}
-	return (to_split_or_not(bigstr, arg, found));
+	free_doublearray(arg);
+	arg = ft_split(bigstr, ' ');
+	return (free(bigstr), arg);
 }
