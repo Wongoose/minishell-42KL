@@ -121,7 +121,7 @@ char    *space_at_paren(char *input)
     return (copy);
 }
 
-char    *add_to_buffer(t_vars *vars,char *buffer, char *value)
+char    *add_to_buffer(t_vars *vars, char *buffer, char *value)
 {
     char    *tmp;
 
@@ -132,7 +132,8 @@ char    *add_to_buffer(t_vars *vars,char *buffer, char *value)
         tmp = ft_strdup(value);
     else
     {
-        tmp = ft_strjoin(tmp, ft_strdup(" "));
+        if (value)
+            tmp = ft_strjoin(tmp, ft_strdup(" "));
         tmp = ft_strjoin(tmp, value);
         free(buffer);
     }

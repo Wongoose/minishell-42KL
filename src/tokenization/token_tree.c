@@ -36,6 +36,7 @@ t_token *build_token_tree(char **tokens, int start, int end)
             parens++;
         else if (is_right_paren(tokens[i]))
             parens--;
+        // checks pipe
         else if (parens == 0 && is_operator(tokens[i]))
         {
             precedence = (ft_strcmp(tokens[i], "&&") == 0) ? 1 : 0;

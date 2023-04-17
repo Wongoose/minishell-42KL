@@ -52,7 +52,6 @@ char	**dup_envp(char **envp)
 	return(new_envp);
 }
 
-// NEXT: Fix bug echo "$USER"'$USER' $USERi fr
 char	*expand_env_dollar(t_vars *vars, char *str)
 {
 	int		i;
@@ -62,7 +61,7 @@ char	*expand_env_dollar(t_vars *vars, char *str)
 	char	quote_t;
 
 	quote_t = 0;
-	new_str = ft_calloc(1, 1);
+	new_str = NULL;
 	i = 0;
 	while (str[i] != '\0')
 	{
@@ -82,19 +81,12 @@ char	*expand_env_dollar(t_vars *vars, char *str)
 					j++;
 				expanded = get_envp_value(vars->envp, ft_substr(str, i, j));
 				if (expanded)
-				{
 					new_str = ft_strjoin(new_str, expanded);
-					i += j - 1;
-				}
-				else
-				{
-					i += j;
-				}
+				i += j - 1;
 			}
 		}
 		if (!j)
 			new_str = ft_strjoin(new_str, ft_substr(str, i, 1));
-		printf("New str is: %s\n", new_str);
 		i++;
 	}
 	free(str);

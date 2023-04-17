@@ -70,6 +70,7 @@ typedef struct s_pipe
     char		*cmd;
     char		**arg;
 	int			rdr_count;
+	t_bool		has_subshell;
     t_rdrinfo	*rdr_info;
 }	t_pipe;
 

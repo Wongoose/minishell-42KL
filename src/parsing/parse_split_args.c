@@ -9,7 +9,6 @@ static int	count_words(char const *s)
 	quote_t = 0;
 	words = 0;
 	i = 0;
-	printf("GIven string: %s\n", s);
 	while (s[i] != '\0')
 	{
 		while (s[i] == ' ')
@@ -17,25 +16,16 @@ static int	count_words(char const *s)
 		if (!quote_t && (s[i] == '"' || s[i] == '\''))
 			quote_t = s[i++];
 		else if (quote_t && s[i] == quote_t)
-		{
 			quote_t = 0;
-			continue ;
-		}
-		if (!s[i])
-			continue;
-		if (quote_t)
-		{
-			while (s[i] != quote_t && s[i] != '\0')
-				i++;
-			if (s[i + 1] == ' ' || s[i + 1] == '\0')
-				words++;
-			continue ;
-		}
-		words++;
-		while (s[i] != ' ' && s[i] != '\0')
+		if (s[i])
+			words++;
+		while(quote_t && (s[i] != quote_t && s[i])) // pass through quotes
+			i++;
+		if (quote_t && s[i] == quote_t)
+			quote_t = 0;
+		while (s[i] != ' ' && s[i]) // always stop at spaces
 			i++;
 	}
-	printf("Words: %d\n", words);
 	return (words);
 }
 
@@ -57,11 +47,8 @@ static char	*exclude_quotes(char *str)
 		if (!quote_t && (str[i] == '"' || str[i] == '\''))
 			quote_t = str[i];
 		else if (quote_t && str[i] == quote_t)
-		{
 			quote_t = 0;
-			continue ;
-		}
-		if (str[i] != quote_t) // don't copy if it's quote
+		else if (str[i] != quote_t) // don't copy if it's quote
 			new[j++] = str[i];
 	}
 	new[j] = 0;
@@ -92,9 +79,11 @@ char	**parse_split_args(char *s)
 			quote_t = s[start];
 		else if (quote_t && s[start] == quote_t)
 			quote_t = 0;
-		end = start;
-		while(quote_t && (end != quote_t && s[end])) // pass through quotes
+		end = start + 1;
+		while(quote_t && (s[end] != quote_t && s[end])) // pass through quotes
 			end++;
+		if (quote_t && s[end] == quote_t)
+			quote_t = 0;
 		while (s[end] != ' ' && s[end]) // always stop at spaces
 			end++;
 		splitstr[i] = exclude_quotes(ft_substr(s, start, end - start));

@@ -31,6 +31,7 @@ FILES		=	print_start				\
 				token_tree				\
 				parse_main				\
 				parse_utils				\
+				parse_split_args		\
 				start					\
 				heredoc_handler			\
 				wildcard_handler		\
