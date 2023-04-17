@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 20:22:23 by chenlee           #+#    #+#             */
-/*   Updated: 2023/04/12 16:07:13 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/04/17 16:30:28 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,8 @@ int	one_child(t_vars *vars, t_token *group, pid_t *pid)
 	int	ret;
 	int	rdr_inout[2];
 
-	ret = do_builtin(vars, group->cmdlst[0]);
+	if (group->cmdlst[0].cmd != NULL)
+		ret = do_builtin(vars, group->cmdlst[0]);
 	if (ret == 1)
 		return (2);
 	else if (ret == 0)
