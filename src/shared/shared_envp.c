@@ -70,7 +70,7 @@ char	*expand_env_dollar(t_vars *vars, char *str)
 			quote_t = 0;
 		else if (!quote_t && (str[i] == '"' || str[i] == '\''))
 			quote_t = str[i];
-		else if (str[i] == '$' && quote_t != '\'')
+		else if (str[i] == '$' && quote_t != '\'' && ft_isalnum(str[i + 1]))
 		{
 			if (str[++i] == '?')
 				new_str = ft_strjoin(new_str, ft_itoa(vars->last_errno));
