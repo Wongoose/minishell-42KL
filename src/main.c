@@ -3,6 +3,7 @@
 // NEXT: Create built-in functions
 void	init_vars(t_vars *vars, char **envp)
 {
+	vars->is_subshell = FALSE;
 	vars->envp = dup_envp(envp);
 	vars->path = ft_split(get_envp_value(vars->envp, "PATH"), ':');
 	vars->functions = ft_split("echo cd pwd export unset env exit", ' ');
@@ -57,9 +58,7 @@ int	start_minishell(t_vars *vars, t_token *group)
 	int	ret;
 
 	if (group->parent == NULL && group->left == NULL)
-	{
 		return (cmdgroup(vars, group));
-	}
 	else
 	{
 		if (group->left->left != NULL)

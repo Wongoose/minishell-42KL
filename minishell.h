@@ -70,7 +70,7 @@ typedef struct s_pipe
     char		*cmd;
     char		**arg;
 	int			rdr_count;
-	t_bool		is_subshell;
+	t_bool		has_subshell;
     t_rdrinfo	*rdr_info;
 }	t_pipe;
 
@@ -89,6 +89,8 @@ typedef struct s_token
 
 typedef struct s_vars
 {
+	t_bool			is_subshell;
+	int				backup_inout[2];
 	char			**envp;
 	char			**functions;
 	char			**path;
@@ -98,10 +100,11 @@ typedef struct s_vars
 }	t_vars;
 
 /* utils */
-void		print_startup(void);
-char		**dup_envp(char **envp);
-void		ft_free(t_vars *vars);
-char		*ft_trim(char *str);
+void	init_vars(t_vars *vars, char **envp);
+void	print_startup(void);
+char	**dup_envp(char **envp);
+void	ft_free(t_vars *vars);
+char	*ft_trim(char *str);
 
 /* signals */
 void		init_signal(void);
@@ -149,6 +152,7 @@ void		filter_exceptions(t_pipe *pipe);
 char	**parse_split_args(char *s);
 
 /* piping */
+int		start_minishell(t_vars *vars, t_token *group);
 int		cmdgroup(t_vars *vars, t_token *group);
 void	first_child(t_vars *vars, t_token *group, int index, int pipefd[2][2]);
 void	middle_child(t_vars *vars, t_token *group, int index, int pipefd[2][2]);
@@ -160,6 +164,7 @@ void	ft_close_pipe(int index, int n_cmds, int pipefd[2][2]);
 
 /* heredoc */
 char	**handle_heredoc(t_vars *vars, t_token *group);
+char	*get_readline(t_vars *vars, char *rdr_str);
 
 /* wildcard */
 char	**handle_wildcard(char **arg);
@@ -173,5 +178,7 @@ void	wait_for_pid(t_vars *vars, t_token *group, int *pid);
 /* piping/execution utils */
 char	*join_str(char *front, char *middle, char *rear);
 int		error(char *cmd, char *str);
+
+void	start_subshell(t_pipe cmdlst, int backup_inout[2], char **envp);
 
 #endif

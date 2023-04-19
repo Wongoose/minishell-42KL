@@ -12,7 +12,7 @@ t_pipe	create_new_pipe(char *value)
 	pipe.rdr_info = (t_rdrinfo *)ft_calloc(1000, sizeof(t_rdrinfo));
 	if (value[0] == '(' && value[ft_strlen(value) - 1] == ')') // is subshell
 	{
-		pipe.is_subshell = TRUE;
+		pipe.has_subshell = TRUE;
 		pipe.cmd = ft_strdup(value);
 		pipe.rdr_count = 0;
 		return (pipe);
@@ -29,7 +29,7 @@ t_pipe	create_new_pipe(char *value)
 		else
 			ft_memset(formatted++, value[i], 1);
 	}
-	pipe.is_subshell = FALSE;
+	pipe.has_subshell = FALSE;
 	pipe.rdr_count = rdr_i;
 	pipe.arg = parse_split_args(head); // this is where you intepret quotes
 	if (pipe.arg && pipe.arg[0])

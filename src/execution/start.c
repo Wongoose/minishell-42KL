@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   start.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 20:22:23 by chenlee           #+#    #+#             */
-/*   Updated: 2023/04/17 16:42:30 by zwong            ###   ########.fr       */
+/*   Updated: 2023/04/19 01:41:18 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ void	multiple_child(t_vars *vars, t_token *group, int *pid)
 	i = -1;
 	while (++i < group->pipe_num)
 	{
+		dprintf(2, "[%d]: has_subshell = %d\n", i, group->cmdlst[i].has_subshell);
 		if (i < group->pipe_num && pipe(pipefd[0]) == -1)
 			exit (error(group->cmdlst[i].cmd, "pipe failed"));
 		ft_fork(group->cmdlst[i].cmd, &(pid[i]));
