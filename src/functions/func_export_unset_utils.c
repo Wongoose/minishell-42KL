@@ -105,18 +105,3 @@ t_bool	verify_variable(char *variable)
 	}
 	return (TRUE);
 }
-
-t_bool	validate_unset(char *variable)
-{
-	int	i;
-
-	i = -1;
-	if (ft_isalpha(variable[++i]) == 0)
-		return (FALSE);
-	while (variable[++i] != '\0')
-	{
-		if (ft_isalnum(variable[i]) == 0)
-			return (FALSE);
-	}
-	return (TRUE);
-}

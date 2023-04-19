@@ -28,16 +28,19 @@ static void	find_and_delete(t_vars *vars, char *key)
 int	func_unset(t_vars *vars, char **args)
 {
 	int	i;
-	(void)vars;
+	int	ret;
 
 	i = 1;
+	ret = 0;
 	while (args[i] != 0)
 	{
-		if (validate_unset(args[i]) == FALSE)
-			return (export_unset_error(1, args[i], "unset"));
+		if (verify_variable(args[i]) == FALSE)
+			ret = export_unset_error(1, args[i], "unset");
+		else if (ft_strcmp(args[i], "_") == 0)
+			continue ;
 		else
-			find_and_delete(vars, args[1]);
+			find_and_delete(vars, args[i]);
 		i++;
 	}
-	return (0);
+	return (ret);
 }
