@@ -76,7 +76,6 @@ char	*expand_env_dollar(t_vars *vars, char *str)
 				new_str = ft_strjoin(new_str, ft_itoa(vars->last_errno));
 			else
 			{
-				j = 0;
 				while (ft_isalnum(str[j + i]))
 					j++;
 				expanded = get_envp_value(vars->envp, ft_substr(str, i, j));
@@ -84,6 +83,12 @@ char	*expand_env_dollar(t_vars *vars, char *str)
 					new_str = ft_strjoin(new_str, expanded);
 				i += j - 1;
 			}
+		}
+		else if (str[i] == '*' && !quote_t)
+		{
+			free(new_str);
+			new_str = expand_wildcard(str);
+			break ;
 		}
 		if (!j)
 			new_str = ft_strjoin(new_str, ft_substr(str, i, 1));

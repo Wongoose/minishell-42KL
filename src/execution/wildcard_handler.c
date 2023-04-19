@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wildcard_handler.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 18:41:25 by chenlee           #+#    #+#             */
-/*   Updated: 2023/04/17 01:37:42 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/04/19 14:22:50 by zwong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,11 @@ char	*expand_wildcard(char *wc_str)
 		}
 	}
 	closedir(dir);
+	if (!expanded_str)
+	{
+		free(expanded_str);
+		return (ft_strdup(wc_str));
+	}
 	return (expanded_str);
 }
 
@@ -107,6 +112,7 @@ t_bool	found_wildcard(char *str)
 }
 
 /**
+ * // FUNCTION NOT USED
  * Wildcard handling function, where function will join the double char arrays
  * containing the commands and options/arguments into a single string with
  * spaces as its delimination. Should there be a wildcard (*) symbol found,

@@ -125,7 +125,7 @@ char    *add_to_buffer(t_vars *vars, char *buffer, char *value)
 {
     char    *tmp;
 
-    if (ft_strchr(value, '$'))
+    if (ft_strchr(value, '$') || ft_strchr(value, '*'))
         value = expand_env_dollar(vars, value);
     tmp = buffer;
     if (tmp == NULL)

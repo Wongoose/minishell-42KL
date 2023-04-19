@@ -163,6 +163,7 @@ char	**handle_heredoc(t_vars *vars, t_token *group);
 
 /* wildcard */
 char	**handle_wildcard(char **arg);
+char	*expand_wildcard(char *wc_str);
 
 /* execution */
 int		do_builtin(t_vars *vars, t_pipe cmdlst);
