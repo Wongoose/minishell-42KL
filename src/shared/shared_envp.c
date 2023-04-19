@@ -19,7 +19,6 @@ char	*get_envp_value(char **envp, char *key)
 		if (value)
 		{
 			value += ft_strlen(key) + 1;
-			value = ft_strdup(value);
 			break ;
 		}
 		i++;
@@ -49,6 +48,7 @@ char	**dup_envp(char **envp)
 		new_envp[i] = ft_strdup(envp[i]);
 		i++;
 	}
+	new_envp[i] = 0;
 	return(new_envp);
 }
 
@@ -70,10 +70,13 @@ char	*expand_env_dollar(t_vars *vars, char *str)
 			quote_t = 0;
 		else if (!quote_t && ft_isquote(str[i]))
 			quote_t = str[i];
-		else if (str[i] == '$' && quote_t != '\'' && ft_isalnum(str[i + 1]))
+		else if (str[i] == '$' && quote_t != '\'' && str[i + 1] != ' ')
 		{
 			if (str[++i] == '?')
+			{
 				new_str = ft_strjoin(new_str, ft_itoa(vars->last_errno));
+				j = ft_strlen(ft_itoa(vars->last_errno));
+			}
 			else
 			{
 				while (ft_isalnum(str[j + i]))

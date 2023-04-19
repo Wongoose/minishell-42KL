@@ -6,6 +6,7 @@ void	init_vars(t_vars *vars, char **envp)
 	vars->envp = dup_envp(envp);
 	vars->path = ft_split(get_envp_value(vars->envp, "PATH"), ':');
 	vars->functions = ft_split("echo cd pwd export unset env exit", ' ');
+	vars->last_errno = 0;
 	// below are all function pointers (not yet define functions)
 	vars->func[E_ECHO] = func_echo;
 	vars->func[E_CD] = func_cd;
@@ -101,9 +102,6 @@ void	read_terminal(t_vars *vars)
 	{
 		add_history(input);
 		vars->tokens = tokenize_input(vars, input);
-		int	j = -1;
-		while (vars->tokens->cmdlst[0].arg[++j] != NULL)
-			dprintf(2, "arg[%d]={%s}\n", j, vars->tokens->cmdlst[0].arg[j]);
 		if (vars->tokens == NULL)
 			exit(1);
 		// print_token_tree(vars->tokens, 0, "ROOT");
