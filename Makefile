@@ -32,7 +32,7 @@ FILES		=	print_start				\
 				token_tree				\
 				parse_main				\
 				parse_utils				\
-				parse_split_args		\
+				split_keep_quotes		\
 				start					\
 				heredoc_handler			\
 				wildcard_handler		\

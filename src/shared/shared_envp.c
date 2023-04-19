@@ -68,7 +68,7 @@ char	*expand_env_dollar(t_vars *vars, char *str)
 		j = 0;
 		if (quote_t && quote_t == str[i])
 			quote_t = 0;
-		else if (!quote_t && (str[i] == '"' || str[i] == '\''))
+		else if (!quote_t && ft_isquote(str[i]))
 			quote_t = str[i];
 		else if (str[i] == '$' && quote_t != '\'' && ft_isalnum(str[i + 1]))
 		{

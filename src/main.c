@@ -103,8 +103,8 @@ void	read_terminal(t_vars *vars)
 		vars->tokens = tokenize_input(vars, input);
 		if (vars->tokens == NULL)
 			exit(1);
-		print_token_tree(vars->tokens, 0, "ROOT");
-		printf("\n\n");
+		// print_token_tree(vars->tokens, 0, "ROOT");
+		// printf("\n\n");
 		if (start_minishell(vars, vars->tokens) == 1)
 		{
 			;

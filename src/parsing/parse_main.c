@@ -31,7 +31,10 @@ t_pipe	create_new_pipe(char *value)
 	}
 	pipe.is_subshell = FALSE;
 	pipe.rdr_count = rdr_i;
-	pipe.arg = parse_split_args(head); // this is where you intepret quotes
+	pipe.arg = split_keep_quotes(head); // this is where you intepret quotes
+	i = -1;
+	while (pipe.arg[++i])
+		pipe.arg[i] = exclude_quotes(pipe.arg[i]);
 	if (pipe.arg && pipe.arg[0])
 	{
 		pipe.cmd = ft_strdup(pipe.arg[0]);

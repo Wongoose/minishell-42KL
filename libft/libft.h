@@ -26,6 +26,7 @@ typedef struct s_list
 }	t_list;
 
 int		ft_isalpha(int c);
+int		ft_isquote(char c);
 int		ft_isdigit(int c);
 int		ft_isalnum(int c);
 int		ft_isascii(int c);

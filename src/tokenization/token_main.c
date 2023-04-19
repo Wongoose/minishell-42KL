@@ -34,7 +34,7 @@ char    *validate_quote(char *value)
     i = 0;
     while (value[i])
     {
-        if ((!quote_type && (value[i] == '"' || value[i] == '\'')) || value[i] == quote_type)
+        if ((!quote_type && ft_isquote(value[i])) || value[i] == quote_type)
         {
             quote_type = value[i];
             quote_level *= -1;
@@ -152,7 +152,7 @@ char **format_input(t_vars *vars, char *input) {
     int     paren;
 
     copy = space_at_paren(input);
-    split = ft_split(copy, ' ');
+    split = split_keep_quotes(copy);
     i = 0;
     j = 0;
     paren = -1;
