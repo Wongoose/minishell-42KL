@@ -149,7 +149,8 @@ void		print_pipe_info(t_pipe pipe);
 int			handle_rdr_out(int i, char *value, t_rdrinfo *rdr_info);
 int			handle_rdr_in(int i, char *value, t_rdrinfo *rdr_info);
 void		filter_exceptions(t_pipe *pipe);
-char	**parse_split_args(char *s);
+char		*exclude_quotes(char *str);
+char		**split_keep_quotes(char *s);
 
 /* piping */
 int		start_minishell(t_vars *vars, t_token *group);

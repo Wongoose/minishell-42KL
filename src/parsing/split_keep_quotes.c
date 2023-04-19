@@ -13,7 +13,7 @@ static int	count_words(char const *s)
 	{
 		while (s[i] == ' ')
 			i++;
-		if (!quote_t && (s[i] == '"' || s[i] == '\''))
+		if (!quote_t && ft_isquote(s[i]))
 			quote_t = s[i++];
 		else if (quote_t && s[i] == quote_t)
 			quote_t = 0;
@@ -29,7 +29,7 @@ static int	count_words(char const *s)
 	return (words);
 }
 
-static char	*exclude_quotes(char *str)
+char	*exclude_quotes(char *str)
 {
 	char	*new;
 	char	quote_t;
@@ -44,7 +44,7 @@ static char	*exclude_quotes(char *str)
 	quote_t = 0;
 	while (str[++i])
 	{
-		if (!quote_t && (str[i] == '"' || str[i] == '\''))
+		if (!quote_t && ft_isquote(str[i]))
 			quote_t = str[i];
 		else if (quote_t && str[i] == quote_t)
 			quote_t = 0;
@@ -56,7 +56,7 @@ static char	*exclude_quotes(char *str)
 	return (new);
 }
 
-char	**parse_split_args(char *s)
+char	**split_keep_quotes(char *s)
 {
 	char	**splitstr;
 	char	quote_t;
@@ -64,7 +64,7 @@ char	**parse_split_args(char *s)
 	int		end;
 	int		i;
 
-	splitstr = (char **)malloc(sizeof(char *) * (count_words(s) + 1));
+	splitstr = (char **)calloc(count_words(s) + 1, sizeof(char *));
 	if (!s || !splitstr)
 		return (0);
 	quote_t = 0;
@@ -75,7 +75,7 @@ char	**parse_split_args(char *s)
 	{
 		while (s[start] == ' ')
 			start++;
-		if (!quote_t && (s[start] == '"' || s[start] == '\'')) // setter for quote_t
+		if (!quote_t && ft_isquote(s[start])) // setter for quote_t
 			quote_t = s[start];
 		else if (quote_t && s[start] == quote_t)
 			quote_t = 0;
@@ -85,8 +85,14 @@ char	**parse_split_args(char *s)
 		if (quote_t && s[end] == quote_t)
 			quote_t = 0;
 		while (s[end] != ' ' && s[end]) // always stop at spaces
+		{
 			end++;
-		splitstr[i] = exclude_quotes(ft_substr(s, start, end - start));
+			if (ft_isquote(s[end]))
+				break ;
+		}
+		splitstr[i] = ft_strjoin(splitstr[i], ft_substr(s, start, end - start));
+		if (!quote_t && ft_isquote(s[end])) // e.g. hello"...  "
+			i--;
 		start = end;
 	}
 	splitstr[i] = 0;

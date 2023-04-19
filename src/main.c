@@ -7,6 +7,7 @@ void	init_vars(t_vars *vars, char **envp)
 	vars->envp = dup_envp(envp);
 	vars->path = ft_split(get_envp_value(vars->envp, "PATH"), ':');
 	vars->functions = ft_split("echo cd pwd export unset env exit", ' ');
+	vars->last_errno = 0;
 	// below are all function pointers (not yet define functions)
 	vars->func[E_ECHO] = func_echo;
 	vars->func[E_CD] = func_cd;
@@ -102,8 +103,8 @@ void	read_terminal(t_vars *vars)
 		vars->tokens = tokenize_input(vars, input);
 		if (vars->tokens == NULL)
 			exit(1);
-		print_token_tree(vars->tokens, 0, "ROOT");
-		printf("\n\n");
+		// print_token_tree(vars->tokens, 0, "ROOT");
+		// printf("\n\n");
 		if (start_minishell(vars, vars->tokens) == 1)
 		{
 			;

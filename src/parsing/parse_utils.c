@@ -60,7 +60,7 @@ int	handle_rdr_out(int i, char *value, t_rdrinfo *rdr_info)
 	}
 	while (value[i] == ' ')
 		i++;
-	if (!quote_type && (value[i] == '\'' || value[i] == '"'))
+	if (!quote_type && ft_isquote(value[i]))
 		quote_type = value[i++];
 	j = i;
 	while (value[j] != 0)
@@ -92,7 +92,7 @@ int	handle_rdr_in(int i, char *value, t_rdrinfo *rdr_info)
 	}
 	while (value[i] == ' ')
 		i++;
-	if (!quote_type && (value[i] == '\'' || value[i] == '"'))
+	if (!quote_type && ft_isquote(value[i]))
 		quote_type = value[i++];
 	j = i;
 	while (value[j] != 0)
