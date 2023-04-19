@@ -101,6 +101,9 @@ void	read_terminal(t_vars *vars)
 	{
 		add_history(input);
 		vars->tokens = tokenize_input(vars, input);
+		int	j = -1;
+		while (vars->tokens->cmdlst[0].arg[++j] != NULL)
+			dprintf(2, "arg[%d]={%s}\n", j, vars->tokens->cmdlst[0].arg[j]);
 		if (vars->tokens == NULL)
 			exit(1);
 		// print_token_tree(vars->tokens, 0, "ROOT");
