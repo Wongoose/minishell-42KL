@@ -135,6 +135,7 @@ int 		count_paren(char *input);
 void		print_token_tree(t_token *token, int level, char *direction); // temporary
 t_operator	get_operator_type(char *value);
 char		*expand_env_dollar(t_vars *vars, char *str);
+char		**validate_tokens(char **tokens);
 
 /* parsing */
 t_pipe		create_new_pipe(char *value);

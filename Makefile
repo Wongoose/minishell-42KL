@@ -29,6 +29,7 @@ FILES		=	print_start				\
 				shared_envp				\
 				token_main				\
 				token_utils				\
+				token_validate			\
 				token_tree				\
 				parse_main				\
 				parse_utils				\
