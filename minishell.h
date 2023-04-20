@@ -90,7 +90,6 @@ typedef struct s_token
 typedef struct s_vars
 {
 	t_bool			is_subshell;
-	int				backup_inout[2];
 	char			**envp;
 	char			**functions;
 	char			**path;
@@ -180,6 +179,6 @@ void	wait_for_pid(t_vars *vars, t_token *group, int *pid);
 char	*join_str(char *front, char *middle, char *rear);
 int		error(char *cmd, char *str);
 
-void	start_subshell(t_pipe cmdlst, int backup_inout[2], char **envp);
+void	start_subshell(t_pipe cmdlst, char **envp);
 
 #endif
