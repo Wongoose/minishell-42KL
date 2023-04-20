@@ -4,36 +4,6 @@
 #include <stdbool.h>
 #include "minishell.h"
 
-int is_operator(char *token)
-{
-    return (ft_strcmp(token, "&&") == 0 || ft_strcmp(token, "||") == 0);
-}
-
-int is_pipe(char *token)
-{
-    return (ft_strcmp(token, "|") == 0);
-}
-
-int is_left_paren(char *token)
-{
-    return (ft_strcmp(token, "(") == 0);
-}
-
-int is_right_paren(char *token)
-{
-    return (ft_strcmp(token, ")") == 0);
-}
-
-t_operator  get_operator_type(char *value)
-{
-    if (ft_strcmp(value, "&&") == 0)
-        return (AND);
-    else if (ft_strcmp(value, "||") == 0)
-        return (OR);
-    else
-        return (UNDEFINED);
-}
-
 int count_paren(char *input)
 {
     int i;
@@ -46,6 +16,47 @@ int count_paren(char *input)
         input++;
     }
     return (i);
+}
+
+int		update_parenthesis(char *token, int paren)
+{
+	if (is_left_paren(token))
+    {
+        if (paren == -1)
+            paren = 0;
+        paren++;
+    }
+	else if (is_right_paren(token))
+		paren--;
+	return (paren);
+}
+
+int should_add_to_tokens(char **token, int i)
+{
+    printf("\nToken: %s\n", token[i - 1]);
+    if (is_pipe(token[i]) && is_right_paren(token[i - 1]))
+        printf("\nToken: %d\n", i);
+    return (is_left_paren(token[i]) || is_right_paren(token[i]) || is_operator(token[i])
+        || (is_pipe(token[i]) && is_right_paren(token[i - 1])));
+}
+
+t_bool has_pipe_in_shell(char **tokens)
+{
+    int i;
+    int paren;
+
+    i = -1;
+    paren = 0;
+    while (tokens[++i] != 0)
+    {
+        if (is_left_paren(tokens[i]))   
+            paren++;
+        else if (is_right_paren(tokens[i]))   
+            paren--;
+        if (is_pipe(tokens[i]) && paren == 0)
+            return (TRUE);
+    }
+    return (FALSE);
 }
 
 // EXTRA

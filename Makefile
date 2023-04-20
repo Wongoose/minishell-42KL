@@ -41,6 +41,7 @@ FILES		=	print_start				\
 				piping_utils			\
 				execution				\
 				execution_utils			\
+				identifier				\
 				free
 
 FOBJS		= $(addprefix $(DOBJS), $(addsuffix .o, $(FILES:.c=.o)))

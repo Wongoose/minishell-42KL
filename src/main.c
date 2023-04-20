@@ -1,13 +1,11 @@
 #include "minishell.h"
 
-// NEXT: Create built-in functions
 void	init_vars(t_vars *vars, char **envp)
 {
 	vars->envp = dup_envp(envp);
 	vars->path = ft_split(get_envp_value(vars->envp, "PATH"), ':');
 	vars->functions = ft_split("echo cd pwd export unset env exit", ' ');
 	vars->last_errno = 0;
-	// below are all function pointers (not yet define functions)
 	vars->func[E_ECHO] = func_echo;
 	vars->func[E_CD] = func_cd;
 	vars->func[E_PWD] = func_pwd;
@@ -16,42 +14,6 @@ void	init_vars(t_vars *vars, char **envp)
 	vars->func[E_ENV] = func_env;
 	vars->func[E_EXIT] = func_exit;
 }
-
-//
-// static t_cmd	*ms_get_cmd_list(t_main *main, char *input)
-// {
-// 	t_parser	*parser;
-// 	t_cmd		*cmd_list;
-
-// 	parser = ms_parser_init(ms_lexer_init(ft_strdup(input)));
-// 	cmd_list = ms_parser_parse_cmd_list(parser);
-// 	main->syntax_error = parser->syntax_error;
-// 	ms_parser_free(&parser);
-// 	return (cmd_list);
-// }
-
-// static void	ms_run_execution(t_main *main, t_cmd *cmd_list)
-// {
-// 	t_exe	*exec;
-
-// 	exec = ms_executor_init();
-// 	ms_hd_cmd_queue(exec, cmd_list, EQ);
-// 	ms_executor_cmd_list(main, exec, cmd_list);
-// 	ms_executor_free(&exec);
-// }
-
-// int	start_left(t_vars *vars, t_token *left_group)
-// {
-// 	int	result;
-
-// 	if (left_group->left != NULL)
-// 		start_left(vars, left_group->left);
-// 	else
-// 	{
-// 		result = cmdgroup(vars, left_group);
-// 		if ()
-// 	}
-// }
 
 int	start_minishell(t_vars *vars, t_token *group)
 {
@@ -84,11 +46,9 @@ int	start_minishell(t_vars *vars, t_token *group)
 	return (ret);
 }
 
-// NEXT: DO PIPEX
 void	read_terminal(t_vars *vars)
 {
 	char	*input;
-	// char	**test_args;
 
 	init_signal();
 	input = readline("minihell$> ");
@@ -97,7 +57,6 @@ void	read_terminal(t_vars *vars)
 		ft_printf("exit\n");
 		exit(0);
 	}
-	// Below is PIPEX
 	if (ft_strlen(input) != 0)
 	{
 		add_history(input);
@@ -111,13 +70,6 @@ void	read_terminal(t_vars *vars)
 			;
 			/* FREE AND EXIT HERE */
 		}
-		// TEST CODE >>>
-		// test_args = ft_split(input, ' ');
-		// if (cmdgroup(vars, &(vars->tokens[0])) == 1)
-		// {
-		// 	;
-		// 	/* FREE AND EXIT HERE */
-		// }
 		ft_free(vars);
 	}
 	free(input);
