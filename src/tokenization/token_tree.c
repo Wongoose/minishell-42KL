@@ -47,9 +47,11 @@ int find_lowest_precedence(char **tokens, int start, int end, int *lowest_preced
 
 int is_balanced(char **tokens, int start, int end)
 {
+    int parens;
+
     if (!is_left_paren(tokens[start]) || !is_right_paren(tokens[end]))
         return (0);
-    int parens = 0;
+    parens = 0;
     for (int i = start; i <= end; i++)
     {
         if (is_left_paren(tokens[i]))

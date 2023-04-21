@@ -14,7 +14,7 @@ t_pipe	create_new_pipe(char *value)
 	{
 		printf("Subshell: %s\n", value);
 		pipe.has_subshell = TRUE;
-		pipe.cmd = ft_trim_paren(value);
+		pipe.cmd = ft_strdup(value);
 		pipe.rdr_count = 0;
 		return (pipe);
 	}

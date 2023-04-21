@@ -86,6 +86,7 @@ t_token *tokenize_input(t_vars *vars, char *input) {
     char    **tokens;
 	t_token *root;
 
+    input = ft_trim_paren(input);
     tokens = malloc(sizeof(char *) * MAX_TOKENS);
 	tokens = format_input(vars, tokens, input);
     tokens = validate_tokens(tokens);
