@@ -13,7 +13,7 @@ t_pipe	create_new_pipe(char *value)
 	if (value[0] == '(' && value[ft_strlen(value) - 1] == ')') // is subshell
 	{
 		printf("Subshell: %s\n", value);
-		pipe.is_subshell = TRUE;
+		pipe.has_subshell = TRUE;
 		pipe.cmd = ft_trim_paren(value);
 		pipe.rdr_count = 0;
 		return (pipe);
@@ -30,7 +30,7 @@ t_pipe	create_new_pipe(char *value)
 		else
 			ft_memset(formatted++, value[i], 1);
 	}
-	pipe.is_subshell = FALSE;
+	pipe.has_subshell = FALSE;
 	pipe.rdr_count = rdr_i;
 	pipe.arg = split_keep_quotes(head); // this is where you intepret quotes
 	i = -1;

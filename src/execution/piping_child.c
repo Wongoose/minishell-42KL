@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 19:00:06 by chenlee           #+#    #+#             */
-/*   Updated: 2023/04/03 15:42:54 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/04/20 01:08:52 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,35 +53,51 @@ void	ft_dup(char *cmd, int fd_one, int fd_two)
 void	last_child(t_vars *vars, t_token *group, int index, int pipefd[2][2])
 {
 	int	rdr_inout[2];
+	// int	backup_inout[2];
 
+	// backup_inout[0] = dup(STDIN_FILENO);
+	// backup_inout[1] = dup(STDOUT_FILENO);
 	ft_dup(group->cmdlst[index].cmd, pipefd[1][0], STDIN_FILENO);
 	close(pipefd[0][0]);
 	close(pipefd[0][1]);
 	ft_dup_inoutfile(index, group->cmdlst[index], group->hdoc_str, rdr_inout);
-	execution(vars, group->cmdlst[index]);
-	exit(0);
+	if (group->cmdlst[index].has_subshell == TRUE)
+		start_subshell(group->cmdlst[index], vars->envp);
+	else
+		execution(vars, group->cmdlst[index]);
 }
 
 void	middle_child(t_vars *vars, t_token *group, int index, int pipefd[2][2])
 {
 	int	rdr_inout[2];
+	// int	backup_inout[2];
 
+	// backup_inout[0] = dup(STDIN_FILENO);
+	// backup_inout[1] = dup(STDOUT_FILENO);
 	ft_dup(group->cmdlst[index].cmd, pipefd[0][1], STDOUT_FILENO);
 	ft_dup(group->cmdlst[index].cmd, pipefd[1][0], STDIN_FILENO);
 	close(pipefd[0][0]);
 	close(pipefd[0][1]);
 	ft_dup_inoutfile(index, group->cmdlst[index], group->hdoc_str, rdr_inout);
-	execution(vars, group->cmdlst[index]);
+	if (group->cmdlst[index].has_subshell == TRUE)
+		start_subshell(group->cmdlst[index], vars->envp);
+	else
+		execution(vars, group->cmdlst[index]);
 }
 
 void	first_child(t_vars *vars, t_token *group, int index, int pipefd[2][2])
 {
 	int	rdr_inout[2];
+	// int	backup_inout[2];
 
+	// backup_inout[0] = dup(STDIN_FILENO);
+	// backup_inout[1] = dup(STDOUT_FILENO);
 	ft_dup(group->cmdlst[index].cmd, pipefd[0][1], STDOUT_FILENO);
 	close(pipefd[0][0]);
 	close(pipefd[0][1]);
 	ft_dup_inoutfile(index, group->cmdlst[index], group->hdoc_str, rdr_inout);
-	execution(vars, group->cmdlst[index]);
-	exit(0);
+	if (group->cmdlst[index].has_subshell == TRUE)
+		start_subshell(group->cmdlst[index], vars->envp);
+	else
+		execution(vars, group->cmdlst[index]);
 }

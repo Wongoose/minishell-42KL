@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   start.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 20:22:23 by chenlee           #+#    #+#             */
-/*   Updated: 2023/04/17 16:42:30 by zwong            ###   ########.fr       */
+/*   Updated: 2023/04/20 04:16:05 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,10 @@ void	ft_fork(char *cmd, int *pid)
 		exit (error(cmd, "fork failed"));
 }
 
+/**
+ * Function will be called if the command group has pipes (eg: cmd1 | cmd2),
+ * where function will 
+*/
 void	multiple_child(t_vars *vars, t_token *group, int *pid)
 {	
 	int	pipefd[2][2];
@@ -49,6 +53,19 @@ void	multiple_child(t_vars *vars, t_token *group, int *pid)
 	}
 }
 
+/**
+ * Function will be called if the command group has no pipes (eg: cmd1).
+ * If the command is of built-in functions (cd, export, unset, exit), the
+ * execution will be handled seperately in the parent process; otherwise,
+ * fork a child process to handle other commands.
+ * 
+ * @param vars The main struct of the program containing the main tree
+ * @param group The current struct containing its command group
+ * @param pid The process id to keep track of its child process
+ * @return Function will only returns if the command is of the said built-in
+ * functions, whereby the execution should be done in parent process, requiring
+ * proper handling of the execution process
+*/
 int	one_child(t_vars *vars, t_token *group, pid_t *pid)
 {
 	int	ret;
@@ -76,6 +93,20 @@ int	one_child(t_vars *vars, t_token *group, pid_t *pid)
 	}
 }
 
+/**
+ * Function marks the start of the piping/execution process, whereby heredocs
+ * are first handled and parsed into string array, along with allocating
+ * memories for the pids that will be used for forking child processes.
+ * Next, function determines if the command group doesn't contain any pipes
+ * (eg: cmd1) or pipes are present (eg: cmd1 | cmd2) and will call respective
+ * functions to handle them.
+ * 
+ * @param vars The main struct of the program containing the main tree
+ * @param group The current struct containing its command group
+ * @return Function will only returns if the command is of the built-in
+ * functions (cd, export, unset, exit), whereby the execution should be done
+ * in parent process, requiring proper handling of the execution process
+*/
 int	cmdgroup(t_vars *vars, t_token *group)
 {
 	pid_t	*pid;
@@ -99,41 +130,3 @@ int	cmdgroup(t_vars *vars, t_token *group)
 	free(pid);
 	return (ret);
 }
-
-// t_redirect	init_rdrlst(char *rdr)
-// {
-// 	t_redirect	ret;
-// 	int			i;
-// 	char		**lmao;
-
-// 	lmao = ft_split(rdr);
-// 	i = -1;
-// 	while (lmao[++i] != NULL)
-// 	{
-		
-// 	}
-// 	free(lmao);
-// 	return (ret);
-// }
-
-// t_pipe	bruh(char *in, char *out, char *cmd, char *arg, t_bool has_red, char *rdr)
-// {
-// 	t_pipe	ret;
-
-// 	ret.infile = in;
-// 	ret.outfile = out;
-// 	ret.cmd = cmd;
-// 	ret.arg = ft_split(arg, ' ');
-// 	ret.rdr_list = init_rdrlst(rdr);
-// 	return (ret);
-// }
-
-// void	test_piping(t_vars *vars)
-// {
-// 	vars->cmdlst = ft_calloc(10, sizeof(t_pipe));
-// 	vars->cmdlst[0] = bruh(NULL, "outfile", "ls", "ls -l src/", 0, "NULL");
-// 	vars->cmdlst[1] = bruh("infile", "outfile", "cat", "cat", 0, "NULL");
-// 	// vars->cmdlst[2] = bruh(NULL, NULL, "cat", "cat", 0, -1);
-// 	// vars->cmdlst[1] = bruh(NULL, NULL, "wc", "wc -l", 0, -1);
-// 	piping(vars, 2);
-// }

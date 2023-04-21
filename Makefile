@@ -5,11 +5,11 @@ CFLAGS		= -Wall -Wextra -Werror -I/usr/local/opt/readline/include
 FSANS		= -fsanitize=address -g3
 READLINE	= -lreadline -L/usr/local/opt/readline/lib
 
-DSRCS		= src			\
-			  src/execution	\
-			  src/functions	\
-			  src/shared	\
-			  src/utils		\
+DSRCS		= src				\
+			  src/execution		\
+			  src/functions		\
+			  src/shared		\
+			  src/utils			\
 			  src/tokenization	\
 			  src/parsing
 
@@ -35,7 +35,9 @@ FILES		=	print_start				\
 				parse_utils				\
 				split_keep_quotes		\
 				start					\
+				subshell				\
 				heredoc_handler			\
+				heredoc_utils			\
 				wildcard_handler		\
 				piping_child			\
 				piping_utils			\
@@ -69,7 +71,7 @@ $(DOBJS)%.o: %.c
 
 ${NAME}:	src/main.c ${LIBD}/${LIBA} ${PRINTFD}/${PRINTFA} ${FOBJS}
 	@echo "Compiling: src/main.c"
-	@${CC} ${CFLAGS} $(FSANS) -I. src/main.c ${FOBJS} ${LIBD}/${LIBA} ${PRINTFD}/${PRINTFA} -o ${NAME} ${READLINE}
+	@${CC} ${CFLAGS} -I. src/main.c ${FOBJS} ${LIBD}/${LIBA} ${PRINTFD}/${PRINTFA} -o ${NAME} ${READLINE}
 
 ${LIBD}/${LIBA}:
 	@make -C ${LIBD}

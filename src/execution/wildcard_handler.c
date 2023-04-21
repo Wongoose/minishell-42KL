@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wildcard_handler.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 18:41:25 by chenlee           #+#    #+#             */
-/*   Updated: 2023/04/19 14:22:50 by zwong            ###   ########.fr       */
+/*   Updated: 2023/04/20 03:58:32 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,15 @@
 
 /**
  * Function checks if the first i characters of the pattern match the first j
- * characters of the text. The algorithm handles wildcard
- * characters in the pattern by considering two cases: either the wildcard
- * character matches zero characters in the text, or the wildcard character
- * matches one or more characters in the text.
+ * characters of the text. The algorithm handles wildcard characters in the
+ * pattern by considering two cases: either the wildcard character matches zero
+ * characters in the text, or the wildcard character matches one or more
+ * characters in the text.
+ * 
+ * @param pattern The pattern string containing the wildcard
+ * @param text The text string to compare
+ * @param pattern_len The length of pattern string
+ * @param text_len The length of text string
 */
 int	is_in_wildcard(char *pattern, char *text, int pattern_len, int text_len)
 {
@@ -66,29 +71,23 @@ char	*expand_wildcard(char *wc_str)
 	struct dirent	*entry;
 	char			*expanded_str;
 
-	expanded_str = NULL;
+	expanded_str = ft_strdup("");
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
 		exit(error("getcwd()", "Failed"));
 	if ((dir = opendir(cwd)) == NULL)
 		exit(error("opendir()", "Failed"));
 	while ((entry = readdir(dir)) != NULL)
 	{
+		if (entry->d_name[0] == '.')
+			continue ;
 		if (is_in_wildcard(wc_str, entry->d_name, ft_strlen(wc_str),
 				ft_strlen(entry->d_name)))
-		{
-			if (expanded_str == NULL)
-				expanded_str = ft_strjoin(entry->d_name, " ");
-			else
-				expanded_str = join_str(expanded_str, ft_strdup(" "),
-					ft_strdup(entry->d_name));
-		}
+			expanded_str = join_str(expanded_str, ft_strdup(" "),
+				ft_strdup(entry->d_name));
 	}
 	closedir(dir);
-	if (!expanded_str)
-	{
-		free(expanded_str);
-		return (ft_strdup(wc_str));
-	}
+	if (expanded_str[0] == '\0')
+		return (free(expanded_str), ft_strdup(wc_str));
 	return (expanded_str);
 }
 
@@ -111,8 +110,8 @@ t_bool	found_wildcard(char *str)
 	return (FALSE);
 }
 
+// FUNCTION NOT USED
 /**
- * // FUNCTION NOT USED
  * Wildcard handling function, where function will join the double char arrays
  * containing the commands and options/arguments into a single string with
  * spaces as its delimination. Should there be a wildcard (*) symbol found,
@@ -125,28 +124,28 @@ t_bool	found_wildcard(char *str)
  * @return Function will replace the initial double char array with the single
  * string splitted into double char array, with spaces as its deliminator.
 */
-char	**handle_wildcard(char **arg)
-{
-	int		i;
-	char	*expand;
-	char	*bigstr;
+// char	**handle_wildcard(char **arg)
+// {
+// 	int		i;
+// 	char	*expand;
+// 	char	*bigstr;
 
-	bigstr = ft_strdup(arg[0]);
-	i = 0;
-	while (arg[++i] != NULL)
-	{
-		if (found_wildcard(arg[i]) == TRUE)
-		{
-			expand = expand_wildcard(arg[i]);
-			if (expand != NULL)
-			{
-				bigstr = join_str(bigstr, ft_strdup(" "), expand);
-				continue ;
-			}
-		}
-		bigstr = join_str(bigstr, ft_strdup(" "), ft_strdup(arg[i]));
-	}
-	free_doublearray(arg);
-	arg = ft_split(bigstr, ' ');
-	return (free(bigstr), arg);
-}
+// 	bigstr = ft_strdup(arg[0]);
+// 	i = 0;
+// 	while (arg[++i] != NULL)
+// 	{
+// 		if (found_wildcard(arg[i]) == TRUE)
+// 		{
+// 			expand = expand_wildcard(arg[i]);
+// 			if (expand != NULL)
+// 			{
+// 				bigstr = join_str(bigstr, ft_strdup(" "), expand);
+// 				continue ;
+// 			}
+// 		}
+// 		bigstr = join_str(bigstr, ft_strdup(" "), ft_strdup(arg[i]));
+// 	}
+// 	free_doublearray(arg);
+// 	arg = ft_split(bigstr, ' ');
+// 	return (free(bigstr), arg);
+// }

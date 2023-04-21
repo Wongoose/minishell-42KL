@@ -56,3 +56,4 @@ minishell
 objects/
 .vscode
 test*
+*.py
