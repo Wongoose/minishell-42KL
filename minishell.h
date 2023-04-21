@@ -102,6 +102,7 @@ void		print_startup(void);
 char		**dup_envp(char **envp);
 void		ft_free(t_vars *vars);
 char		*ft_trim(char *str);
+char		*ft_trim_paren(char *str);
 
 /* signals */
 void		init_signal(void);

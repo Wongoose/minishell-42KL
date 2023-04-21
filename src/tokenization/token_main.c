@@ -60,14 +60,11 @@ char **format_input(t_vars *vars, char **tokens, char *input) {
     int     paren;
 
     split = split_keep_quotes(space_at_paren(input));
-    i = 0;
-    while (split[i])
-        printf("%s\n", split[i++]);
-    i = 0;
+    i = -1;
     j = 0;
     paren = -1;
     buffer = NULL;
-    while (split[i] != 0)
+    while (split[++i] != 0)
     {
         paren = update_parenthesis(split[i], paren);
         if (should_add_to_tokens(split, i))
@@ -77,13 +74,10 @@ char **format_input(t_vars *vars, char **tokens, char *input) {
         }
         else
             append_to_buffer(vars, &buffer, split[i]);
-        free(split[i++]);
     }
     j = add_to_tokens(tokens, &buffer, j);
     tokens[j] = 0;
-    i = 0;
-    while (tokens[i])
-        printf("%s\n", tokens[i++]);
+    free_doublearray(split);
     return (tokens);
 }
 
@@ -99,7 +93,10 @@ t_token *tokenize_input(t_vars *vars, char *input) {
     	return (NULL);
 	i = 0;
     while (tokens[i] != 0)
+    {
+        printf("%s\n", tokens[i]);
 		i++;
+    }
     if (has_pipe_in_shell(tokens))
         root = create_token(input);
     else

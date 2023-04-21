@@ -33,11 +33,8 @@ int		update_parenthesis(char *token, int paren)
 
 int should_add_to_tokens(char **token, int i)
 {
-    printf("\nToken: %s\n", token[i - 1]);
-    if (is_pipe(token[i]) && is_right_paren(token[i - 1]))
-        printf("\nToken: %d\n", i);
     return (is_left_paren(token[i]) || is_right_paren(token[i]) || is_operator(token[i])
-        || (is_pipe(token[i]) && is_right_paren(token[i - 1])));
+        || (i != 0 && (is_pipe(token[i]) && is_right_paren(token[i - 1]))));
 }
 
 t_bool has_pipe_in_shell(char **tokens)
@@ -53,7 +50,7 @@ t_bool has_pipe_in_shell(char **tokens)
             paren++;
         else if (is_right_paren(tokens[i]))   
             paren--;
-        if (is_pipe(tokens[i]) && paren == 0)
+        if (is_pipe(tokens[i]) && is_right_paren(tokens[i - 1]))
             return (TRUE);
     }
     return (FALSE);
