@@ -5,6 +5,7 @@ t_token *create_token(char *value)
     t_token *new_token = malloc(sizeof(t_token));
     if (!new_token)
         exit(1);
+    value = ft_trim_paren(value);
     new_token->left = NULL;
     new_token->right = NULL;
     new_token->value = ft_strdup(value);

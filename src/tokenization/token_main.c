@@ -51,7 +51,6 @@ int		add_to_tokens(char **tokens, char **buffer, int j)
 	return (j);
 }
 
-// FIXING should add to tokens
 char **format_input(t_vars *vars, char **tokens, char *input) {
     char    **split;
     char    *buffer;
@@ -67,7 +66,7 @@ char **format_input(t_vars *vars, char **tokens, char *input) {
     while (split[++i] != 0)
     {
         paren = update_parenthesis(split[i], paren);
-        if (should_add_to_tokens(split, i))
+        if (should_add_to_tokens(split, i, find_operator(split)))
         {
             j = add_to_tokens(tokens, &buffer, j);
 	        tokens[j++] = ft_strdup(split[i]);
@@ -94,10 +93,7 @@ t_token *tokenize_input(t_vars *vars, char *input) {
     	return (NULL);
 	i = 0;
     while (tokens[i] != 0)
-    {
-        printf("%s\n", tokens[i]);
 		i++;
-    }
     if (has_pipe_in_shell(tokens))
         root = create_token(input);
     else

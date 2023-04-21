@@ -12,9 +12,8 @@ t_pipe	create_new_pipe(char *value)
 	pipe.rdr_info = (t_rdrinfo *)ft_calloc(1000, sizeof(t_rdrinfo));
 	if (value[0] == '(' && value[ft_strlen(value) - 1] == ')') // is subshell
 	{
-		printf("Subshell: %s\n", value);
 		pipe.has_subshell = TRUE;
-		pipe.cmd = ft_strdup(value);
+		pipe.cmd = ft_trim_paren(value);
 		pipe.rdr_count = 0;
 		return (pipe);
 	}

@@ -31,10 +31,15 @@ int		update_parenthesis(char *token, int paren)
 	return (paren);
 }
 
-int should_add_to_tokens(char **token, int i)
+int should_add_to_tokens(char **token, int i, int operator_i)
 {
-    return (is_left_paren(token[i]) || is_right_paren(token[i]) || is_operator(token[i])
-        || (i != 0 && (is_pipe(token[i]) && is_right_paren(token[i - 1]))));
+    if (operator_i == -1)
+        return (is_left_paren(token[i]) || is_right_paren(token[i])
+            || (i != 0 && (is_pipe(token[i]) && is_right_paren(token[i - 1]))));
+    else if (i <= operator_i)
+        return (is_operator(token[i]));
+    else
+        return (0);
 }
 
 t_bool has_pipe_in_shell(char **tokens)
@@ -54,6 +59,23 @@ t_bool has_pipe_in_shell(char **tokens)
             return (TRUE);
     }
     return (FALSE);
+}
+
+int  find_operator(char **split)
+{
+    int i;
+    int paren;
+
+    i = 0;
+    paren = 0;
+    while (split[i])
+    {
+        paren = update_parenthesis(split[i], paren);
+        if (paren == 0 && is_operator(split[i]))
+            return (i);
+        i++;
+    }
+    return (-1);
 }
 
 // EXTRA

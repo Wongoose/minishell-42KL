@@ -51,5 +51,5 @@ char	*ft_trim_paren(char *str)
 		}
 		i++;
 	}
-	return (ret);
+	return (ft_trim(ret));
 }

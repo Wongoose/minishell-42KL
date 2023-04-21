@@ -137,7 +137,8 @@ int 		is_left_paren(char *token);
 int 		is_right_paren(char *token);
 int 		count_paren(char *input);
 int			update_parenthesis(char *token, int paren);
-int 		should_add_to_tokens(char **token, int i);
+int 		should_add_to_tokens(char **token, int i, int operator_i);
+int  		find_operator(char **split);
 void		print_token_tree(t_token *token, int level, char *direction); // temporary
 t_operator	get_operator_type(char *value);
 char		*expand_env_dollar(t_vars *vars, char *str);
