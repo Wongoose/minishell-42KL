@@ -66,7 +66,7 @@ char **format_input(t_vars *vars, char **tokens, char *input) {
     while (split[++i] != 0)
     {
         paren = update_parenthesis(split[i], paren);
-        if (should_add_to_tokens(split, i, find_operator(split)))
+        if (should_add_to_tokens(split, i, find_operator(split, i)))
         {
             j = add_to_tokens(tokens, &buffer, j);
 	        tokens[j++] = ft_strdup(split[i]);
@@ -85,7 +85,6 @@ t_token *tokenize_input(t_vars *vars, char *input) {
     char    **tokens;
 	t_token *root;
 
-    input = ft_trim_paren(input);
     tokens = malloc(sizeof(char *) * MAX_TOKENS);
 	tokens = format_input(vars, tokens, input);
     tokens = validate_tokens(tokens);

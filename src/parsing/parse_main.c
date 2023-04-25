@@ -10,7 +10,7 @@ t_pipe	create_new_pipe(char *value)
 
 	formatted = (char *)ft_calloc(ft_strlen(value) + 1, sizeof(char));
 	pipe.rdr_info = (t_rdrinfo *)ft_calloc(1000, sizeof(t_rdrinfo));
-	if (value[0] == '(' && value[ft_strlen(value) - 1] == ')') // is subshell
+	if (value[0] == '(' && value[ft_strlen(value) - 1] == ')')
 	{
 		pipe.has_subshell = TRUE;
 		pipe.cmd = ft_trim_paren(value);

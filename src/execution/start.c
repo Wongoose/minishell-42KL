@@ -6,7 +6,7 @@
 /*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 20:22:23 by chenlee           #+#    #+#             */
-/*   Updated: 2023/04/21 17:22:27 by zwong            ###   ########.fr       */
+/*   Updated: 2023/04/25 18:45:05 by zwong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,26 +71,30 @@ int	one_child(t_vars *vars, t_token *group, pid_t *pid)
 	int	ret;
 	int	rdr_inout[2];
 
-	ret = 0;
-	if (group->cmdlst[0].cmd != NULL)
-		ret = do_builtin(vars, group->cmdlst[0]);
-	if (ret == 1)
-		return (2);
-	else if (ret == 0)
-		return (1);
-	else
+	// if (group->cmdlst[0].has_subshell == TRUE)
+	// 	start_subshell(group->cmdlst[0], vars->envp, vars->is_subshell, pid);
+	if (group->cmdlst[0].has_subshell != TRUE)
 	{
-		pid[0] = fork();
-		if (pid[0] == -1)
-			exit (error(group->cmdlst[0].cmd, "fork failed"));
-		else if (pid[0] == 0)
-		{
-			ft_dup_inoutfile(0, group->cmdlst[0], group->hdoc_str, rdr_inout);
-			execution(vars, group->cmdlst[0]);
-			exit(0);
-		}
-		return (0);
+		ret = 0;
+		if (group->cmdlst[0].cmd != NULL)
+			ret = do_builtin(vars, group->cmdlst[0]);
+		if (ret == 1)
+			return (2);
+		else if (ret == 0)
+			return (1);
 	}
+	pid[0] = fork();
+	if (pid[0] == -1)
+		exit (error(group->cmdlst[0].cmd, "fork failed"));
+	else if (pid[0] == 0)
+	{
+		ft_dup_inoutfile(0, group->cmdlst[0], group->hdoc_str, rdr_inout);
+		if (group->cmdlst[0].has_subshell == TRUE)
+			start_subshell(group->cmdlst[0], vars->envp);
+		else
+			execution(vars, group->cmdlst[0]);
+	}
+	return (1);
 }
 
 /**

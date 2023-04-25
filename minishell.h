@@ -138,7 +138,7 @@ int 		is_right_paren(char *token);
 int 		count_paren(char *input);
 int			update_parenthesis(char *token, int paren);
 int 		should_add_to_tokens(char **token, int i, int operator_i);
-int  		find_operator(char **split);
+int  		find_operator(char **split, int i);
 void		print_token_tree(t_token *token, int level, char *direction); // temporary
 t_operator	get_operator_type(char *value);
 char		*expand_env_dollar(t_vars *vars, char *str);
@@ -185,6 +185,6 @@ void	wait_for_pid(t_vars *vars, t_token *group, int *pid);
 char	*join_str(char *front, char *middle, char *rear);
 int		error(char *cmd, char *str);
 
-void	start_subshell(t_pipe cmdlst, char **envp);
+int		start_subshell(t_pipe cmdlst, char **envp);
 
 #endif

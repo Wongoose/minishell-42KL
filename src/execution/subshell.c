@@ -6,13 +6,13 @@
 /*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/18 21:41:58 by chenlee           #+#    #+#             */
-/*   Updated: 2023/04/21 17:22:30 by zwong            ###   ########.fr       */
+/*   Updated: 2023/04/25 18:37:37 by zwong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	start_subshell(t_pipe cmdlst, char **envp)
+int	start_subshell(t_pipe cmdlst, char **envp)
 {
 	t_vars	vars;
 

@@ -33,10 +33,9 @@ int		update_parenthesis(char *token, int paren)
 
 int should_add_to_tokens(char **token, int i, int operator_i)
 {
-    if (operator_i == -1)
-        return (is_left_paren(token[i]) || is_right_paren(token[i])
-            || (i != 0 && (is_pipe(token[i]) && is_right_paren(token[i - 1]))));
-    else if (i <= operator_i)
+    // if (operator_i == -1)
+        // return (i != 0 && paren == 0 && (is_pipe(token[i]) && is_right_paren(token[i - 1])));
+    if (i == operator_i)
         return (is_operator(token[i]));
     else
         return (0);
@@ -55,23 +54,23 @@ t_bool has_pipe_in_shell(char **tokens)
             paren++;
         else if (is_right_paren(tokens[i]))   
             paren--;
-        if (paren == 0 && is_pipe(tokens[i]) && is_right_paren(tokens[i - 1]))
+        if (paren == 0 && is_pipe(tokens[i]))
             return (TRUE);
     }
     return (FALSE);
 }
 
-int  find_operator(char **split)
+int  find_operator(char **split, int current)
 {
-    int i;
     int paren;
+    int i;
 
-    i = 0;
     paren = 0;
+    i = 0;
     while (split[i])
     {
         paren = update_parenthesis(split[i], paren);
-        if (paren == 0 && is_operator(split[i]))
+        if (paren == 0 && is_operator(split[i]) && current <= i)
             return (i);
         i++;
     }
@@ -90,7 +89,17 @@ void print_token_tree(t_token *token, int level, char *direction)
     for (int i = 0; i < level; i++) {
         printf("    ");
     }
-    printf("%s: %s\n", direction, token->value);
+    printf("%s: %s", direction, token->value);
+    int i = 0;
+    while (i < token->pipe_num)
+    {
+        if (token->cmdlst[i++].has_subshell)
+        {
+            printf("\t[has subshell]");
+            break ;
+        }
+    }
+    printf("\n");
     print_token_tree(token->left, level + 1, "LEFT");
     print_token_tree(token->right, level + 1, "RIGHT");
 }
