@@ -39,7 +39,9 @@ char	*ft_trim_paren(char *str)
 		return (NULL);
 	paren = -1;
 	i = 0;
-	ret = ft_strdup(str);
+	ret = ft_trim(str);
+	if (ret[0] != '(')
+		return (ret);
 	while (str[i])
 	{
 		paren = update_paren(str[i], paren);
