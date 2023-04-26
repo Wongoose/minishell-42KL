@@ -15,33 +15,27 @@ t_token *create_token(char *value)
     return (new_token);
 }
 
-int find_lowest_precedence(char **tokens, int start, int end, int *lowest_precedence)
+int find_lowest_precedence(char **tokens, int start, int end)
 {
     int	i;
     int	parens;
-    int	precedence;
     int	lowest_precedence_index;
 
-    i = start;
+    i = end;
     parens = 0;
     lowest_precedence_index = -1;
-    *lowest_precedence = INT_MAX;
-    while (i <= end)
+    while (i >= start)
     {
-        if (is_left_paren(tokens[i]))
+        if (is_right_paren(tokens[i]))
             parens++;
-        else if (is_right_paren(tokens[i]))
+        else if (is_left_paren(tokens[i]))
             parens--;
         else if (parens == 0 && is_operator(tokens[i]))
         {
-            precedence = (ft_strcmp(tokens[i], "&&") == 0) ? 1 : 0;
-            if (precedence <= *lowest_precedence)
-            {
+            if (lowest_precedence_index == -1)
                 lowest_precedence_index = i;
-                *lowest_precedence = precedence;
-            }
         }
-        i++;
+        i--;
     }
     return (lowest_precedence_index);
 }
@@ -68,12 +62,11 @@ int is_balanced(char **tokens, int start, int end)
 t_token *build_token_tree(char **tokens, int start, int end)
 {
     int		lowest_precedence_index;
-    int		lowest_precedence;
     t_token	*new_token;
 
     if (start > end)
         return (NULL);
-    lowest_precedence_index = find_lowest_precedence(tokens, start, end, &lowest_precedence);
+    lowest_precedence_index = find_lowest_precedence(tokens, start, end);
     if (lowest_precedence_index != -1)
     {
         new_token = create_token(tokens[lowest_precedence_index]);
