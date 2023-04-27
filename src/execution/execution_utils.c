@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 17:39:09 by chenlee           #+#    #+#             */
-/*   Updated: 2023/04/14 21:22:36 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/04/26 15:29:49 by zwong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,21 @@ char	*join_str(char *front, char *middle, char *rear)
 	char	*ret;
 
 	temp = ft_strjoin(front, middle);
-	free(front);
-	free(middle);
-	ret = ft_strjoin(temp, rear);
-	free(temp);
-	free(rear);
+	if (front)
+		free(front);
+	if (middle)
+		free(middle);
+	if (rear)
+	{
+		ret = ft_strjoin(temp, rear);
+		free(temp);
+		free(rear);
+	}
+	else
+	{
+		ret = ft_strdup(temp);
+		free(temp);
+	}
 	return (ret);
 }
 

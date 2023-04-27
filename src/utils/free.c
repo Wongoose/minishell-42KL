@@ -3,6 +3,7 @@
 void	ft_free(t_vars *vars)
 {
 	(void)vars;
+	// free all tokens link list
 }
 
 void	free_doublearray(char **data)

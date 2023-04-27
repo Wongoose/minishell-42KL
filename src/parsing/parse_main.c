@@ -15,6 +15,8 @@ t_pipe	create_new_pipe(char *value)
 		pipe.has_subshell = TRUE;
 		pipe.cmd = ft_trim_paren(value);
 		pipe.rdr_count = 0;
+		free(value);
+		free(formatted);
 		return (pipe);
 	}
 	head = formatted;
@@ -42,6 +44,8 @@ t_pipe	create_new_pipe(char *value)
 	}
 	else
 		pipe.cmd = NULL;
+	if (value)
+		free(value);
 	return (pipe);
 }
 

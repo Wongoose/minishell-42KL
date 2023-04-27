@@ -28,16 +28,19 @@ char    *space_at_paren(char *input)
 
 void    append_to_buffer(t_vars *vars, char **buffer, char *value)
 {
+    char    *temp;
+
     if (ft_strchr(value, '$') || ft_strchr(value, '*'))
-        value = expand_env_dollar(vars, value);
-    if (*buffer == NULL)
-        *buffer = ft_strdup(value);
+        temp = expand_env_dollar(vars, ft_strdup(value));
     else
-    {
-        if (value)
-            *buffer = ft_strjoin(*buffer, " ");
-        *buffer = ft_strjoin(*buffer, value);
-    }
+        temp = ft_strdup(value);
+    if (*buffer == NULL)
+        *buffer = ft_strdup(temp);
+    else if (temp)
+        *buffer = join_str(*buffer, ft_strdup(" "), ft_strdup(temp));
+    else
+        *buffer = ft_strjoin(*buffer, temp);
+    free(temp);
 }
 
 int		add_to_tokens(char **tokens, char **buffer, int j)

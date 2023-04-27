@@ -90,11 +90,12 @@ char	**split_keep_quotes(char *s)
 			if (ft_isquote(s[end]))
 				break ;
 		}
-		splitstr[i] = ft_strjoin(splitstr[i], ft_substr(s, start, end - start));
+		splitstr[i] = join_str(splitstr[i], ft_substr(s, start, end - start), NULL);
 		if (!quote_t && ft_isquote(s[end])) // e.g. hello"...  "
 			i--;
 		start = end;
 	}
 	splitstr[i] = 0;
+	free(s);
 	return (splitstr);
 }
