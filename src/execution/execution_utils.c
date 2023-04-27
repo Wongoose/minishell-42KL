@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 17:39:09 by chenlee           #+#    #+#             */
-/*   Updated: 2023/04/26 15:29:49 by zwong            ###   ########.fr       */
+/*   Updated: 2023/04/28 02:42:30 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,9 +93,27 @@ int	inout_execute(t_vars *vars, t_pipe cmdlst, int num)
 	close(fd[0]);
 	ft_dup(cmdlst.cmd, fd[1], STDOUT_FILENO);
 	close(fd[1]);
-	return (0);
+	if (num == 6)
+		return (0);
+	else
+		return (1);
 }
 
+/**
+ * Function checks for certain built-in functions that are necessary to be run
+ * on the parent process, since these functions will manipulate the current
+ * behavior of the minishell program environment, and any manipulation ran in a
+ * child process with fork will not reflect to the main program.
+ * 
+ * @param vars The main struct of the program containing the main tree
+ * @param cmdlst The group of commands, which can either be a single command,
+ * or multiple made up of several pipe members, but not compare operators
+ * (&& or ||)
+ * 
+ * @return If the command parsed is not in the list of specific built-in, return
+ * -1; else, returns 0 if command is exit, which should stop the minishell
+ * program, otherwise returns 1.
+*/
 int	do_builtin(t_vars *vars, t_pipe cmdlst)
 {
 	int	num;
@@ -114,12 +132,3 @@ int	do_builtin(t_vars *vars, t_pipe cmdlst)
 	else
 		return (inout_execute(vars, cmdlst, num));
 }
-
-// if (ft_strncmp(cmd, "echo", 5) == 0)
-// 	num = 0;
-// else if (ft_strncmp(cmd, "cd", 3) == 0)
-// 	num = 1;
-// else if (ft_strncmp(cmd, "pwd", 4) == 0)
-// 	num = 2;
-// else if (ft_strncmp(cmd, "env", 4) == 0)
-// 	num = 5;

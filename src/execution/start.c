@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   start.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 20:22:23 by chenlee           #+#    #+#             */
-/*   Updated: 2023/04/25 18:45:05 by zwong            ###   ########.fr       */
+/*   Updated: 2023/04/28 02:36:32 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,11 @@
 #include <sys/wait.h>
 #include <fcntl.h>
 
-void	ft_fork(char *cmd, int *pid)
+void	ft_fork(int *pid)
 {
 	*(pid) = fork();
 	if (*(pid) == -1)
-		exit (error(cmd, "fork failed"));
+		perror("fork");
 }
 
 /**
@@ -38,7 +38,7 @@ void	multiple_child(t_vars *vars, t_token *group, int *pid)
 	{
 		if (i < group->pipe_num && pipe(pipefd[0]) == -1)
 			exit (error(group->cmdlst[i].cmd, "pipe failed"));
-		ft_fork(group->cmdlst[i].cmd, &(pid[i]));
+		ft_fork(&(pid[i]));
 		if (pid[i] == 0)
 		{
 			if (i == 0)
@@ -71,30 +71,24 @@ int	one_child(t_vars *vars, t_token *group, pid_t *pid)
 	int	ret;
 	int	rdr_inout[2];
 
-	// if (group->cmdlst[0].has_subshell == TRUE)
-	// 	start_subshell(group->cmdlst[0], vars->envp, vars->is_subshell, pid);
 	if (group->cmdlst[0].has_subshell != TRUE)
 	{
 		ret = 0;
 		if (group->cmdlst[0].cmd != NULL)
 			ret = do_builtin(vars, group->cmdlst[0]);
-		if (ret == 1)
-			return (2);
-		else if (ret == 0)
-			return (1);
+		if (ret != -1)
+			return (ret);
 	}
-	pid[0] = fork();
-	if (pid[0] == -1)
-		exit (error(group->cmdlst[0].cmd, "fork failed"));
-	else if (pid[0] == 0)
+	ft_fork(&pid[0]);
+	if (pid[0] == 0)
 	{
 		ft_dup_inoutfile(0, group->cmdlst[0], group->hdoc_str, rdr_inout);
 		if (group->cmdlst[0].has_subshell == TRUE)
-			start_subshell(group->cmdlst[0], vars->envp);
+			start_subshell(vars, group, group->cmdlst[0], vars->envp);
 		else
 			execution(vars, group->cmdlst[0]);
 	}
-	return (1);
+	return (-1);
 }
 
 /**
@@ -109,14 +103,16 @@ int	one_child(t_vars *vars, t_token *group, pid_t *pid)
  * @param group The current struct containing its command group
  * @return Function will only returns if the command is of the built-in
  * functions (cd, export, unset, exit), whereby the execution should be done
- * in parent process, requiring proper handling of the execution process
+ * in parent process, requiring proper handling of the execution process.
+ * Returns 0 if command is exit, which should stop the minishell program,
+ * otherwise returns 1.
 */
 int	cmdgroup(t_vars *vars, t_token *group)
 {
 	pid_t	*pid;
 	int		ret;
 
-	ret = 0;
+	ret = -1;
 	signal(SIGINT, SIG_IGN);
 	pid = ft_calloc(group->pipe_num, sizeof(int));
 	group->hdoc_str = handle_heredoc(vars, group);
@@ -129,7 +125,7 @@ int	cmdgroup(t_vars *vars, t_token *group)
 		ret = one_child(vars, group, pid);
 	else
 		multiple_child(vars, group, pid);
-	if (ret == 0)
+	if (ret == -1)
 		wait_for_pid(vars, group, pid);
 	free(pid);
 	return (ret);

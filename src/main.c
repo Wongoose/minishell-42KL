@@ -21,7 +21,10 @@ int	start_minishell(t_vars *vars, t_token *group)
 	int	ret;
 
 	if (group->parent == NULL && group->left == NULL)
+	{
+		// dprintf(2, "cmd=%s && error=%d\n", group->value, vars->last_errno);
 		return (cmdgroup(vars, group));
+	}
 	else
 	{
 		if (group->left->left != NULL)
@@ -29,20 +32,24 @@ int	start_minishell(t_vars *vars, t_token *group)
 		else
 			ret = cmdgroup(vars, group->left);
 		if ((vars->last_errno == 0 && group->operator == 1)
-			|| (vars->last_errno == 1 && group->operator == 2))
+			|| (vars->last_errno != 0 && group->operator == 2))
 		{
 			if (group->right->left != NULL)
 			{
 				start_minishell(vars, group->right);
 				if ((vars->last_errno == 0 && group->operator == 1)
-					|| (vars->last_errno == 1 && group->operator == 2))
+					|| (vars->last_errno != 0 && group->operator == 2))
 					ret = cmdgroup(vars, group->right);
 			}
 			else
 				ret = cmdgroup(vars, group->right);
 		}
 	}
-	return (ret);
+	// dprintf(2, "cmd=%s && error=%d\n", group->value, vars->last_errno);
+	if (vars->is_subshell == FALSE)
+		return (ret);
+	else
+		exit (ret);
 }
 
 void	read_terminal(t_vars *vars)
@@ -62,12 +69,12 @@ void	read_terminal(t_vars *vars)
 		vars->tokens = tokenize_input(vars, input);
 		if (vars->tokens == NULL)
 			return ;
-		print_token_tree(vars->tokens, 0, "ROOT");
-		printf("\n\n");
-		if (start_minishell(vars, vars->tokens) == 1)
+		// print_token_tree(vars->tokens, 0, "ROOT");
+		// printf("\n\n");
+		if (start_minishell(vars, vars->tokens) == 0)
 		{
-			;
 			/* FREE AND EXIT HERE */
+			exit(vars->last_errno);
 		}
 		ft_free(vars);
 	}
@@ -84,8 +91,6 @@ int	main(int argc, char **argv, char **envp)
 	print_startup();
 	init_vars(&vars, envp);
 	while (1)
-	{
 		read_terminal(&vars);
-	}
 	return (0);
 }

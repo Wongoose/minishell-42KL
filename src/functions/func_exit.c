@@ -30,12 +30,11 @@ int	func_exit(t_vars *vars, char **args)
 	(void)vars;
 	ft_printf("exit\n");
 	if (!args[1])
-	{
-		status = 0;
-		exit(status);
-	}
+		status = vars->last_errno;
 	else
 		status = ft_atoi(args[1]);
-	exit(status);
-	return (status);
+	if (vars->is_subshell == TRUE)
+		exit(status);
+	else
+		return (status);
 }

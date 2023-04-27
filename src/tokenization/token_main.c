@@ -84,23 +84,23 @@ char **format_input(t_vars *vars, char **tokens, char *input) {
 }
 
 t_token *tokenize_input(t_vars *vars, char *input) {
-    int     i;
-    char    **tokens;
+	int     i;
+	char    **tokens;
 	t_token *root;
 
-    tokens = malloc(sizeof(char *) * MAX_TOKENS);
+	tokens = malloc(sizeof(char *) * MAX_TOKENS);
 	tokens = format_input(vars, tokens, input);
-    tokens = validate_tokens(tokens);
-    if (!tokens)
-    	return (NULL);
+	tokens = validate_tokens(tokens);
+	if (!tokens)
+		return (NULL);
 	i = 0;
-    while (tokens[i] != 0)
+	while (tokens[i] != 0)
 		i++;
-    if (has_pipe_in_shell(tokens))
-        root = create_token(input);
-    else
-        root = build_token_tree(tokens, 0, i - 1);
+	if (has_pipe_in_shell(tokens))
+		root = create_token(input);
+	else
+		root = build_token_tree(tokens, 0, i - 1);
 	root->parent = NULL;
-    free_doublearray(tokens);
-    return (root);
+	free_doublearray(tokens);
+	return (root);
 }

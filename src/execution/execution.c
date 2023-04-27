@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 16:00:08 by chenlee           #+#    #+#             */
-/*   Updated: 2023/04/19 14:12:35 by zwong            ###   ########.fr       */
+/*   Updated: 2023/04/27 18:01:04 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,18 +39,8 @@ int	call_execve(t_vars *vars, t_pipe cmdlst)
 int	execution(t_vars *vars, t_pipe cmdlst)
 {
 	int	i;
-	// int	j;
 
 	i = -1;
-	// REMOVED by ZX, wildcards will be handled during tokenization
-	
-	// while (cmdlst.arg[++i] != NULL)
-	// {
-	// 	j = -1;
-	// 	while (cmdlst.arg[i][++j] != '\0')
-	// 		if (cmdlst.arg[i][j] == '*')
-	// 			cmdlst.arg = handle_wildcard(cmdlst.arg);
-	// }
 	if (cmdlst.cmd == NULL)
 		exit(0);
 	i = -1;

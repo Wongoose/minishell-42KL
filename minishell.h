@@ -184,7 +184,8 @@ void	wait_for_pid(t_vars *vars, t_token *group, int *pid);
 /* piping/execution utils */
 char	*join_str(char *front, char *middle, char *rear);
 int		error(char *cmd, char *str);
+void	ft_fork(int *pid);
 
-int		start_subshell(t_pipe cmdlst, char **envp);
+int		start_subshell(t_vars *vars, t_token *group, t_pipe cmdlst, char **envp);
 
 #endif
