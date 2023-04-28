@@ -70,7 +70,6 @@ int	handle_rdr_out(int i, char *value, t_rdrinfo *rdr_info)
 			if (rdr_info->rdr_str)
 				free(rdr_info->rdr_str);
 			rdr_info->rdr_str = ft_substr(value, i, j++ - i + 1);
-			printf("rdr str is: %s\n", rdr_info->rdr_str);
 			// Handle error: [echo > >>> outfile] (refer to bash)
 			break ;
 		}

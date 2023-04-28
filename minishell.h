@@ -135,14 +135,16 @@ int 		is_operator(char *token);
 int 		is_pipe(char *token);
 int 		is_left_paren(char *token);
 int 		is_right_paren(char *token);
-int 		count_paren(char *input);
+int 		count_paren_and_ops(char *input);
+t_bool		is_operator_char(char *input, int i);
 int			update_parenthesis(char *token, int paren);
 int 		should_add_to_tokens(char **token, int i, int operator_i);
 int  		find_operator(char **split, int i);
 void		print_token_tree(t_token *token, int level, char *direction); // temporary
 t_operator	get_operator_type(char *value);
 char		*expand_env_dollar(t_vars *vars, char *str);
-char		**validate_tokens(char **tokens);
+char		**validate_operator(char **tokens);
+char		*validate_quote(char *value);
 
 /* parsing */
 t_pipe		create_new_pipe(char *value);

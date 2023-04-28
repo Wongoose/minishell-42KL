@@ -58,7 +58,7 @@ void	read_terminal(t_vars *vars)
 
 	init_signal();
 	input = readline("minihell$> ");
-	if (input == NULL) // handles Ctrl-D (Ctrl-D is EOF in terminal which return value of NULL)
+	if (input == NULL)
 	{
 		ft_printf("exit\n");
 		exit(0);
