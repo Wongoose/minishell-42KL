@@ -79,7 +79,7 @@ void	read_terminal(t_vars *vars)
 		ft_free(vars);
 	}
 	free(input);
-	usleep(10000);
+	usleep(4242);
 }
 
 int	main(int argc, char **argv, char **envp)

@@ -6,13 +6,13 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 16:00:08 by chenlee           #+#    #+#             */
-/*   Updated: 2023/04/27 18:01:04 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/04/28 22:08:01 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	call_execve(t_vars *vars, t_pipe cmdlst)
+void	call_execve(t_vars *vars, t_pipe cmdlst)
 {
 	int		i;
 	int		ret;
@@ -32,11 +32,13 @@ int	call_execve(t_vars *vars, t_pipe cmdlst)
 			break ;
 	}
 	if (vars->path[i] == NULL)
-		return (error(cmdlst.cmd, "command not found"));
-	return (0);
+	{
+		error(cmdlst.cmd, "command not found");
+		exit(127);
+	}
 }
 
-int	execution(t_vars *vars, t_pipe cmdlst)
+void	execution(t_vars *vars, t_pipe cmdlst)
 {
 	int	i;
 
@@ -49,5 +51,5 @@ int	execution(t_vars *vars, t_pipe cmdlst)
 		if (ft_strcmp(cmdlst.cmd, vars->functions[i]) == 0)
 			exit (vars->func[i](vars, cmdlst.arg));
 	}
-	return (call_execve(vars, cmdlst));
+	call_execve(vars, cmdlst);
 }

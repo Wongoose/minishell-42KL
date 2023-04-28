@@ -180,7 +180,7 @@ char	*expand_wildcard(char *wc_str);
 
 /* execution */
 int		do_builtin(t_vars *vars, t_pipe cmdlst);
-int		execution(t_vars *vars, t_pipe cmdlst);
+void	execution(t_vars *vars, t_pipe cmdlst);
 void	wait_for_pid(t_vars *vars, t_token *group, int *pid);
 
 /* piping/execution utils */
