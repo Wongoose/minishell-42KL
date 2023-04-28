@@ -6,11 +6,30 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 17:39:09 by chenlee           #+#    #+#             */
-/*   Updated: 2023/04/28 22:17:32 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/04/28 22:28:58 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+// char	*join_str(char *front, char *middle, char *rear)
+// {
+// 	char	*temp;
+// 	char	*ret;
+
+// 	if (middle != NULL)
+// 	{
+// 		temp = ft_strjoin(front, middle);
+// 		free(front);
+// 		free(middle);
+// 	}
+// 	else
+// 		temp = front;
+// 	ret = ft_strjoin(temp, rear);
+// 	free(temp);
+// 	free(rear);
+// 	return (ret);
+// }
 
 char	*join_str(char *front, char *middle, char *rear)
 {
