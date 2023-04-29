@@ -44,6 +44,7 @@ FILES		=	print_start				\
 				execution				\
 				execution_utils			\
 				identifier				\
+				join_str				\
 				free
 
 FOBJS		= $(addprefix $(DOBJS), $(addsuffix .o, $(FILES:.c=.o)))

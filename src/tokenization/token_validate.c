@@ -89,6 +89,7 @@ char	*validate_quote(char *value)
 // 	}
 // }
 
+// NEXT: Deal with && within prompt_input
 char	**validate_operator(char **tokens)
 {
 	int	i;
