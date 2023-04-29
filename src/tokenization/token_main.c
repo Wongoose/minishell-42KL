@@ -84,6 +84,7 @@ char	**format_input(t_vars *vars, char **tokens, char *input)
 	i = -1;
 	j = 0;
 	paren = -1;
+	buffer = NULL;
 	while (split[++i] != 0)
 	{
 		paren = update_parenthesis(split[i], paren);

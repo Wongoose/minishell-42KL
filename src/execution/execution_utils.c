@@ -12,48 +12,48 @@
 
 #include "minishell.h"
 
-// char	*join_str(char *front, char *middle, char *rear)
-// {
-// 	char	*temp;
-// 	char	*ret;
-
-// 	if (middle != NULL)
-// 	{
-// 		temp = ft_strjoin(front, middle);
-// 		free(front);
-// 		free(middle);
-// 	}
-// 	else
-// 		temp = front;
-// 	ret = ft_strjoin(temp, rear);
-// 	free(temp);
-// 	free(rear);
-// 	return (ret);
-// }
-
 char	*join_str(char *front, char *middle, char *rear)
 {
 	char	*temp;
 	char	*ret;
 
-	temp = ft_strjoin(front, middle);
-	if (front)
-		free(front);
-	if (middle)
-		free(middle);
-	if (rear)
+	if (middle != NULL)
 	{
-		ret = ft_strjoin(temp, rear);
-		free(temp);
-		free(rear);
+		temp = ft_strjoin(front, middle);
+		free(front);
+		free(middle);
 	}
 	else
-	{
-		ret = ft_strdup(temp);
-		free(temp);
-	}
+		temp = front;
+	ret = ft_strjoin(temp, rear);
+	free(temp);
+	free(rear);
 	return (ret);
 }
+
+// char	*join_str(char *front, char *middle, char *rear)
+// {
+// 	char	*temp;
+// 	char	*ret;
+
+// 	temp = ft_strjoin(front, middle);
+// 	if (front)
+// 		free(front);
+// 	if (middle)
+// 		free(middle);
+// 	if (rear)
+// 	{
+// 		ret = ft_strjoin(temp, rear);
+// 		free(temp);
+// 		free(rear);
+// 	}
+// 	else
+// 	{
+// 		ret = ft_strdup(temp);
+// 		free(temp);
+// 	}
+// 	return (ret);
+// }
 
 void	wait_for_pid(t_vars *vars, t_token *group, int *pid)
 {

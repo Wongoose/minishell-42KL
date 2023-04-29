@@ -90,7 +90,7 @@ char	**split_keep_quotes(char *s)
 			if (ft_isquote(s[end]))
 				break ;
 		}
-		splitstr[i] = join_str(splitstr[i], ft_substr(s, start, end - start), NULL);
+		splitstr[i] = join_str(splitstr[i], NULL, ft_substr(s, start, end - start));
 		if (!quote_t && ft_isquote(s[end])) // e.g. hello"...  "
 			i--;
 		start = end;
