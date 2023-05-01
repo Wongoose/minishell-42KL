@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 14:46:29 by chenlee           #+#    #+#             */
-/*   Updated: 2023/05/01 17:33:30 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/05/01 17:45:21 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ char	*handle_per_cmdlst(t_vars *vars, t_pipe cmdlst)
 	int		i;
 	char	*ret;
 
-	ret = NULL;
+	ret = ft_strdup(" ");
 	i = -1;
 	while (++i < cmdlst.rdr_count)
 	{
@@ -50,10 +50,7 @@ char	**handle_heredoc(t_vars *vars, t_token *group)
 			break ;
 		}
 	}
-	if (ret == 1 || hdoc_str[0] == NULL)
-	{
-		free(hdoc_str);
-		return (NULL);
-	}
+	if (ret == 1)
+		return (free(hdoc_str), NULL);
 	return (hdoc_str);
 }

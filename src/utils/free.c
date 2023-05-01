@@ -48,18 +48,18 @@ void	ft_free_pipe(int pipe_num, t_pipe *cmdlst)
 */
 void	ft_free_token(t_token *group, int ret)
 {
+	int	i;
+
 	if (ret == -1)
 		return ;
 	if (group->left == NULL)
 	{
 		free(group->value);
-		// int	k = -1;
-		// dprintf(2, "\n==================\n");
-		// while (group->hdoc_str[++k] != NULL)
-		// 	dprintf(2, "HDOC[%d]={%s}\n", k, group->hdoc_str[k]);
-		// dprintf(2, "\n==================\n");
-		if (group->hdoc_str != NULL)
-			free_doublearray(group->hdoc_str);
+		i = -1;
+		while (group->hdoc_str != NULL && ++i < group->pipe_num)
+			if (group->hdoc_str[i] != NULL)
+				free(group->hdoc_str[i]);
+		free(group->hdoc_str);
 		ft_free_pipe(group->pipe_num, group->cmdlst);
 		free(group);
 	}
