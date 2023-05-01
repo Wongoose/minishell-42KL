@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 01:24:58 by chenlee           #+#    #+#             */
-/*   Updated: 2023/04/19 01:33:03 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/05/01 17:30:55 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,9 +93,9 @@ char	*get_readline(t_vars *vars, char *rdr_str)
 	while (1)
 	{
 		temp_one = readline("> ");
-		temp_one = expand_dollar(vars, temp_one);
 		if (temp_one == NULL)
 			return (NULL);
+		temp_one = expand_dollar(vars, temp_one);
 		if (ft_strncmp(temp_one, rdr_str, get_len(temp_one, rdr_str)) == 0)
 			break ;
 		temp_two = ft_strjoin(temp_one, "\n");

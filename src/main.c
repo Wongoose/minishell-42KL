@@ -21,10 +21,7 @@ int	start_minishell(t_vars *vars, t_token *group)
 	int	ret;
 
 	if (group->parent == NULL && group->left == NULL)
-	{
-		// dprintf(2, "cmd=%s && error=%d\n", group->value, vars->last_errno);
 		return (cmdgroup(vars, group));
-	}
 	else
 	{
 		if (group->left->left != NULL)
@@ -45,52 +42,56 @@ int	start_minishell(t_vars *vars, t_token *group)
 				ret = cmdgroup(vars, group->right);
 		}
 	}
-	// dprintf(2, "cmd=%s && error=%d\n", group->value, vars->last_errno);
 	if (vars->is_subshell == FALSE)
 		return (ret);
 	else
 		exit (ret);
 }
 
-void	read_terminal(t_vars *vars)
+int	read_terminal(t_vars *vars)
 {
 	char	*input;
+	int		ret;
 
+	ret = -2;
 	init_signal();
 	input = readline("minihell$> ");
 	if (input == NULL)
 	{
-		ft_printf("exit\n");
-		exit(0);
+		printf("exit\n");
+		ret = -1;
 	}
-	if (ft_strlen(input) != 0)
+	else if (ft_strlen(input) != 0)
 	{
 		add_history(input);
 		vars->tokens = tokenize_input(vars, input);
 		if (vars->tokens == NULL)
-			return ;
-		// print_token_tree(vars->tokens, 0, "ROOT");
-		// printf("\n\n");
-		if (start_minishell(vars, vars->tokens) == 0)
-		{
-			/* FREE AND EXIT HERE */
-			exit(vars->last_errno);
-		}
-		ft_free(vars);
+			ret = -1;
+		else if (start_minishell(vars, vars->tokens) == 0)
+			ret = vars->last_errno;
 	}
 	free(input);
-	usleep(4242);
+	return (ret);
 }
 
 int	main(int argc, char **argv, char **envp)
 {
+	t_vars	vars;
+	int		ret;
+	int		exit_status;
+
 	(void)argc;
 	(void)argv;
-	t_vars	vars;
-
 	print_startup();
 	init_vars(&vars, envp);
 	while (1)
-		read_terminal(&vars);
-	return (0);
+	{
+		ret = read_terminal(&vars);
+		exit_status = vars.last_errno;
+		ft_free_token(vars.tokens, ret);
+		if (ret != -2)
+			break ;
+	}
+	ft_free_vars(&vars);
+	return (exit_status);
 }

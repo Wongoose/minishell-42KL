@@ -101,8 +101,9 @@ typedef struct s_vars
 /* utils */
 void		init_vars(t_vars *vars, char **envp);
 void		print_startup(void);
+void		ft_free_token(t_token *group, int ret);
+void		ft_free_vars(t_vars *vars);
 char		**dup_envp(char **envp);
-void		ft_free(t_vars *vars);
 char		*ft_trim(char *str);
 char		*ft_trim_paren(char *str);
 
@@ -188,6 +189,7 @@ char	*join_str(char *front, char *middle, char *rear);
 int		error(char *cmd, char *str);
 void	ft_fork(int *pid);
 
-int		start_subshell(t_vars *vars, t_token *group, t_pipe cmdlst, char **envp);
+/* subshell */
+void	start_subshell(t_vars *vars, t_token *group, t_pipe cmdlst, char **envp);
 
 #endif
