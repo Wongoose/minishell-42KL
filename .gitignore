@@ -57,3 +57,4 @@ objects/
 .vscode
 test*
 *.py
+valgrind*

@@ -65,6 +65,14 @@ PRINTFA		= libftprintf.a
 
 all:		$(NAME)
 
+valgrind:	all
+		valgrind --leak-check=full  \
+		--show-leak-kinds=all       \
+		--track-origins=yes         \
+		--verbose                   \
+		--log-file=valgrind-out.txt \
+		./minishell
+
 $(DOBJS)%.o: %.c
 	@mkdir -p objs/
 	@echo "Compiling: $<"
@@ -72,7 +80,7 @@ $(DOBJS)%.o: %.c
 
 ${NAME}:	src/main.c ${LIBD}/${LIBA} ${PRINTFD}/${PRINTFA} ${FOBJS}
 	@echo "Compiling: src/main.c"
-	@${CC} ${CFLAGS} -I. $(FSANS) src/main.c ${FOBJS} ${LIBD}/${LIBA} ${PRINTFD}/${PRINTFA} -o ${NAME} ${READLINE}
+	@${CC} ${CFLAGS} -I. src/main.c ${FOBJS} ${LIBD}/${LIBA} ${PRINTFD}/${PRINTFA} -o ${NAME} ${READLINE}
 
 ${LIBD}/${LIBA}:
 	@make -C ${LIBD}
