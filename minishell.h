@@ -102,7 +102,7 @@ typedef struct s_vars
 void		init_vars(t_vars *vars, char **envp);
 void		print_startup(void);
 char		**dup_envp(char **envp);
-void		ft_free(t_vars *vars);
+void		ft_free_tree(t_token *token);
 char		*ft_trim(char *str);
 char		*ft_trim_paren(char *str);
 

@@ -76,7 +76,8 @@ void	read_terminal(t_vars *vars)
 			/* FREE AND EXIT HERE */
 			exit(vars->last_errno);
 		}
-		ft_free(vars);
+		ft_free_tree(vars->tokens);
+		// free(vars->tokens);
 	}
 	free(input);
 	usleep(4242);
