@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 14:46:29 by chenlee           #+#    #+#             */
-/*   Updated: 2023/04/20 01:11:33 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/05/01 17:45:21 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,31 +32,14 @@ char	*handle_per_cmdlst(t_vars *vars, t_pipe cmdlst)
 	return (ret);
 }
 
-// void	dup_heredoc(t_vars *vars, int temp[2], int situation)
-// {
-// 	if (situation == 1)
-// 	{
-// 		ft_dup("dup", STDIN_FILENO, temp[0]);
-// 		ft_dup("dup", STDOUT_FILENO, temp[1]);
-// 		ft_dup("dup", vars->backup_inout[0], STDIN_FILENO);
-// 		ft_dup("dup", vars->backup_inout[1], STDOUT_FILENO);
-// 	}
-// 	else if (situation == 2)
-// 	{
-// 		ft_dup("dup", temp[0], STDIN_FILENO);
-// 		ft_dup("dup", temp[1], STDOUT_FILENO);
-// 	}
-// }
-
 char	**handle_heredoc(t_vars *vars, t_token *group)
 {
 	int		i;
 	int		ret;
-	// int		temp[2];
 	char	**hdoc_str;
 
 	ret = 0;
-	hdoc_str = ft_calloc(group->pipe_num, sizeof(char *));
+	hdoc_str = ft_calloc(group->pipe_num + 1, sizeof(char *));
 	i = -1;
 	while (++i < group->pipe_num)
 	{
@@ -68,6 +51,6 @@ char	**handle_heredoc(t_vars *vars, t_token *group)
 		}
 	}
 	if (ret == 1)
-		return (NULL);
+		return (free(hdoc_str), NULL);
 	return (hdoc_str);
 }

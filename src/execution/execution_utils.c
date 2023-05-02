@@ -6,35 +6,11 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 17:39:09 by chenlee           #+#    #+#             */
-/*   Updated: 2023/04/28 22:28:58 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/04/29 17:04:39 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-// char	*join_str(char *front, char *middle, char *rear)
-// {
-// 	char	*temp;
-// 	char	*ret;
-
-// 	temp = ft_strjoin(front, middle);
-// 	if (front)
-// 		free(front);
-// 	if (middle)
-// 		free(middle);
-// 	if (rear)
-// 	{
-// 		ret = ft_strjoin(temp, rear);
-// 		free(temp);
-// 		free(rear);
-// 	}
-// 	else
-// 	{
-// 		ret = ft_strdup(temp);
-// 		free(temp);
-// 	}
-// 	return (ret);
-// }
 
 void	wait_for_pid(t_vars *vars, t_token *group, int *pid)
 {
@@ -48,7 +24,7 @@ void	wait_for_pid(t_vars *vars, t_token *group, int *pid)
 			return ;
 		if (waitpid(pid[i], &status, 0) == -1)
 			error(group->cmdlst[i].cmd, "waitpid failed");
-		if (WIFEXITED(status))
+		else if (WIFEXITED(status))
 			vars->last_errno = WEXITSTATUS(status);
 		else if (WIFSIGNALED(status))
 		{

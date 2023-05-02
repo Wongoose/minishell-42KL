@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 20:22:23 by chenlee           #+#    #+#             */
-/*   Updated: 2023/04/28 22:11:49 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/05/01 17:33:49 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ int	one_child(t_vars *vars, t_token *group, pid_t *pid)
  * functions to handle them.
  * 
  * @param vars The main struct of the program containing the main tree
- * @param group The current struct containing its command group
+ * @param group The current struct containing its command group tree
  * @return Function will only returns if the command is of the built-in
  * functions (cd, export, unset, exit), whereby the execution should be done
  * in parent process, requiring proper handling of the execution process.
@@ -114,13 +114,13 @@ int	cmdgroup(t_vars *vars, t_token *group)
 
 	ret = -1;
 	signal(SIGINT, SIG_IGN);
-	pid = ft_calloc(group->pipe_num, sizeof(int));
 	group->hdoc_str = handle_heredoc(vars, group);
 	if (group->hdoc_str == NULL)
 	{
 		vars->last_errno = 0;
 		return (0);
 	}
+	pid = ft_calloc(group->pipe_num, sizeof(int));
 	if (group->pipe_num == 1)
 		ret = one_child(vars, group, pid);
 	else
