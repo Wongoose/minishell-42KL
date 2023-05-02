@@ -45,7 +45,7 @@ void	start_subshell(t_vars *vars, t_token *group, t_pipe cmdlst, char **envp)
 		start_minishell(&new_vars, new_vars.tokens);
 	else
 		ret = wait_subshell_pid(&new_pid);
-	ft_free_token(new_vars.tokens, 0);
+	ft_free_tree(new_vars.tokens, 0);
 	ft_free_vars(&new_vars);
 	exit (ret);
 }

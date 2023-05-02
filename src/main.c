@@ -69,7 +69,6 @@ int	read_terminal(t_vars *vars)
 			ret = -1;
 		else if (start_minishell(vars, vars->tokens) == 0)
 			ret = vars->last_errno;
-		ft_free_token(vars->tokens, ret);
 	}
 	free(input);
 	return (ret);
@@ -89,7 +88,7 @@ int	main(int argc, char **argv, char **envp)
 	{
 		ret = read_terminal(&vars);
 		exit_status = vars.last_errno;
-		ft_free_token(vars.tokens, ret);
+		ft_free_tree(vars.tokens, ret);
 		if (ret != -2)
 			break ;
 	}

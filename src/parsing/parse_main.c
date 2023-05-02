@@ -79,6 +79,7 @@ t_pipe	*generate_pipe_list(char *value, t_token *token)
 			if (buffer[0] != 0)
 			{
 				cmdlst[pipe_count++] = create_new_pipe(ft_trim(buffer));
+				free(buffer);
 				buffer = (char *)ft_calloc(1000, 1);
 				j = 0;
 			}
