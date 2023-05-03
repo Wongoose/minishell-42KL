@@ -48,7 +48,7 @@ char	*exclude_quotes(char *str)
 			quote_t = str[i];
 		else if (quote_t && str[i] == quote_t)
 			quote_t = 0;
-		else if (str[i] != quote_t) // don't copy if it's quote
+		else if (str[i] != quote_t)
 			new[j++] = str[i];
 	}
 	new[j] = 0;

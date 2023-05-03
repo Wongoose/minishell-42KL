@@ -23,6 +23,7 @@ char	*get_envp_value(char **envp, char *key)
 		}
 		i++;
 	}
+	free(key);
 	return (value);
 }
 

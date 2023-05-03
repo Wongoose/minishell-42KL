@@ -6,7 +6,7 @@
 /*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 13:54:12 by zwong             #+#    #+#             */
-/*   Updated: 2023/05/03 15:12:07 by zwong            ###   ########.fr       */
+/*   Updated: 2023/05/03 17:08:00 by zwong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ static t_pipe	prepare_subshell(t_pipe *pipe, char *value, char *formatted)
 {
 	pipe->has_subshell = TRUE;
 	pipe->cmd = ft_trim_paren(value);
+	pipe->arg = NULL;
 	pipe->rdr_count = 0;
 	free(formatted);
 	return (*pipe);
