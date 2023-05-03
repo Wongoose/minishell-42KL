@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   split_keep_quotes.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/05/03 18:10:52 by zwong             #+#    #+#             */
+/*   Updated: 2023/05/03 18:11:48 by zwong            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../minishell.h"
 
 static int	count_words(char const *s)
@@ -19,11 +31,11 @@ static int	count_words(char const *s)
 			quote_t = 0;
 		if (s[i])
 			words++;
-		while(quote_t && (s[i] != quote_t && s[i])) // pass through quotes
+		while (quote_t && (s[i] != quote_t && s[i]))
 			i++;
 		if (quote_t && s[i] == quote_t)
 			quote_t = 0;
-		while (s[i] != ' ' && s[i]) // always stop at spaces
+		while (s[i] != ' ' && s[i])
 			i++;
 	}
 	return (words);
@@ -75,23 +87,23 @@ char	**split_keep_quotes(char *s)
 	{
 		while (s[start] == ' ')
 			start++;
-		if (!quote_t && ft_isquote(s[start])) // setter for quote_t
+		if (!quote_t && ft_isquote(s[start]))
 			quote_t = s[start];
 		else if (quote_t && s[start] == quote_t)
 			quote_t = 0;
 		end = start + 1;
-		while(quote_t && (s[end] != quote_t && s[end])) // pass through quotes
+		while (quote_t && (s[end] != quote_t && s[end]))
 			end++;
 		if (quote_t && s[end] == quote_t)
 			quote_t = 0;
-		while (s[end] != ' ' && s[end]) // always stop at spaces
+		while (s[end] != ' ' && s[end])
 		{
 			end++;
 			if (ft_isquote(s[end]))
 				break ;
 		}
 		splitstr[i] = join_str(splitstr[i], NULL, ft_substr(s, start, end - start));
-		if (!quote_t && ft_isquote(s[end])) // e.g. hello"...  "
+		if (!quote_t && ft_isquote(s[end]))
 			i--;
 		start = end;
 	}
