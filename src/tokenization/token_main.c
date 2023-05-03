@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_main.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/28 15:56:08 by zwong             #+#    #+#             */
-/*   Updated: 2023/05/02 23:19:07 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/05/03 15:21:00 by zwong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,20 +20,15 @@ char	*space_at_paren_and_ops(char *input)
 
 	i = -1;
 	j = 0;
-	copy = (char *)malloc(ft_strlen(input) + count_paren_and_ops(input) * 2 + 1);
+	copy = malloc(ft_strlen(input) + count_paren_and_ops(input) * 2 + 1);
 	while (input[++i] != 0)
 	{
-		if (input[i] == '(' || input[i] == ')')
+		if (input[i] == '(' || input[i] == ')' || is_operator_char(input, i))
 		{
 			copy[j++] = ' ';
 			copy[j++] = input[i];
-			copy[j] = ' ';
-		}
-		else if (is_operator_char(input, i))
-		{
-			copy[j++] = ' ';
-			copy[j++] = input[i];
-			copy[j++] = input[++i];
+			if (is_operator_char(input, i))
+				copy[j++] = input[++i];
 			copy[j] = ' ';
 		}
 		else
@@ -96,8 +91,7 @@ char	**format_input(t_vars *vars, char **tokens, char *input)
 		else
 			append_to_buffer(vars, &buffer, split[i]);
 	}
-	j = add_to_tokens(tokens, &buffer, j);
-	tokens[j] = 0;
+	tokens[add_to_tokens(tokens, &buffer, j)] = 0;
 	free_doublearray(split);
 	return (tokens);
 }

@@ -6,7 +6,7 @@
 /*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/28 17:59:43 by zwong             #+#    #+#             */
-/*   Updated: 2023/04/28 18:36:57 by zwong            ###   ########.fr       */
+/*   Updated: 2023/05/03 14:20:36 by zwong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,10 @@ t_token	*create_token(char *value)
 	new_token->value = ft_strdup(value);
 	new_token->operator = get_operator_type(value);
 	new_token->pipe_num = 0;
-	new_token->cmdlst = generate_pipe_list(value, new_token);
+	if (is_operator(value))
+		new_token->cmdlst = NULL;
+	else
+		new_token->cmdlst = generate_pipe_list(value, new_token);
 	new_token->exit_status = 0;
 	return (new_token);
 }

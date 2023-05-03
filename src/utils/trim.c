@@ -6,7 +6,7 @@
 /*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 13:36:52 by zwong             #+#    #+#             */
-/*   Updated: 2023/05/03 13:36:52 by zwong            ###   ########.fr       */
+/*   Updated: 2023/05/03 14:15:56 by zwong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,17 +32,17 @@ char	*ft_trim(char *str)
 	return (ret);
 }
 
-static int	update_paren(char c, int paren)
+int	update_paren_char(char c, int *paren)
 {
 	if (c == '(')
 	{
-		if (paren == -1)
-			paren = 0;
-		paren++;
+		if (*paren == -1)
+			*paren = 0;
+		(*paren)++;
 	}
 	else if (c == ')')
-		paren--;
-	return (paren);
+		(*paren)--;
+	return (*paren);
 }
 
 char	*ft_trim_paren(char *str)
@@ -61,7 +61,7 @@ char	*ft_trim_paren(char *str)
 		return (ret);
 	while (ret[i])
 	{
-		paren = update_paren(ret[i], paren);
+		update_paren_char(ret[i], &paren);
 		if (paren == 0)
 		{
 			if (i == (int)(ft_strlen(ret) - 1))

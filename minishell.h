@@ -106,6 +106,7 @@ void		ft_free_vars(t_vars *vars);
 char		**dup_envp(char **envp);
 char		*ft_trim(char *str);
 char		*ft_trim_paren(char *str);
+int			update_paren_char(char c, int *paren);
 
 /* signals */
 void		init_signal(void);

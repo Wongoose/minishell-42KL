@@ -1,38 +1,70 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_main.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/05/03 13:54:12 by zwong             #+#    #+#             */
+/*   Updated: 2023/05/03 15:12:07 by zwong            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-t_pipe	create_new_pipe(char *value)
+static t_pipe	prepare_subshell(t_pipe *pipe, char *value, char *formatted)
 {
-	t_pipe	pipe;
-	int		i;
-	int		rdr_i;
-	char	*formatted;
-	char	*head;
+	pipe->has_subshell = TRUE;
+	pipe->cmd = ft_trim_paren(value);
+	pipe->rdr_count = 0;
+	free(formatted);
+	return (*pipe);
+}
 
-	formatted = (char *)ft_calloc(ft_strlen(value) + 1, sizeof(char));
-	pipe.rdr_info = (t_rdrinfo *)ft_calloc(1000, sizeof(t_rdrinfo));
-	if (value[0] == '(' && value[ft_strlen(value) - 1] == ')')
-	{
-		pipe.has_subshell = TRUE;
-		pipe.cmd = ft_trim_paren(value);
-		pipe.rdr_count = 0;
-		free(formatted);
-		return (pipe);
-	}
-	head = formatted;
+static int	loop_rdr_check(char *value, t_pipe *pipe, char *formatted)
+{
+	int	i;
+	int	rdr_i;
+
 	i = -1;
 	rdr_i = 0;
 	while (value[++i] != 0)
 	{
 		if (value[i] == '>')
-			i = handle_rdr_out(i, value, &pipe.rdr_info[rdr_i++]);
+		{
+			pipe->rdr_info[rdr_i].rdr_type = OUT;
+			if (value[++i] == '>')
+				pipe->rdr_info[rdr_i].rdr_type = APPEND;
+			i = handle_rdr_out(i, value, &pipe->rdr_info[rdr_i++]);
+		}
 		else if (value[i] == '<')
-			i = handle_rdr_in(i, value, &pipe.rdr_info[rdr_i++]);
+		{
+			pipe->rdr_info[rdr_i].rdr_type = IN;
+			if (value[++i] == '<')
+				pipe->rdr_info[rdr_i].rdr_type = HEREDOC;
+			i = handle_rdr_in(i, value, &pipe->rdr_info[rdr_i++]);
+		}
 		else
 			ft_memset(formatted++, value[i], 1);
 	}
+	return (rdr_i);
+}
+
+t_pipe	create_new_pipe(char *value)
+{
+	t_pipe	pipe;
+	int		i;
+	char	*formatted;
+	char	*head;
+
+	formatted = (char *)ft_calloc(ft_strlen(value) + 1, sizeof(char));
+	pipe.rdr_info = (t_rdrinfo *)ft_calloc(1000, sizeof(t_rdrinfo));
+	head = formatted;
+	if (value[0] == '(' && value[ft_strlen(value) - 1] == ')')
+		return (prepare_subshell(&pipe, value, formatted));
+	pipe.rdr_count = loop_rdr_check(value, &pipe, formatted);
 	pipe.has_subshell = FALSE;
-	pipe.rdr_count = rdr_i;
-	pipe.arg = split_keep_quotes(head); // this is where you intepret quotes
+	pipe.arg = split_keep_quotes(head);
 	i = -1;
 	while (pipe.arg[++i])
 		pipe.arg[i] = exclude_quotes(pipe.arg[i]);
@@ -43,59 +75,45 @@ t_pipe	create_new_pipe(char *value)
 	}
 	else
 		pipe.cmd = NULL;
-	if (value)
-		free(value);
+	free(value);
 	return (pipe);
+}
+
+void	handle_if_pipe(int *j, t_pipe *cmdlst, int *pipe_count, char **buffer)
+{
+	if (*j == 0)
+		write(2, "minishell: syntax error near unexpected token '|'\n", 50);
+	if ((*buffer)[0] != 0)
+	{
+		cmdlst[(*pipe_count)++] = create_new_pipe(ft_trim(*buffer));
+		*buffer = (char *)ft_calloc(1000, 1);
+		*j = 0;
+	}
 }
 
 t_pipe	*generate_pipe_list(char *value, t_token *token)
 {
-	int		i;
 	int		j;
 	int		paren;
 	int		pipe_count;
 	t_pipe	*cmdlst;
 	char	*buffer;
 
-	if (is_operator(value))
-		return (NULL);
 	cmdlst = (t_pipe *)malloc(sizeof(t_pipe) * (count_pipes(value) + 1));
 	buffer = (char *)ft_calloc(1000, 1);
-	i = 0;
 	j = 0;
 	paren = 0;
 	pipe_count = 0;
-	while (value[i] != 0)
+	while (*value != 0)
 	{
-		if (value[i] == '(')
-			paren++;
-		else if (value[i] == ')')
-			paren--;
-		if (value[i] == '|' && paren == 0)
-		{
-			if (i == 0)
-				write(2, "minishell: syntax error near unexpected token '|'\n", 50);
-			if (buffer[0] != 0)
-			{
-				cmdlst[pipe_count++] = create_new_pipe(ft_trim(buffer));
-				buffer = (char *)ft_calloc(1000, 1);
-				j = 0;
-			}
-		}
-		else
-		{
-			if (buffer[0] == 0 && value[i] == ' ')
-			{
-				i++;
-				continue ;
-			}
-			buffer[j++] = value[i];
-		}
-		i++;
+		if (*value == '|' && update_paren_char(*value, &paren) == 0)
+			handle_if_pipe(&j, cmdlst, &pipe_count, &buffer);
+		else if (buffer[0] != 0 || *value != ' ')
+			buffer[j++] = *value;
+		value++;
 	}
 	if (buffer[0] != 0)
 		cmdlst[pipe_count++] = create_new_pipe(ft_trim(buffer));
 	token->pipe_num = pipe_count;
-	// free(buffer);
 	return (cmdlst);
 }

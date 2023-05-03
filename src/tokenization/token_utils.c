@@ -6,21 +6,17 @@
 /*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/28 18:06:17 by zwong             #+#    #+#             */
-/*   Updated: 2023/04/28 18:58:09 by zwong            ###   ########.fr       */
+/*   Updated: 2023/05/03 13:52:20 by zwong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdbool.h>
 #include "minishell.h"
 
 int	count_paren_and_ops(char *input)
 {
 	int	count;
 	int	i;
-	
+
 	count = 0;
 	i = 0;
 	while (input[i])
@@ -55,8 +51,8 @@ t_bool	is_operator_char(char *input, int i)
 	if (input[i + 1] == 0)
 		return (0);
 	else
-		return (input[i] == '&' && input[i + 1] == '&')
-			|| (input[i] == '|' && input[i + 1] == '|');
+		return ((input[i] == '&' && input[i + 1] == '&')
+			|| (input[i] == '|' && input[i + 1] == '|'));
 }
 
 // int	should_add_to_tokens(char **token, int i, int operator_i)
@@ -103,26 +99,26 @@ int	find_operator(char **split, int current)
 	return (-1);
 }
 
-void	print_token_tree(t_token *token, int level, char *direction)
-{
-	int	i;
+// void	print_token_tree(t_token *token, int level, char *direction)
+// {
+// 	int	i;
 
-	if (token == NULL)
-		return ;
-	i = -1;
-	while (++i < level)
-		printf("    ");
-	printf("%s: %s", direction, token->value);
-	i = 0;
-	while (i < token->pipe_num)
-	{
-		if (token->cmdlst[i++].has_subshell)
-		{
-			printf("\t[has subshell]");
-			break ;
-		}
-	}
-	printf("\n");
-	print_token_tree(token->left, level + 1, "LEFT");
-	print_token_tree(token->right, level + 1, "RIGHT");
-}
+// 	if (token == NULL)
+// 		return ;
+// 	i = -1;
+// 	while (++i < level)
+// 		printf("    ");
+// 	printf("%s: %s", direction, token->value);
+// 	i = 0;
+// 	while (i < token->pipe_num)
+// 	{
+// 		if (token->cmdlst[i++].has_subshell)
+// 		{
+// 			printf("\t[has subshell]");
+// 			break ;
+// 		}
+// 	}
+// 	printf("\n");
+// 	print_token_tree(token->left, level + 1, "LEFT");
+// 	print_token_tree(token->right, level + 1, "RIGHT");
+// }
