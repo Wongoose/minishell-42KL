@@ -75,7 +75,7 @@ char	*expand_env_dollar(t_vars *vars, char *str)
 		{
 			if (str[++i] == '?')
 			{
-				new_str = ft_strjoin(new_str, ft_itoa(vars->last_errno));
+				new_str = join_str(new_str, NULL, ft_itoa(vars->last_errno));
 				j = ft_strlen(ft_itoa(vars->last_errno));
 			}
 			else
@@ -84,7 +84,7 @@ char	*expand_env_dollar(t_vars *vars, char *str)
 					j++;
 				expanded = get_envp_value(vars->envp, ft_substr(str, i, j));
 				if (expanded)
-					new_str = ft_strjoin(new_str, expanded);
+					new_str = join_str(new_str, NULL, ft_strdup(expanded));
 				i += j - 1;
 			}
 		}
@@ -95,7 +95,7 @@ char	*expand_env_dollar(t_vars *vars, char *str)
 			break ;
 		}
 		if (!j)
-			new_str = ft_strjoin(new_str, ft_substr(str, i, 1));
+			new_str = join_str(new_str, NULL, ft_substr(str, i, 1));
 		i++;
 	}
 	free(str);

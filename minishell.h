@@ -132,7 +132,8 @@ void		free_doublearray(char **data);
 /* tokenization */
 t_token		*tokenize_input(t_vars *vars, char *input);
 t_bool		has_pipe_in_shell(char **tokens);
-t_token 	*create_token(char *value);
+t_token 	*build_token_tree(t_vars *vars, char **tokens, int start, int end);
+t_token 	*create_token(t_vars *vars, char *value);
 int 		is_operator(char *token);
 int 		is_pipe(char *token);
 int 		is_left_paren(char *token);
@@ -151,7 +152,6 @@ char		*validate_quote(char *value);
 /* parsing */
 t_pipe		create_new_pipe(char *value);
 int			get_pipe_num(t_pipe *pipe_list);
-t_token 	*build_token_tree(char **tokens, int start, int end);
 t_pipe		*generate_pipe_list(char *value, t_token *token);
 int			count_pipes(char *value);
 void		print_pipe_info(t_pipe pipe);

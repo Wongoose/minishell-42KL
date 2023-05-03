@@ -9,13 +9,16 @@ char	*join_str(char *front, char *middle, char *rear)
 	if (middle != NULL)
 	{
 		temp = ft_strjoin(front, middle);
-		free(front);
+		if (front != NULL)
+			free(front);
 		free(middle);
 	}
 	else
 		temp = front;
 	ret = ft_strjoin(temp, rear);
-	free(temp);
-	free(rear);
+	if (temp != NULL)
+		free(temp);
+	if (rear != NULL)
+		free(rear);
 	return (ret);
 }

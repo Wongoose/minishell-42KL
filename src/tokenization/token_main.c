@@ -6,7 +6,7 @@
 /*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/28 15:56:08 by zwong             #+#    #+#             */
-/*   Updated: 2023/05/03 15:21:00 by zwong            ###   ########.fr       */
+/*   Updated: 2023/05/03 17:27:24 by zwong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,14 +39,11 @@ char	*space_at_paren_and_ops(char *input)
 	return (copy);
 }
 
-void	append_to_buffer(t_vars *vars, char **buffer, char *value)
+void	append_to_buffer(char **buffer, char *value)
 {
 	char	*temp;
 
-	if (ft_strchr(value, '$') || ft_strchr(value, '*'))
-		temp = expand_env_dollar(vars, ft_strdup(value));
-	else
-		temp = ft_strdup(value);
+	temp = ft_strdup(value);
 	if (*buffer == NULL)
 		*buffer = ft_strdup(temp);
 	else if (temp)
@@ -67,7 +64,7 @@ int	add_to_tokens(char **tokens, char **buffer, int j)
 	return (j);
 }
 
-char	**format_input(t_vars *vars, char **tokens, char *input)
+char	**format_input(char **tokens, char *input)
 {
 	char	**split;
 	char	*buffer;
@@ -89,7 +86,7 @@ char	**format_input(t_vars *vars, char **tokens, char *input)
 			tokens[j++] = ft_strdup(split[i]);
 		}
 		else
-			append_to_buffer(vars, &buffer, split[i]);
+			append_to_buffer(&buffer, split[i]);
 	}
 	tokens[add_to_tokens(tokens, &buffer, j)] = 0;
 	free_doublearray(split);
@@ -105,7 +102,7 @@ t_token	*tokenize_input(t_vars *vars, char *input)
 
 	tokens = malloc(sizeof(char *) * MAX_TOKENS);
 	// input = validate_quote(input);
-	tokens = format_input(vars, tokens, input);
+	tokens = format_input(tokens, input);
 	tokens = validate_operator(tokens);
 	if (!tokens)
 		return (NULL);
@@ -113,9 +110,9 @@ t_token	*tokenize_input(t_vars *vars, char *input)
 	while (tokens[i] != 0)
 		i++;
 	if (has_pipe_in_shell(tokens))
-		root = create_token(input);
+		root = create_token(vars, input);
 	else
-		root = build_token_tree(tokens, 0, i - 1);
+		root = build_token_tree(vars, tokens, 0, i - 1);
 	root->parent = NULL;
 	free_doublearray(tokens);
 	return (root);

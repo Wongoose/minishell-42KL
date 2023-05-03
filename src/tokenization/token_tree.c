@@ -6,28 +6,33 @@
 /*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/28 17:59:43 by zwong             #+#    #+#             */
-/*   Updated: 2023/05/03 14:20:36 by zwong            ###   ########.fr       */
+/*   Updated: 2023/05/03 18:08:25 by zwong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-t_token	*create_token(char *value)
+t_token	*create_token(t_vars *vars, char *value)
 {
 	t_token	*new_token;
+	char	*formatted;
 
 	new_token = malloc(sizeof(t_token));
 	if (!new_token)
 		exit(1);
+	if (ft_strchr(value, '$') || ft_strchr(value, '*'))
+		formatted = expand_env_dollar(vars, ft_strdup(value));
+	else
+		formatted = ft_strdup(value);
 	new_token->left = NULL;
 	new_token->right = NULL;
-	new_token->value = ft_strdup(value);
-	new_token->operator = get_operator_type(value);
+	new_token->value = formatted;
+	new_token->operator = get_operator_type(formatted);
 	new_token->pipe_num = 0;
-	if (is_operator(value))
+	if (is_operator(formatted))
 		new_token->cmdlst = NULL;
 	else
-		new_token->cmdlst = generate_pipe_list(value, new_token);
+		new_token->cmdlst = generate_pipe_list(formatted, new_token);
 	new_token->exit_status = 0;
 	return (new_token);
 }
@@ -79,23 +84,23 @@ int	is_balanced(char **tokens, int start, int end)
 	return (parens == 0);
 }
 
-t_token	*build_token_tree(char **tokens, int start, int end)
+t_token	*build_token_tree(t_vars *vars, char **tokens, int start, int end)
 {
-	int		lowest_precedence_i;
+	int		lowest_prec_i;
 	t_token	*token;
 
 	if (start > end)
 		return (NULL);
-	lowest_precedence_i = find_lowest_precedence(tokens, start, end);
-	if (lowest_precedence_i != -1)
+	lowest_prec_i = find_lowest_precedence(tokens, start, end);
+	if (lowest_prec_i != -1)
 	{
-		token = create_token(tokens[lowest_precedence_i]);
-		token->left = build_token_tree(tokens, start, lowest_precedence_i - 1);
-		token->right = build_token_tree(tokens, lowest_precedence_i + 1, end);
+		token = create_token(vars, tokens[lowest_prec_i]);
+		token->left = build_token_tree(vars, tokens, start, lowest_prec_i - 1);
+		token->right = build_token_tree(vars, tokens, lowest_prec_i + 1, end);
 		return (token);
 	}
 	else if (is_balanced(tokens, start, end))
-		return (build_token_tree(tokens, start + 1, end - 1));
+		return (build_token_tree(vars, tokens, start + 1, end - 1));
 	else
-		return (create_token(tokens[start]));
+		return (create_token(vars, tokens[start]));
 }
