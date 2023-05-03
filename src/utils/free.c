@@ -1,22 +1,5 @@
 #include "minishell.h"
 
-
-// // NEXT: Extract default free to external function to clear t_pipes
-// void	ft_free_tree(t_token *token)
-// {
-// 	if (token->left == NULL)
-// 		ft_free_token(token);
-// 	else
-// 	{
-// 		if (token->left->left != NULL)
-// 			ft_free_tree(token->left);
-// 		else
-// 			ft_free_token(token->left);
-// 		if (token->right->left != NULL)
-// 			ft_free_tree(token->right);
-// 		else
-// 			ft_free_token(token->right);
-
 void	ft_free_vars(t_vars *vars)
 {
 	free_doublearray(vars->envp);
@@ -44,33 +27,6 @@ void	ft_free_pipe(int pipe_num, t_pipe *cmdlst)
 	free(cmdlst);
 }
 
-// void	ft_free_token(t_token *group)
-// {
-// 	int	i;
-
-// 	free(group->value);
-// 	i = -1;
-// 	while (group->hdoc_str != NULL && ++i < group->pipe_num)
-// 		if (group->hdoc_str[i] != NULL)
-// 			free(group->hdoc_str[i]);
-// 	free(group->hdoc_str);
-// 	ft_free_pipe(group->pipe_num, group->cmdlst);
-// 	free(group);
-// 	// int	count;
-
-// 	// if (token->value)
-// 	// 	free(token->value);
-// 	// count = 0;
-// 	// while (count < token->pipe_num)
-// 	// {
-// 	// 	free_doublearray(token->cmdlst[count].arg);
-// 	// 	free(token->cmdlst[count].cmd);
-// 	// 	free(token->cmdlst[count].rdr_info);
-// 	// 	count++;
-// 	// }
-// 	// free(token);
-// }
-
 /**
  * Main free function, free respective memories depending on ret values.
  * 
@@ -90,31 +46,68 @@ void	ft_free_pipe(int pipe_num, t_pipe *cmdlst)
  * 
  * @return Function does not return
 */
-void	ft_free_tree(t_token *group, int ret)
+void	ft_free_tree(t_token *root, int ret)
 {
 	int	i;
 
-	if (ret == -1)
-		return ;
-	if (group->left == NULL)
+	if (ret == -1 || root == NULL)
+		return ;	
+	ft_free_tree(root->left, ret);
+	ft_free_tree(root->right, ret);
+	free(root->value);
+	if (root->operator != OR && root->operator != AND)
 	{
-		free(group->value);
 		i = -1;
-		while (group->hdoc_str != NULL && ++i < group->pipe_num)
-			if (group->hdoc_str[i] != NULL)
-				free(group->hdoc_str[i]);
-		free(group->hdoc_str);
-		ft_free_pipe(group->pipe_num, group->cmdlst);
-		free(group);
+		while (root->hdoc_str != NULL && ++i <= root->pipe_num)
+		{
+			if (root->hdoc_str[i] != NULL)
+				free(root->hdoc_str[i]);
+		}
+		free(root->hdoc_str);
 	}
-	else if (group->left->left != NULL)
-		ft_free_tree(group->left, ret);
-	else
-	{
-		ft_free_tree(group->left, ret);
-		ft_free_tree(group->right, ret);
-	}
+	ft_free_pipe(root->pipe_num, root->cmdlst);
+	free(root);
 }
+
+// void	ft_free_tree(t_token *group, int ret, t_bool is_root)
+// {
+// 	int	i;
+
+// 	if (ret == -1)
+// 		return ;
+// 	if (group->left == NULL)
+// 	{
+// 		free(group->value);
+// 		// printf("FREED VALUE: %s\n", group->value);
+// 		if (group->operator != OR && group->operator != AND)
+// 		{
+// 			i = -1;
+// 			while (group->hdoc_str != NULL && ++i < group->pipe_num)
+// 			{
+// 				if (group->hdoc_str[i] != NULL)
+// 					free(group->hdoc_str[i]);
+// 			}
+// 			free(group->hdoc_str);
+// 			// printf("FREED HDOC_STR\n");
+// 			// printf("FREED PIPE\n");
+// 			// printf("FREED TOKEN\n");
+// 		}
+// 		ft_free_pipe(group->pipe_num, group->cmdlst);
+// 		free(group);
+// 	}
+// 	else if (group->left->left != NULL)
+// 		ft_free_tree(group->left, ret, FALSE);
+// 	else
+// 	{
+// 		ft_free_tree(group->left, ret, FALSE);
+// 		ft_free_tree(group->right, ret, FALSE);
+// 	}
+// 	if (is_root)
+// 	{
+// 		group->left = NULL;
+// 		ft_free_tree(group, ret, FALSE);
+// 	}
+// }
 
 void	free_doublearray(char **data)
 {

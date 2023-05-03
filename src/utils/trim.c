@@ -1,9 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   trim.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/05/03 13:36:52 by zwong             #+#    #+#             */
+/*   Updated: 2023/05/03 13:36:52 by zwong            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 char	*ft_trim(char *str)
 {
-	int i;
-	int	j;
+	int 	i;
+	int		j;
+	char	*ret;
 
 	if (!str)
 		return (NULL);
@@ -13,7 +26,10 @@ char	*ft_trim(char *str)
 		i++;
 	while (str[j] == ' ' && j != 0)
 		j--;
-	return (ft_substr(str, i, j - i + 1));		
+	
+	ret = ft_substr(str, i, j - i + 1);
+	free(str);
+	return (ret);
 }
 
 static int	update_paren(char c, int paren)
@@ -34,6 +50,7 @@ char	*ft_trim_paren(char *str)
 	int		i;
 	int		paren;
 	char	*ret;
+	char	*temp;
 
 	if (!str)
 		return (NULL);
@@ -42,13 +59,17 @@ char	*ft_trim_paren(char *str)
 	ret = ft_trim(str);
 	if (ret[0] != '(')
 		return (ret);
-	while (str[i])
+	while (ret[i])
 	{
-		paren = update_paren(str[i], paren);
+		paren = update_paren(ret[i], paren);
 		if (paren == 0)
 		{
-			if (i == (int)(ft_strlen(str) - 1))
-				ret = ft_trim_paren(ft_substr(str, 1, ft_strlen(str) - 2));
+			if (i == (int)(ft_strlen(ret) - 1))
+			{
+				temp = ft_substr(ret, 1, ft_strlen(ret) - 2);
+				free(ret);
+				ret = ft_trim_paren(temp);
+			}
 			break ;
 		}
 		i++;
