@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 19:00:06 by chenlee           #+#    #+#             */
-/*   Updated: 2023/04/28 22:12:03 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/05/03 10:38:47 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,10 +48,7 @@ void	ft_dup(char *cmd, int fd_one, int fd_two)
 void	last_child(t_vars *vars, t_token *group, int index, int pipefd[2][2])
 {
 	int	rdr_inout[2];
-	// int	backup_inout[2];
 
-	// backup_inout[0] = dup(STDIN_FILENO);
-	// backup_inout[1] = dup(STDOUT_FILENO);
 	ft_dup(group->cmdlst[index].cmd, pipefd[1][0], STDIN_FILENO);
 	close(pipefd[0][0]);
 	close(pipefd[0][1]);
@@ -65,10 +62,7 @@ void	last_child(t_vars *vars, t_token *group, int index, int pipefd[2][2])
 void	middle_child(t_vars *vars, t_token *group, int index, int pipefd[2][2])
 {
 	int	rdr_inout[2];
-	// int	backup_inout[2];
 
-	// backup_inout[0] = dup(STDIN_FILENO);
-	// backup_inout[1] = dup(STDOUT_FILENO);
 	ft_dup(group->cmdlst[index].cmd, pipefd[0][1], STDOUT_FILENO);
 	ft_dup(group->cmdlst[index].cmd, pipefd[1][0], STDIN_FILENO);
 	close(pipefd[0][0]);
@@ -83,10 +77,7 @@ void	middle_child(t_vars *vars, t_token *group, int index, int pipefd[2][2])
 void	first_child(t_vars *vars, t_token *group, int index, int pipefd[2][2])
 {
 	int	rdr_inout[2];
-	// int	backup_inout[2];
 
-	// backup_inout[0] = dup(STDIN_FILENO);
-	// backup_inout[1] = dup(STDOUT_FILENO);
 	ft_dup(group->cmdlst[index].cmd, pipefd[0][1], STDOUT_FILENO);
 	close(pipefd[0][0]);
 	close(pipefd[0][1]);

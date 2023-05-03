@@ -3,21 +3,83 @@
 /*                                                        :::      ::::::::   */
 /*   wildcard_handler.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 18:41:25 by chenlee           #+#    #+#             */
-/*   Updated: 2023/04/27 18:22:16 by zwong            ###   ########.fr       */
+/*   Updated: 2023/05/03 14:51:01 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+void	ft_free_dp(t_bool **dp, int p_len)
+{
+	int	i;
+
+	i = -1;
+	while (++i <= p_len)
+		free(dp[i]);
+	free(dp);
+}
+
 /**
- * Function checks if the first i characters of the pattern match the first j
- * characters of the text. The algorithm handles wildcard characters in the
- * pattern by considering two cases: either the wildcard character matches zero
- * characters in the text, or the wildcard character matches one or more
- * characters in the text.
+ * When populating cells within the dp table, two while loops are used that
+ * iterate through the characters in the pattern and text strings respectively.
+ * 
+ * In cases where a '*' wildcard appears within the pattern string, fill current
+ * cell, taking into account either:
+ *   i. The value of the previous row (dp[i 1][j]) or
+ *   ii. The value of the previous column (dp[i][j 1]).
+ * This function checks if zero or more characters can exist between matched
+ * sub patterns.
+ * 
+ * In cases where no wildcard appears, cells are further populated with diagonal
+ * cells to the top left.
+ * 
+ * Example: text = "abcde", pattern = "ab*"
+ *      a  b  c  d  e
+ *    -----------------
+ *  a | T  F  F  F  F
+ *  b | F  T  F  F  F
+ *  * | F  T  T  T  T
+ * 
+ * @param dp The table that stores the boolean comparison of the pattern and
+ * text strings
+ * @param pattern The pattern string
+ * @param text The text string
+ * @return Function does not return
+*/
+void	fill_dp_table(t_bool **dp, char *pattern, char *text)
+{
+	int	i;
+	int	j;
+	int	p_len;
+	int	t_len;
+
+	p_len = ft_strlen(pattern);
+	t_len = ft_strlen(text);
+	dp[0][0] = TRUE;
+	i = 0;
+	while (++i <= p_len)
+	{
+		j = 0;
+		if (pattern[i - 1] == '*')
+		{
+			dp[i][0] = dp[i - 1][0];
+			while (++j <= t_len)
+				dp[i][j] = dp[i - 1][j] || dp[i][j - 1];
+		}
+		else
+			while (++j <= t_len)
+				if (pattern[i - 1] == text[j - 1])
+					dp[i][j] = dp[i - 1][j - 1];
+	}
+}
+
+/**
+ * Main wilcard matching algorithm, initialize a 2D boolean table of size
+ * pattern_len and text_len, and set all index to FALSE. This table will
+ * be used to compare both strings.
  * 
  * @param pattern The pattern string containing the wildcard
  * @param text The text string to compare
@@ -26,30 +88,21 @@
 */
 int	is_in_wildcard(char *pattern, char *text, int pattern_len, int text_len)
 {
-	int	i;
-	int	j;
-	int	dp[pattern_len + 1][text_len + 1];
+	int		i;
+	int		result;
+	t_bool	**dp;
 
-	ft_memset(dp, 0, sizeof(dp));
-	dp[0][0] = 1;
-	i = 0;
-	while (++i <= pattern_len && pattern[i - 1] == '*')
-		dp[i][0] = 1;
-	i = 0;
+	dp = malloc(sizeof(t_bool *) * (pattern_len + 1));
+	i = -1;
 	while (++i <= pattern_len)
 	{
-		j = 0;
-		while (++j <= text_len)
-		{
-			if (pattern[i - 1] == '*')
-				dp[i][j] = dp[i - 1][j] || dp[i][j - 1];
-			else if (pattern[i - 1] == text[j - 1])
-				dp[i][j] = dp[i - 1][j - 1];
-			else
-				dp[i][j] = 0;
-		}
+		dp[i] = malloc(sizeof(t_bool) * (text_len + 1));
+		ft_memset(dp[i], FALSE, sizeof(t_bool) * (text_len + 1));
 	}
-	return (dp[pattern_len][text_len]);
+	fill_dp_table(dp, pattern, text);
+	result = dp[pattern_len][text_len];
+	ft_free_dp(dp, pattern_len);
+	return (result);
 }
 
 /**
@@ -109,43 +162,3 @@ t_bool	found_wildcard(char *str)
 	}
 	return (FALSE);
 }
-
-// FUNCTION NOT USED
-/**
- * Wildcard handling function, where function will join the double char arrays
- * containing the commands and options/arguments into a single string with
- * spaces as its delimination. Should there be a wildcard (*) symbol found,
- * the dereferenced string of the double char array will be expanded to string
- * with matching text given the wildcard pattern, before joining them back to
- * said single string.
- * 
- * @param arg The double char array containing the initial commands and options/
- * arguments.
- * @return Function will replace the initial double char array with the single
- * string splitted into double char array, with spaces as its deliminator.
-*/
-// char	**handle_wildcard(char **arg)
-// {
-// 	int		i;
-// 	char	*expand;
-// 	char	*bigstr;
-
-// 	bigstr = ft_strdup(arg[0]);
-// 	i = 0;
-// 	while (arg[++i] != NULL)
-// 	{
-// 		if (found_wildcard(arg[i]) == TRUE)
-// 		{
-// 			expand = expand_wildcard(arg[i]);
-// 			if (expand != NULL)
-// 			{
-// 				bigstr = join_str(bigstr, ft_strdup(" "), expand);
-// 				continue ;
-// 			}
-// 		}
-// 		bigstr = join_str(bigstr, ft_strdup(" "), ft_strdup(arg[i]));
-// 	}
-// 	free_doublearray(arg);
-// 	arg = ft_split(bigstr, ' ');
-// 	return (free(bigstr), arg);
-// }

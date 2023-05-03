@@ -66,6 +66,7 @@ PRINTFA		= libftprintf.a
 all:		$(NAME)
 
 valgrind:	all
+		@rm -rf valgrind-out.txt
 		valgrind --leak-check=full  \
 		--show-leak-kinds=all       \
 		--track-origins=yes         \
@@ -92,11 +93,14 @@ clean: ${OBJ}
 	@make clean -C ${LIBD}
 	@make clean -C ${PRINTFD}
 	@rm -rf ${DOBJS}
+	@echo clean done
 
 fclean: clean
 	@make fclean -C ${LIBD}
 	@make fclean -C ${PRINTFD}
 	@rm -rf ${NAME}
+	@rm -rf valgrind-out.txt
+	@echo fclean done
 
 re: fclean all
 
