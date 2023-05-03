@@ -57,13 +57,14 @@ void	ft_free_tree(t_token *root, int ret)
 	free(root->value);
 	if (root->operator != OR && root->operator != AND)
 	{
-		i = -1;
-		while (root->hdoc_str != NULL && ++i <= root->pipe_num)
+		if (root->hdoc_str != NULL)
 		{
-			if (root->hdoc_str[i] != NULL)
-				free(root->hdoc_str[i]);
+			i = -1;
+			while (++i <= root->pipe_num)
+				if (root->hdoc_str[i] != NULL)
+					free(root->hdoc_str[i]);
+			free(root->hdoc_str);
 		}
-		free(root->hdoc_str);
 	}
 	ft_free_pipe(root->pipe_num, root->cmdlst);
 	free(root);

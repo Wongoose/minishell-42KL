@@ -76,9 +76,9 @@ char	**split_keep_quotes(char *s)
 	int		end;
 	int		i;
 
-	splitstr = (char **)calloc(count_words(s) + 1, sizeof(char *));
+	splitstr = (char **)ft_calloc(count_words(s) + 1, sizeof(char *));
 	if (!s || !splitstr)
-		return (0);
+		return (NULL);
 	quote_t = 0;
 	start = 0;
 	end = 0;
@@ -107,7 +107,7 @@ char	**split_keep_quotes(char *s)
 			i--;
 		start = end;
 	}
-	splitstr[i] = 0;
+	splitstr[i] = NULL;
 	free(s);
 	return (splitstr);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_tree.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/28 17:59:43 by zwong             #+#    #+#             */
-/*   Updated: 2023/05/03 18:08:25 by zwong            ###   ########.fr       */
+/*   Updated: 2023/05/03 22:08:57 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ t_token	*create_token(t_vars *vars, char *value)
 	new_token->value = formatted;
 	new_token->operator = get_operator_type(formatted);
 	new_token->pipe_num = 0;
+	new_token->hdoc_str = NULL;
 	if (is_operator(formatted))
 		new_token->cmdlst = NULL;
 	else

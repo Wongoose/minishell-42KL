@@ -16,6 +16,27 @@ void	init_vars(t_vars *vars, char **envp)
 	vars->func[E_EXIT] = func_exit;
 }
 
+void	recurse_start(int *ret, t_vars *vars, t_token *group)
+{
+	if (group->left->left != NULL)
+		start_minishell(vars, group->left);
+	else
+		*(ret) = cmdgroup(vars, group->left);
+	if ((vars->last_errno == 0 && group->operator == AND)
+		|| (vars->last_errno != 0 && group->operator == OR))
+	{
+		if (group->right->left != NULL)
+		{
+			start_minishell(vars, group->right);
+			if ((vars->last_errno == 0 && group->operator == AND)
+				|| (vars->last_errno != 0 && group->operator == OR))
+				*(ret) = cmdgroup(vars, group->right);
+		}
+		else
+			*(ret) = cmdgroup(vars, group->right);
+	}
+}
+
 int	start_minishell(t_vars *vars, t_token *group)
 {
 	int	ret;
@@ -23,29 +44,11 @@ int	start_minishell(t_vars *vars, t_token *group)
 	if (group->parent == NULL && group->left == NULL)
 		return (cmdgroup(vars, group));
 	else
-	{
-		if (group->left->left != NULL)
-			start_minishell(vars, group->left);
-		else
-			ret = cmdgroup(vars, group->left);
-		if ((vars->last_errno == 0 && group->operator == 1)
-			|| (vars->last_errno != 0 && group->operator == 2))
-		{
-			if (group->right->left != NULL)
-			{
-				start_minishell(vars, group->right);
-				if ((vars->last_errno == 0 && group->operator == 1)
-					|| (vars->last_errno != 0 && group->operator == 2))
-					ret = cmdgroup(vars, group->right);
-			}
-			else
-				ret = cmdgroup(vars, group->right);
-		}
-	}
+		recurse_start(&ret, vars, group);
 	if (vars->is_subshell == FALSE)
 		return (ret);
 	else
-		exit (ret);
+		exit (vars->last_errno);
 }
 
 int	read_terminal(t_vars *vars)

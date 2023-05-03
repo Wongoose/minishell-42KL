@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 01:24:58 by chenlee           #+#    #+#             */
-/*   Updated: 2023/05/01 17:30:55 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/05/03 15:18:42 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	get_len(char *temp_one, char *rdr_str)
 {
 	int	len_one;
-	int len_two;
+	int	len_two;
 
 	len_one = ft_strlen(temp_one);
 	len_two = ft_strlen(rdr_str);
@@ -32,7 +32,7 @@ char	*check_existance(t_vars *vars, char *middle)
 	char	**key_val;
 
 	i = -1;
-	while(vars->envp[++i] != NULL)
+	while (vars->envp[++i] != NULL)
 	{
 		key_val = ft_split(vars->envp[i], '=');
 		if (ft_strncmp(key_val[0], middle, get_len(key_val[0], middle)) == 0)

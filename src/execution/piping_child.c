@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 19:00:06 by chenlee           #+#    #+#             */
-/*   Updated: 2023/05/03 10:38:47 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/05/03 15:19:30 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ void	ft_close_pipe(int index, int n_cmds, int pipefd[2][2])
 void	ft_dup(char *cmd, int fd_one, int fd_two)
 {
 	int	ret;
+
 	ret = dup2(fd_one, fd_two);
 	if (ret == -1)
 	{

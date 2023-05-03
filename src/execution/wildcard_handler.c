@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wildcard_handler.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 18:41:25 by chenlee           #+#    #+#             */
-/*   Updated: 2023/05/03 18:08:18 by zwong            ###   ########.fr       */
+/*   Updated: 2023/05/03 21:48:38 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void	fill_dp_table(t_bool **dp, char *pattern, char *text)
 		{
 			dp[i][0] = dp[i - 1][0];
 			while (++j <= t_len)
-				dp[i][j] = dp[i - 1][j] || dp[i][j - 1];
+				dp[i][j] = (dp[i - 1][j] || dp[i][j - 1]);
 		}
 		else
 			while (++j <= t_len)
@@ -105,6 +105,30 @@ int	is_in_wildcard(char *pattern, char *text, int pattern_len, int text_len)
 	return (result);
 }
 
+char	*readdir_loop(DIR *dir, char *wc_str)
+{
+	struct dirent	*entry;
+	char			*expanded_str;
+	
+	expanded_str = ft_strdup("");
+	while (1)
+	{
+		entry = readdir(dir);
+		if (entry != NULL)
+		{
+			if (entry->d_name[0] == '.')
+				continue ;
+			if (is_in_wildcard(wc_str, entry->d_name, ft_strlen(wc_str),
+					ft_strlen(entry->d_name)))
+				expanded_str = join_str(expanded_str, ft_strdup(" "),
+						ft_strdup(entry->d_name));
+		}
+		else
+			break ;
+	}
+	return (expanded_str);
+}
+
 /**
  * Function calls readdir() which gets a pointer to a dirent structure
  * describing a directory entry in the directory stream, in which contains
@@ -121,23 +145,14 @@ char	*expand_wildcard(char *wc_str)
 {
 	DIR				*dir;
 	char			cwd[256];
-	struct dirent	*entry;
 	char			*expanded_str;
 
-	expanded_str = ft_strdup("");
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
 		exit(error("getcwd()", "Failed"));
-	if ((dir = opendir(cwd)) == NULL)
+	dir = opendir(cwd);
+	if (dir == NULL)
 		exit(error("opendir()", "Failed"));
-	while ((entry = readdir(dir)) != NULL)
-	{
-		if (entry->d_name[0] == '.')
-			continue ;
-		if (is_in_wildcard(wc_str, entry->d_name, ft_strlen(wc_str),
-				ft_strlen(entry->d_name)))
-			expanded_str = join_str(expanded_str, ft_strdup(" "),
-				ft_strdup(entry->d_name));
-	}
+	expanded_str = readdir_loop(dir, wc_str);
 	closedir(dir);
 	if (expanded_str[0] == '\0')
 		return (free(expanded_str), ft_strdup(wc_str));
