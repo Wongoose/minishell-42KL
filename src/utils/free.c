@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   free.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/05/04 13:13:37 by zwong             #+#    #+#             */
+/*   Updated: 2023/05/04 13:13:37 by zwong            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	ft_free_vars(t_vars *vars)
@@ -51,7 +63,7 @@ void	ft_free_tree(t_token *root, int ret)
 	int	i;
 
 	if (ret == -1 || root == NULL)
-		return ;	
+		return ;
 	ft_free_tree(root->left, ret);
 	ft_free_tree(root->right, ret);
 	free(root->value);

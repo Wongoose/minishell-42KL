@@ -6,11 +6,51 @@
 /*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/28 18:08:31 by zwong             #+#    #+#             */
-/*   Updated: 2023/04/28 19:08:43 by zwong            ###   ########.fr       */
+/*   Updated: 2023/05/04 13:07:23 by zwong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+char	*prompt_raw_input(char *str)
+{
+	char	*input;
+	char	*result;
+
+	input = readline("> ");
+	if (input == NULL)
+	{
+		free(str);
+		return (ft_strdup(""));
+	}
+	result = join_str(str, NULL, input);
+	return (validate_raw_input(result));
+	
+}
+
+char	*validate_raw_input(char *input)
+{
+	int		i;
+	char	quote_t;
+	char	*temp;
+
+	if (input == NULL)
+		return (NULL);
+	i = -1;
+	quote_t = 0;
+	while (input[++i])
+	{
+		if (!quote_t && ft_isquote(input[i]))
+			quote_t = input[i];
+		else if (quote_t && input[i] == quote_t)
+			quote_t = 0;
+	}
+	temp = ft_trim(ft_strdup(input));
+	if (quote_t || (!quote_t && temp[ft_strlen(temp) - 1] == '|'))
+		input = prompt_raw_input(input);
+	free(temp);
+	return (ft_trim(input));
+}
 
 char  **prompt_input(char **tokens)
 {
@@ -20,6 +60,7 @@ char  **prompt_input(char **tokens)
 	int		j;
 
 	input = readline("> ");
+	input = validate_raw_input(input);
 	i = 0;
 	j = 0;
 	while (tokens[i] != 0)
@@ -33,63 +74,9 @@ char  **prompt_input(char **tokens)
 	return (validate_operator(new_tokens));
 }
 
-char	*validate_quote(char *value)
-{
-	int		i;
-	char	*input;
-	char	quote_t;
-	int		quote_level;
 
-	quote_level = 1;
-	i = 0;
-	while (value[i])
-	{
-		if ((!quote_t && ft_isquote(value[i])) || value[i] == quote_t)
-		{
-			quote_t = value[i];
-			quote_level *= -1;
-		}
-		i++;
-	}
-	if (quote_level == -1)
-	{
-		input = readline("> ");
-		// if (ft_strchr(input, quote_t))
-		// if (ft_strcmp(input, &quote_t) != 0)
-		value  = join_str(ft_strdup(value), ft_strdup("\n"), ft_strdup(input));
-		return (validate_quote(value));
-	}
-	else
-		return (value);
-}
-
-// char	*validate_paren(char *value)
-// {
-// 	int		i;
-// 	int		paren;
-// 	char	*input;
-// 	char	**split;
-
-// 	i = 0;
-// 	paren = 0;
-// 	split = space_at_paren();
-// 	while (value[i])
-// 	{
-// 		if (value[i] == '(')
-// 			paren++;
-// 		else if (value[i] == ')')
-// 		{
-// 			paren--;
-// 			if (paren < 0)
-// 				printf("syntax error near unexpected token '%c'\n", value[i]);
-// 			if (value[i + 1] == 0)
-// 				continue ;
-// 			if (value[i + 1] != ')' && value[i + 1] != )
-// 		}
-// 	}
-// }
-
-// NEXT: Deal with && within prompt_input
+// NEXT: Deal with parenthesis
+// NEXT: Exit prompt when input is NULL Ctrl-D
 char	**validate_operator(char **tokens)
 {
 	int	i;

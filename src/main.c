@@ -2,6 +2,7 @@
 
 void	init_vars(t_vars *vars, char **envp)
 {
+	vars->tokens = NULL;
 	vars->is_subshell = FALSE;
 	vars->envp = dup_envp(envp);
 	vars->path = ft_split(get_envp_value(vars->envp, ft_strdup("PATH")), ':');
@@ -59,6 +60,7 @@ int	read_terminal(t_vars *vars)
 	ret = -2;
 	init_signal();
 	input = readline("minihell$> ");
+	input = validate_raw_input(input);
 	if (input == NULL)
 	{
 		printf("exit\n");
@@ -72,6 +74,7 @@ int	read_terminal(t_vars *vars)
 			ret = -1;
 		else if (start_minishell(vars, vars->tokens) == 0)
 			ret = vars->last_errno;
+		// print_token_tree(vars->tokens, 0, "ROOT");
 	}
 	free(input);
 	return (ret);
@@ -89,6 +92,7 @@ int	main(int argc, char **argv, char **envp)
 	init_vars(&vars, envp);
 	while (1)
 	{
+		vars.tokens = NULL;
 		ret = read_terminal(&vars);
 		exit_status = vars.last_errno;
 		ft_free_tree(vars.tokens, ret);

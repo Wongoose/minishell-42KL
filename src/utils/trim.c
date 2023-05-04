@@ -6,7 +6,7 @@
 /*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 13:36:52 by zwong             #+#    #+#             */
-/*   Updated: 2023/05/03 14:15:56 by zwong            ###   ########.fr       */
+/*   Updated: 2023/05/04 12:55:44 by zwong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,10 @@ char	*ft_trim(char *str)
 		i++;
 	while (str[j] == ' ' && j != 0)
 		j--;
-	
-	ret = ft_substr(str, i, j - i + 1);
+	if (j == 0)
+		ret = ft_strdup("");
+	else
+		ret = ft_substr(str, i, j - i + 1);
 	free(str);
 	return (ret);
 }

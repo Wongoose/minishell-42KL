@@ -148,6 +148,7 @@ t_operator	get_operator_type(char *value);
 char		*expand_env_dollar(t_vars *vars, char *str);
 char		**validate_operator(char **tokens);
 char		*validate_quote(char *value);
+char		*validate_raw_input(char *input);
 
 /* parsing */
 t_pipe		create_new_pipe(char *value);
