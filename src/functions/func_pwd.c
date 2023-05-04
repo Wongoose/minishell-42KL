@@ -32,7 +32,7 @@ int	func_pwd(t_vars *vars, char **args)
 		return (1);
 	else
 	{
-		ft_printf("%s\n", path);
+		printf("%s\n", path);
 		free(path);
 		return (0);
 	}

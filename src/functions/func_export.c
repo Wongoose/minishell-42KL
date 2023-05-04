@@ -81,7 +81,7 @@ int	check_occurance(char **env, char **our)
 	{
 		ori = ft_split(env[i], '=');
 		len = ((ft_strlen(ori[0]) >= ft_strlen(our[0])) * ft_strlen(ori[0]))
-				+ ((ft_strlen(ori[0]) < ft_strlen(our[0])) * ft_strlen(our[0]));
+			+ ((ft_strlen(ori[0]) < ft_strlen(our[0])) * ft_strlen(our[0]));
 		if (ft_strncmp(ori[0], our[0], len) == 0)
 			ret = i;
 		free_doublearray(ori);
