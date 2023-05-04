@@ -6,7 +6,7 @@
 /*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/28 18:08:31 by zwong             #+#    #+#             */
-/*   Updated: 2023/05/04 13:07:23 by zwong            ###   ########.fr       */
+/*   Updated: 2023/05/04 13:21:32 by zwong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ char	*prompt_raw_input(char *str)
 	}
 	result = join_str(str, NULL, input);
 	return (validate_raw_input(result));
-	
 }
 
 char	*validate_raw_input(char *input)
@@ -52,7 +51,7 @@ char	*validate_raw_input(char *input)
 	return (ft_trim(input));
 }
 
-char  **prompt_input(char **tokens)
+char	**prompt_input(char **tokens)
 {
 	char	*input;
 	char	**new_tokens;
@@ -74,7 +73,6 @@ char  **prompt_input(char **tokens)
 	return (validate_operator(new_tokens));
 }
 
-
 // NEXT: Deal with parenthesis
 // NEXT: Exit prompt when input is NULL Ctrl-D
 char	**validate_operator(char **tokens)
@@ -83,10 +81,12 @@ char	**validate_operator(char **tokens)
 
 	i = -1;
 	while (tokens[++i] != 0)
-	{
 		if (is_operator(tokens[i]) && tokens[i + 1] == 0)
 			tokens = prompt_input(tokens);
-		// if (is_left_paren(tokens[i]) && quote_level == 1)
+	return (tokens);
+}
+
+// if (is_left_paren(tokens[i]) && quote_level == 1)
 		// 	paren_level++;
 		// else if (is_right_paren(tokens[i]) && quote_level == 1)
 		// {
@@ -98,7 +98,8 @@ char	**validate_operator(char **tokens)
 		// 	}
 		// 	if (tokens[i + 1] == 0)
 		// 		continue ;
-		// 	if (!is_right_paren(tokens[i + 1]) && !is_operator(tokens[i + 1]) && !is_pipe(tokens[i + 1]))
+		// 	if (!is_right_paren(tokens[i + 1])
+		//		 && !is_operator(tokens[i + 1]) && !is_pipe(tokens[i + 1]))
 		// 	{
 		// 		printf("Found unexpected token near '%s'\n", tokens[i + 1]);
 		// 		return (NULL);
@@ -106,6 +107,3 @@ char	**validate_operator(char **tokens)
 		// }
 		// else
 			// tokens[i] = validate_quote(tokens[i]);
-	}
-	return (tokens);
-}
