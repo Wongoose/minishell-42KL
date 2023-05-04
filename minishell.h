@@ -178,7 +178,7 @@ char	**handle_heredoc(t_vars *vars, t_token *group);
 char	*get_readline(t_vars *vars, char *rdr_str);
 
 /* wildcard */
-char	**handle_wildcard(char **arg);
+char	*handle_wildcard(char **arg);
 char	*expand_wildcard(char *wc_str);
 
 /* execution */

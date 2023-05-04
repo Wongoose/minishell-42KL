@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shared_envp.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 18:14:25 by zwong             #+#    #+#             */
-/*   Updated: 2023/05/03 18:14:25 by zwong            ###   ########.fr       */
+/*   Updated: 2023/05/04 19:01:38 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ char	*expand_env_dollar(t_vars *vars, char *str)
 		else if (str[i] == '*' && !quote_t)
 		{
 			free(new_str);
-			new_str = expand_wildcard(str);
+			new_str = handle_wildcard(ft_split(str, ' '));
 			break ;
 		}
 		if (!j)

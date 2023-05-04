@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/14 18:41:25 by chenlee           #+#    #+#             */
-/*   Updated: 2023/05/03 21:48:38 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/05/04 19:04:54 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,28 @@ void	fill_dp_table(t_bool **dp, char *pattern, char *text)
 	}
 }
 
+// void	print_dp(t_bool **dp, int p, int t, char *pat, char *txt)
+// {
+// 	int	i;
+// 	int	j;
+
+// 	(void)txt;
+// 	dprintf(2, "pat=%d && txt=%d\n", p, t);
+// 	i = -1;
+// 	dprintf(2, "  ");
+// 	while (++i < p)
+// 		dprintf(2, "%c ", pat[i]);
+// 	i = -1;
+// 	while (++i < p)
+// 	{
+// 		j = -1;
+// 		while (++j < t)
+// 			dprintf(2, "%d ", dp[i][j]);
+// 		dprintf(2, "\n");
+// 	}
+// 	dprintf(2, "\n\n");
+// }
+
 /**
  * Main wilcard matching algorithm, initialize a 2D boolean table of size
  * pattern_len and text_len, and set all index to FALSE. This table will
@@ -100,6 +122,7 @@ int	is_in_wildcard(char *pattern, char *text, int pattern_len, int text_len)
 		ft_memset(dp[i], FALSE, sizeof(t_bool) * (text_len + 1));
 	}
 	fill_dp_table(dp, pattern, text);
+	// print_dp(dp, pattern_len, text_len, pattern, text);
 	result = dp[pattern_len][text_len];
 	ft_free_dp(dp, pattern_len);
 	return (result);
@@ -109,7 +132,7 @@ char	*readdir_loop(DIR *dir, char *wc_str)
 {
 	struct dirent	*entry;
 	char			*expanded_str;
-	
+
 	expanded_str = ft_strdup("");
 	while (1)
 	{
@@ -147,6 +170,7 @@ char	*expand_wildcard(char *wc_str)
 	char			cwd[256];
 	char			*expanded_str;
 
+	printf("str=%s\n", wc_str);
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
 		exit(error("getcwd()", "Failed"));
 	dir = opendir(cwd);
@@ -176,4 +200,41 @@ t_bool	found_wildcard(char *str)
 			return (TRUE);
 	}
 	return (FALSE);
+}
+
+/**
+ * Wildcard handling function, where function will join the double char arrays
+ * containing the commands and options/arguments into a single string with
+ * spaces as its delimination. Should there be a wildcard (*) symbol found,
+ * the dereferenced string of the double char array will be expanded to string
+ * with matching text given the wildcard pattern, before joining them back to
+ * said single string.
+ * 
+ * @param arg The double char array containing the initial commands and options/
+ * arguments.
+ * @return Function will return a expanded string.
+*/
+char	*handle_wildcard(char **arg)
+{
+	int		i;
+	char	*expand;
+	char	*bigstr;
+
+	bigstr = ft_strdup(arg[0]);
+	i = 0;
+	while (arg[++i] != NULL)
+	{
+		if (found_wildcard(arg[i]) == TRUE)
+		{
+			expand = expand_wildcard(arg[i]);
+			if (expand != NULL)
+			{
+				bigstr = join_str(bigstr, ft_strdup(" "), expand);
+				continue ;
+			}
+		}
+		bigstr = join_str(bigstr, ft_strdup(" "), ft_strdup(arg[i]));
+	}
+	free_doublearray(arg);
+	return (bigstr);
 }
