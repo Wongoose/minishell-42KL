@@ -6,7 +6,7 @@
 /*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 13:54:12 by zwong             #+#    #+#             */
-/*   Updated: 2023/05/03 17:08:00 by zwong            ###   ########.fr       */
+/*   Updated: 2023/05/04 11:48:28 by zwong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ t_pipe	*generate_pipe_list(char *value, t_token *token)
 	pipe_count = 0;
 	while (*value != 0)
 	{
-		if (*value == '|' && update_paren_char(*value, &paren) == 0)
+		if (update_paren_char(*value, &paren) == 0 && *value == '|')
 			handle_if_pipe(&j, cmdlst, &pipe_count, &buffer);
 		else if (buffer[0] != 0 || *value != ' ')
 			buffer[j++] = *value;

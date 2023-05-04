@@ -6,7 +6,7 @@
 /*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 14:50:55 by zwong             #+#    #+#             */
-/*   Updated: 2023/05/03 15:17:21 by zwong            ###   ########.fr       */
+/*   Updated: 2023/05/04 11:22:32 by zwong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	count_pipes(char *value)
 	int	paren;
 
 	i = 0;
-	count = 0;
+	count = 1;
 	paren = 0;
 	while (value[i] != 0)
 	{
