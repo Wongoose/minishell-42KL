@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/05/04 13:22:36 by zwong             #+#    #+#             */
+/*   Updated: 2023/05/04 13:22:36 by zwong            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	init_vars(t_vars *vars, char **envp)
@@ -74,7 +86,6 @@ int	read_terminal(t_vars *vars)
 			ret = -1;
 		else if (start_minishell(vars, vars->tokens) == 0)
 			ret = vars->last_errno;
-		// print_token_tree(vars->tokens, 0, "ROOT");
 	}
 	free(input);
 	return (ret);
