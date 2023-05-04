@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/18 21:41:58 by chenlee           #+#    #+#             */
-/*   Updated: 2023/05/04 16:52:00 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/05/04 19:21:14 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,8 @@ void	start_subshell(t_vars *vars, t_token *group, t_pipe cmdlst, char **envp)
 		start_minishell(&new_vars, new_vars.tokens);
 	else
 		wait_subshell_pid(&new_vars, &new_pid);
-	// ft_free_tree(new_vars.tokens, 0);
 	ft_free_vars(&new_vars);
 	exit (new_vars.last_errno);
 }
+
+// ft_free_tree(new_vars.tokens, 0);
