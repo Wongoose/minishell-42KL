@@ -6,12 +6,25 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 17:39:09 by chenlee           #+#    #+#             */
-/*   Updated: 2023/05/03 15:17:40 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/05/05 14:38:47 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+/**
+ * Function waits for child processes with specified pids. Calls waitpid system
+ * call which suspends execution of the current process until all the childrens
+ * terminates. Function then updates the last exit status in the vars struct
+ * using WIFEXITED if the child process exit normally, or WTERMSIG if a signal
+ * caused the child process to terminate.
+ * 
+ * @param vars The main struct of the program containing the main token trees
+ * @param group The current token tree containing its command group
+ * @param pid The process id to keep track of its child process
+ * 
+ * @return Function does not return
+*/
 void	wait_for_pid(t_vars *vars, t_token *group, int *pid)
 {
 	int	status;
@@ -34,6 +47,9 @@ void	wait_for_pid(t_vars *vars, t_token *group, int *pid)
 	}
 }
 
+/**
+ * ft_open for specific built-in functions.
+*/
 int	open_loop(t_pipe cmdlst, int fd[2])
 {
 	int	i;
@@ -55,6 +71,18 @@ int	open_loop(t_pipe cmdlst, int fd[2])
 	return (0);
 }
 
+/**
+ * Execution for specific built-in functions (cd, export, unset, exit).
+ * Similar to normal execution, but modified to be run on parent process.
+ * 
+ * @param vars The main struct of the program containing the main token trees
+ * @param cmdlst The struct containing information of current command group,
+ * including command and arguments, redirections, etc.
+ * @param num The number that denotes the specific function for execution.
+ * 
+ * @return Function returns 0 if the built-in function is "exit", otherwise,
+ * returns 1
+*/
 int	inout_execute(t_vars *vars, t_pipe cmdlst, int num)
 {
 	int	fd[2];

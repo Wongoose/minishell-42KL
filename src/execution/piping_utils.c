@@ -6,12 +6,20 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 15:22:35 by chenlee           #+#    #+#             */
-/*   Updated: 2023/04/14 16:37:33 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/05/04 22:49:57 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+/**
+ * As the name of the function suggests, this is a error message printer.
+ * 
+ * @param cmd The command string of the current command group
+ * @param str Error message
+ * 
+ * @return Function returns error (1)
+*/
 int	error(char *cmd, char *str)
 {
 	if (cmd != NULL)
@@ -21,6 +29,18 @@ int	error(char *cmd, char *str)
 	return (1);
 }
 
+/**
+ * Function writes the i-th index of the heredoc string array into a file
+ * descriptor.
+ * 
+ * @param i The index of the current command group among the cmd pipe groups,
+ * also used to extract the string from the heredoc using the same index.
+ * @param hdoc Heredoc string array prompted at the start of the
+ * piping/execution program
+ * 
+ * @return Function returns a file descriptor containing a string passed from
+ * the heredoc of the i-th index
+*/
 int	do_heredoc(int i, char **hdoc)
 {
 	int	fd[2];
@@ -32,6 +52,19 @@ int	do_heredoc(int i, char **hdoc)
 	return (fd[0]);
 }
 
+/**
+ * Function calls open() system call that will return a file descriptor to the
+ * opened entry. The 2 if statements are used when input (IN/HEREDOC) or output
+ * (OUT/APPEND) redirections exist in the current command group.
+ * 
+ * @param i The index of the current command group among the cmd pipe groups
+ * @param info The redirection info struct of the current command group
+ * @param hdoc Heredoc string array prompted at the start of the
+ * piping/execution program
+ * @param rdr_inout The file descriptor of the last input/output redirections
+ * 
+ * @return Function does not return
+*/
 void	ft_open(int i, t_rdrinfo info, char **hdoc, int rdr_inout[2])
 {
 	if ((info.rdr_type == IN || info.rdr_type == HEREDOC))
@@ -60,7 +93,23 @@ void	ft_open(int i, t_rdrinfo info, char **hdoc, int rdr_inout[2])
 	}
 }
 
-// void	ft_dup_inoutfile(int i, t_pipe cmdlst, int fd_inout[2], int std_fd[2])
+/**
+ * Function checks if redirection exists in current command group. It is
+ * possible for a command group to have multiple input/output redirections
+ * (Example: < infile1 < infile2 cmd > outfile1 > outfile2), hence a loop is
+ * required to open all files related to the redirections. However, only the
+ * last redirection will be stored and dup with current io stream (which may
+ * be dupped to a pipe if multiple command groups across pipelines exist).
+ * 
+ * @param i The index of the current command group among the cmd pipe groups
+ * @param cmdlst The struct containing information of current command group,
+ * including command and arguments, redirections, etc.
+ * @param hdoc Heredoc string array prompted at the start of the
+ * piping/execution program
+ * @param rdr_inout The file descriptor of the last input/output redirections
+ * 
+ * @return Function does not return
+*/
 void	ft_dup_inoutfile(int i, t_pipe cmdlst, char **hdoc, int rdr_inout[2])
 {
 	int	j;
