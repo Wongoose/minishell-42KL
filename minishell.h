@@ -67,11 +67,11 @@ typedef struct s_rdrinfo
 
 typedef struct s_pipe
 {
-    char		*cmd;
-    char		**arg;
+	char		*cmd;
+	char		**arg;
 	int			rdr_count;
 	t_bool		has_subshell;
-    t_rdrinfo	*rdr_info;
+	t_rdrinfo	*rdr_info;
 }	t_pipe;
 
 typedef struct s_token
@@ -103,6 +103,8 @@ void		init_vars(t_vars *vars, char **envp);
 void		print_startup(void);
 void		ft_free_tree(t_token *group, int ret);
 void		ft_free_vars(t_vars *vars);
+void		ft_free_pipe(int pipe_num, t_pipe *cmdlst);
+char		**extract_path(char **path, char **envp);
 char		**dup_envp(char **envp);
 char		*ft_trim(char *str);
 char		*ft_trim_paren(char *str);
@@ -183,9 +185,12 @@ char	*get_readline(t_vars *vars, char *rdr_str);
 char	*handle_wildcard(char **arg);
 char	*expand_wildcard(char *wc_str);
 
+/* dollar expansion */
+void	handle_dollar(t_vars *vars, t_pipe *cmdlst);
+
 /* execution */
-int		do_builtin(t_vars *vars, t_pipe cmdlst);
-void	execution(t_vars *vars, t_pipe cmdlst);
+int		do_builtin(t_vars *vars, t_pipe *cmdlst);
+void	execution(t_vars *vars, t_pipe *cmdlst);
 void	wait_for_pid(t_vars *vars, t_token *group, int *pid);
 
 /* piping/execution utils */

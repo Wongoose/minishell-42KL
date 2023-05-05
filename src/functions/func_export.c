@@ -31,10 +31,8 @@ void	add_env(t_vars *vars, char *new_var)
 	new_envp = (char **)ft_calloc(i + 2, sizeof(char *));
 	i = -1;
 	while (vars->envp[++i] != NULL)
-	{
 		new_envp[i] = ft_strdup(vars->envp[i]);
-		free(vars->envp[i]);
-	}
+	free_doublearray(vars->envp);
 	new_envp[i] = ft_strdup(new_var);
 	vars->envp = new_envp;
 }
@@ -77,7 +75,7 @@ int	check_occurance(char **env, char **our)
 
 	i = -1;
 	ret = -1;
-	while (env[++i] != NULL)
+	while (env[++i] != NULL && env[i][0] != 0)
 	{
 		ori = ft_split(env[i], '=');
 		len = ((ft_strlen(ori[0]) >= ft_strlen(our[0])) * ft_strlen(ori[0]))

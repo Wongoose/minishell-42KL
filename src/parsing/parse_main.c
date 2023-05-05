@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_main.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 13:54:12 by zwong             #+#    #+#             */
-/*   Updated: 2023/05/04 11:48:28 by zwong            ###   ########.fr       */
+/*   Updated: 2023/05/05 17:46:51 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ static int	loop_rdr_check(char *value, t_pipe *pipe, char *formatted)
 	rdr_i = 0;
 	while (value[++i] != 0)
 	{
+		// quote
 		if (value[i] == '>')
 		{
 			pipe->rdr_info[rdr_i].rdr_type = OUT;
@@ -54,7 +55,7 @@ static int	loop_rdr_check(char *value, t_pipe *pipe, char *formatted)
 t_pipe	create_new_pipe(char *value)
 {
 	t_pipe	pipe;
-	int		i;
+	// int		i;
 	char	*formatted;
 	char	*head;
 
@@ -66,9 +67,9 @@ t_pipe	create_new_pipe(char *value)
 	pipe.rdr_count = loop_rdr_check(value, &pipe, formatted);
 	pipe.has_subshell = FALSE;
 	pipe.arg = split_keep_quotes(head);
-	i = -1;
-	while (pipe.arg[++i])
-		pipe.arg[i] = exclude_quotes(pipe.arg[i]);
+	// i = -1;
+	// while (pipe.arg[++i])
+	// 	pipe.arg[i] = exclude_quotes(pipe.arg[i]);
 	if (pipe.arg && pipe.arg[0])
 	{
 		pipe.cmd = ft_strdup(pipe.arg[0]);
@@ -107,6 +108,7 @@ t_pipe	*generate_pipe_list(char *value, t_token *token)
 	pipe_count = 0;
 	while (*value != 0)
 	{
+		// quote
 		if (update_paren_char(*value, &paren) == 0 && *value == '|')
 			handle_if_pipe(&j, cmdlst, &pipe_count, &buffer);
 		else if (buffer[0] != 0 || *value != ' ')

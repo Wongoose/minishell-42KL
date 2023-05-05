@@ -17,7 +17,7 @@ void	init_vars(t_vars *vars, char **envp)
 	vars->tokens = NULL;
 	vars->is_subshell = FALSE;
 	vars->envp = dup_envp(envp);
-	vars->path = ft_split(get_envp_value(vars->envp, ft_strdup("PATH")), ':');
+	vars->path = NULL;
 	vars->functions = ft_split("echo cd pwd export unset env exit", ' ');
 	vars->last_errno = 0;
 	vars->func[E_ECHO] = func_echo;

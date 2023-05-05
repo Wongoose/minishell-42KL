@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 20:22:23 by chenlee           #+#    #+#             */
-/*   Updated: 2023/05/04 16:52:05 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/05/05 18:02:11 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ int	one_child(t_vars *vars, t_token *group, pid_t *pid)
 	{
 		ret = 0;
 		if (group->cmdlst[0].cmd != NULL)
-			ret = do_builtin(vars, group->cmdlst[0]);
+			ret = do_builtin(vars, &group->cmdlst[0]);
 		if (ret != -1)
 			return (ret);
 	}
@@ -101,7 +101,7 @@ int	one_child(t_vars *vars, t_token *group, pid_t *pid)
 		if (group->cmdlst[0].has_subshell == TRUE)
 			start_subshell(vars, group, group->cmdlst[0], vars->envp);
 		else
-			execution(vars, group->cmdlst[0]);
+			execution(vars, &group->cmdlst[0]);
 	}
 	return (-1);
 }
@@ -127,6 +127,7 @@ int	cmdgroup(t_vars *vars, t_token *group)
 	pid_t	*pid;
 	int		ret;
 
+	vars->path = extract_path(vars->path, vars->envp);
 	ret = -1;
 	signal(SIGINT, SIG_IGN);
 	group->hdoc_str = handle_heredoc(vars, group);

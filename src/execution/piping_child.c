@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 19:00:06 by chenlee           #+#    #+#             */
-/*   Updated: 2023/05/04 22:39:32 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/05/05 17:19:14 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ void	last_child(t_vars *vars, t_token *group, int index, int pipefd[2][2])
 	if (group->cmdlst[index].has_subshell == TRUE)
 		start_subshell(vars, group, group->cmdlst[index], vars->envp);
 	else
-		execution(vars, group->cmdlst[index]);
+		execution(vars, &group->cmdlst[index]);
 }
 
 /**
@@ -115,7 +115,7 @@ void	middle_child(t_vars *vars, t_token *group, int index, int pipefd[2][2])
 	if (group->cmdlst[index].has_subshell == TRUE)
 		start_subshell(vars, group, group->cmdlst[index], vars->envp);
 	else
-		execution(vars, group->cmdlst[index]);
+		execution(vars, &group->cmdlst[index]);
 }
 
 /**
@@ -145,5 +145,5 @@ void	first_child(t_vars *vars, t_token *group, int index, int pipefd[2][2])
 	if (group->cmdlst[index].has_subshell == TRUE)
 		start_subshell(vars, group, group->cmdlst[index], vars->envp);
 	else
-		execution(vars, group->cmdlst[index]);
+		execution(vars, &group->cmdlst[index]);
 }

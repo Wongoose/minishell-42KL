@@ -15,7 +15,8 @@
 void	ft_free_vars(t_vars *vars)
 {
 	free_doublearray(vars->envp);
-	free_doublearray(vars->path);
+	if (vars->path != NULL)
+		free_doublearray(vars->path);
 	free_doublearray(vars->functions);
 }
 

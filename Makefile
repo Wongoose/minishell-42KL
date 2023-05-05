@@ -41,6 +41,7 @@ FILES		=	print_start				\
 				heredoc_utils			\
 				wildcard_handler		\
 				wildcard_utils			\
+				dollar_handler			\
 				piping_child			\
 				piping_utils			\
 				execution				\

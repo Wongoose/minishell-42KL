@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 16:00:08 by chenlee           #+#    #+#             */
-/*   Updated: 2023/05/05 14:57:45 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/05/05 18:23:03 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,28 +21,32 @@
  * @param cmdlst The struct containing information of current command group,
  * including command and arguments, redirections, etc.
 */
-void	call_execve(t_vars *vars, t_pipe cmdlst)
+void	call_execve(t_vars *vars, t_pipe *cmdlst)
 {
 	int		i;
 	int		ret;
 	char	*pathname;
-	char	*temp;
 
 	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
 	i = -1;
+	if (vars->path == NULL)
+	{
+		error(cmdlst->cmd, "No such file or directory");
+		exit(127);
+	}
 	while (vars->path[++i] != NULL)
 	{
-		temp = ft_strjoin(vars->path[i], "/");
-		pathname = ft_strjoin(temp, cmdlst.cmd);
-		ret = execve(pathname, cmdlst.arg, vars->envp);
-		free(temp);
-		free(pathname);
+		pathname = join_str(ft_strdup(vars->path[i]), ft_strdup("/"),
+				ft_strdup(cmdlst->cmd));
+		printf("pathname={%s}\n", pathname);
+		ret = execve(pathname, cmdlst->arg, vars->envp);
 		if (ret != -1)
 			break ;
 	}
 	if (vars->path[i] == NULL)
 	{
-		error(cmdlst.cmd, "command not found");
+		error(cmdlst->cmd, "command not found");
 		exit(127);
 	}
 }
@@ -57,18 +61,19 @@ void	call_execve(t_vars *vars, t_pipe cmdlst)
  * 
  * @return Function does not return
 */
-void	execution(t_vars *vars, t_pipe cmdlst)
+void	execution(t_vars *vars, t_pipe *cmdlst)
 {
 	int	i;
 
+	handle_dollar(vars, cmdlst);
 	i = -1;
-	if (cmdlst.cmd == NULL)
+	if (cmdlst->cmd == NULL)
 		exit(0);
 	i = -1;
 	while (vars->functions[++i] != NULL)
 	{
-		if (ft_strcmp(cmdlst.cmd, vars->functions[i]) == 0)
-			exit (vars->func[i](vars, cmdlst.arg));
+		if (ft_strcmp(cmdlst->cmd, vars->functions[i]) == 0)
+			exit (vars->func[i](vars, cmdlst->arg));
 	}
 	call_execve(vars, cmdlst);
 }
