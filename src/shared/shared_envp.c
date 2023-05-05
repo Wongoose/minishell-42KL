@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shared_envp.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 18:14:25 by zwong             #+#    #+#             */
-/*   Updated: 2023/05/04 19:01:38 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/05/05 14:48:03 by zwong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ char	**dup_envp(char **envp)
 		i++;
 	}
 	new_envp[i] = 0;
-	return(new_envp);
+	return (new_envp);
 }
 
 char	*expand_env_dollar(t_vars *vars, char *str)

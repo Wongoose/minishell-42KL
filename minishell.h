@@ -108,6 +108,11 @@ char		*ft_trim(char *str);
 char		*ft_trim_paren(char *str);
 int			update_paren_char(char c, int *paren);
 
+/* validation */
+char		*validate_raw_input(char *input);
+char		*prompt_raw_input(char *str);
+char		**validate_ops(char **tokens);
+
 /* signals */
 void		init_signal(void);
 
@@ -146,9 +151,6 @@ int  		find_operator(char **split, int i);
 void		print_token_tree(t_token *token, int level, char *direction); // temporary
 t_operator	get_operator_type(char *value);
 char		*expand_env_dollar(t_vars *vars, char *str);
-char		**validate_operator(char **tokens);
-char		*validate_quote(char *value);
-char		*validate_raw_input(char *input);
 
 /* parsing */
 t_pipe		create_new_pipe(char *value);

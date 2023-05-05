@@ -84,6 +84,8 @@ int	read_terminal(t_vars *vars)
 		vars->tokens = tokenize_input(vars, input);
 		if (vars->tokens == NULL)
 			ret = -1;
+		else if (vars->tokens->value == NULL)
+			ret = -2;
 		else if (start_minishell(vars, vars->tokens) == 0)
 			ret = vars->last_errno;
 	}

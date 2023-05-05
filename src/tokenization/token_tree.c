@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_tree.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/28 17:59:43 by zwong             #+#    #+#             */
-/*   Updated: 2023/05/03 22:08:57 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/05/05 13:57:53 by zwong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ t_token	*create_token(t_vars *vars, char *value)
 	new_token = malloc(sizeof(t_token));
 	if (!new_token)
 		exit(1);
+	if (value == NULL)
+		return (new_token);
 	if (ft_strchr(value, '$') || ft_strchr(value, '*'))
 		formatted = expand_env_dollar(vars, ft_strdup(value));
 	else

@@ -6,7 +6,7 @@
 /*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/28 15:56:08 by zwong             #+#    #+#             */
-/*   Updated: 2023/05/04 12:15:24 by zwong            ###   ########.fr       */
+/*   Updated: 2023/05/05 14:40:21 by zwong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,6 @@ char	**format_input(char **tokens, char *input)
 	return (tokens);
 }
 
-// NEXT: Simplify validation (missing validation for '|' pipes and quotes)
 t_token	*tokenize_input(t_vars *vars, char *input)
 {
 	int		i;
@@ -102,9 +101,13 @@ t_token	*tokenize_input(t_vars *vars, char *input)
 
 	tokens = malloc(sizeof(char *) * MAX_TOKENS);
 	tokens = format_input(tokens, input);
-	tokens = validate_operator(tokens);
+	tokens = validate_ops(tokens);
 	if (!tokens || !tokens[0])
-		return (NULL);
+	{
+		root = create_token(vars, NULL);
+		root->value = NULL;
+		return (root);
+	}
 	i = 0;
 	while (tokens[i] != 0)
 		i++;
