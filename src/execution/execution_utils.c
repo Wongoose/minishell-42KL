@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 17:39:09 by chenlee           #+#    #+#             */
-/*   Updated: 2023/05/05 18:08:50 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/05/05 19:33:52 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 char	**extract_path(char **path, char **envp)
 {
 	char	*str;
-	
+
 	if (path != NULL)
 		free_doublearray(path);
 	str = get_envp_value(envp, ft_strdup("PATH"));
@@ -75,8 +75,8 @@ int	open_loop(t_pipe *cmdlst, int fd[2])
 		if (fd[0] != -2)
 			close(fd[0]);
 		if (cmdlst->rdr_info[i].rdr_type == OUT)
-			fd[0] = open(cmdlst->rdr_info[i].rdr_str, O_CREAT | O_TRUNC | O_RDWR,
-					S_IRWXU | S_IRGRP | S_IROTH);
+			fd[0] = open(cmdlst->rdr_info[i].rdr_str,
+					O_CREAT | O_TRUNC | O_RDWR, S_IRWXU | S_IRGRP | S_IROTH);
 		else if (cmdlst->rdr_info[i].rdr_type == APPEND)
 			fd[0] = open(cmdlst->rdr_info[i].rdr_str,
 					O_CREAT | O_APPEND | O_RDWR, S_IRWXU | S_IRGRP | S_IROTH);

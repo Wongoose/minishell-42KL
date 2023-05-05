@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 16:00:08 by chenlee           #+#    #+#             */
-/*   Updated: 2023/05/05 18:23:03 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/05/05 19:33:21 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ void	call_execve(t_vars *vars, t_pipe *cmdlst)
 	{
 		pathname = join_str(ft_strdup(vars->path[i]), ft_strdup("/"),
 				ft_strdup(cmdlst->cmd));
-		printf("pathname={%s}\n", pathname);
 		ret = execve(pathname, cmdlst->arg, vars->envp);
 		if (ret != -1)
 			break ;

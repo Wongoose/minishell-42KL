@@ -18,9 +18,9 @@
  * 
  * @param vars The main struct containing the environment variables
  * @param new_var The new key/value to add
- * @return Function doesn't return
+ * @return Function returns 1 after successful replacement of env array
 */
-void	add_env(t_vars *vars, char *new_var)
+int	add_env(t_vars *vars, char *new_var)
 {
 	int		i;
 	char	**new_envp;
@@ -35,6 +35,7 @@ void	add_env(t_vars *vars, char *new_var)
 	free_doublearray(vars->envp);
 	new_envp[i] = ft_strdup(new_var);
 	vars->envp = new_envp;
+	return (1);
 }
 
 /**
@@ -44,9 +45,9 @@ void	add_env(t_vars *vars, char *new_var)
  * @param new_var The new key's value to replace
  * @param location The index of the environment variable array which points to
  * the key for value-replacement
- * @return Function doesn't return
+ * @return Function returns 1 after successful replacement of the value
 */
-void	replace_env(t_vars *vars, char **new_var, int location)
+int	replace_env(t_vars *vars, char **new_var, int location)
 {
 	char	*temp;
 	char	*str;
@@ -56,6 +57,7 @@ void	replace_env(t_vars *vars, char **new_var, int location)
 	free(temp);
 	free(vars->envp[location]);
 	vars->envp[location] = str;
+	return (1);
 }
 
 /**
@@ -98,6 +100,7 @@ int	check_occurance(char **env, char **our)
 int	add_or_replace(t_vars *vars, char **args)
 {
 	int		ret;
+	int		add_ret;
 	int		i;
 	char	**key_val;
 
@@ -109,10 +112,12 @@ int	add_or_replace(t_vars *vars, char **args)
 			return (export_unset_error(1, key_val[0], "export"));
 		ret = check_occurance(vars->envp, key_val);
 		if (ret != -1 && key_val[1] != NULL)
-			replace_env(vars, key_val, ret);
+			add_ret = replace_env(vars, key_val, ret);
 		else if (ret == -1)
-			add_env(vars, args[i]);
+			add_ret = add_env(vars, args[i]);
 		free_doublearray(key_val);
+		if (add_ret == 1)
+			break ;
 	}
 	return (0);
 }

@@ -1,4 +1,16 @@
-#include "../../minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   signal.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/05/05 19:35:08 by chenlee           #+#    #+#             */
+/*   Updated: 2023/05/05 19:35:08 by chenlee          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "minishell.h"
 
 void	sigint_handler(int signo)
 {
@@ -8,7 +20,6 @@ void	sigint_handler(int signo)
 	rl_replace_line("", 0);
 	rl_on_new_line();
 	rl_redisplay();
-	// vars->last_errno = 1;
 }
 
 void	init_signal(void)
@@ -20,12 +31,12 @@ void	init_signal(void)
 		perror("Tcgetattr failed\n");
 		exit(errno);
 	}
-	termios_current.c_lflag &= ~ECHOCTL; // Turning off ECHO for Ctrl key pressed
+	termios_current.c_lflag &= ~ECHOCTL;
 	if (tcsetattr(STDIN_FILENO, TCSANOW, &termios_current) == -1)
 	{
 		perror("Tcsetattr failed\n");
 		exit(errno);
 	}
-	signal(SIGINT, sigint_handler); // handles Ctrl-C
-	signal(SIGQUIT, SIG_IGN); // ignores Ctrl-\' SIG_IGN = signal ignore
+	signal(SIGINT, sigint_handler);
+	signal(SIGQUIT, SIG_IGN);
 }

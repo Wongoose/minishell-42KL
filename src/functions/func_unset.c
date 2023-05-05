@@ -1,4 +1,4 @@
-#include "../../minishell.h"
+#include "minishell.h"
 
 static void	find_and_delete(t_vars *vars, char *key)
 {

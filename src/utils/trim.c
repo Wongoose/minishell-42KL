@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   trim.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 13:36:52 by zwong             #+#    #+#             */
-/*   Updated: 2023/05/05 14:31:57 by zwong            ###   ########.fr       */
+/*   Updated: 2023/05/05 19:40:07 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 char	*ft_trim(char *str)
 {
-	int 	i;
+	int		i;
 	int		j;
 	char	*ret;
 
