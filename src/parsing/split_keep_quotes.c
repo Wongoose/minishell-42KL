@@ -87,10 +87,7 @@ char	**split_keep_quotes(char *s)
 	{
 		while (s[start] == ' ')
 			start++;
-		if (!quote_t && ft_isquote(s[start]))
-			quote_t = s[start];
-		else if (quote_t && s[start] == quote_t)
-			quote_t = 0;
+		quote_t = update_quote_t(quote_t, s[start]);
 		end = start + 1;
 		while (quote_t && (s[end] != quote_t && s[end]))
 			end++;
@@ -107,7 +104,5 @@ char	**split_keep_quotes(char *s)
 			i--;
 		start = end;
 	}
-	splitstr[i] = NULL;
-	free(s);
-	return (splitstr);
+	return (free(s), splitstr);
 }

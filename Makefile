@@ -27,6 +27,7 @@ FILES		=	print_start				\
 				func_export_unset_utils	\
 				func_unset				\
 				input_validation		\
+				quote_check				\
 				shared_envp				\
 				token_main				\
 				token_utils				\

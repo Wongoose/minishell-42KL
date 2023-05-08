@@ -157,7 +157,7 @@ char		*expand_env_dollar(t_vars *vars, char *str);
 /* parsing */
 t_pipe		create_new_pipe(char *value);
 int			get_pipe_num(t_pipe *pipe_list);
-t_pipe		*generate_pipe_list(char *value, t_token *token);
+t_pipe		*generate_pipe_list(char *value, int *pipe_num);
 int			count_pipes(char *value);
 void		print_pipe_info(t_pipe pipe);
 int			handle_rdr_out(int i, char *value, t_rdrinfo *rdr_info);
@@ -200,5 +200,8 @@ void	ft_fork(int *pid);
 
 /* subshell */
 void	start_subshell(t_vars *vars, t_token *group, t_pipe cmdlst, char **envp);
+
+/* shared */
+char	update_quote_t(char	quote_t, char value);
 
 #endif

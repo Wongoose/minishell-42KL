@@ -74,10 +74,7 @@ char	*validate_raw_input(char *input)
 	quote_t = 0;
 	while (input[++i])
 	{
-		if (!quote_t && ft_isquote(input[i]))
-			quote_t = input[i];
-		else if (quote_t && input[i] == quote_t)
-			quote_t = 0;
+		quote_t = update_quote_t(quote_t, input[i]);
 		if (validate_paren(quote_t, input, i, &paren) == -1)
 			return (add_history(input), free(input), ft_strdup(""));
 	}

@@ -26,20 +26,22 @@ static int	loop_rdr_check(char *value, t_pipe *pipe, char *formatted)
 {
 	int	i;
 	int	rdr_i;
+	int	quote_t;
 
 	i = -1;
 	rdr_i = 0;
+	quote_t = 0;
 	while (value[++i] != 0)
 	{
-		// quote
-		if (value[i] == '>')
+		quote_t = update_quote_t(quote_t, value[i]);
+		if (!quote_t && value[i] == '>')
 		{
 			pipe->rdr_info[rdr_i].rdr_type = OUT;
 			if (value[++i] == '>')
 				pipe->rdr_info[rdr_i].rdr_type = APPEND;
 			i = handle_rdr_out(i, value, &pipe->rdr_info[rdr_i++]);
 		}
-		else if (value[i] == '<')
+		else if (!quote_t && value[i] == '<')
 		{
 			pipe->rdr_info[rdr_i].rdr_type = IN;
 			if (value[++i] == '<')
@@ -55,7 +57,6 @@ static int	loop_rdr_check(char *value, t_pipe *pipe, char *formatted)
 t_pipe	create_new_pipe(char *value)
 {
 	t_pipe	pipe;
-	// int		i;
 	char	*formatted;
 	char	*head;
 
@@ -67,9 +68,6 @@ t_pipe	create_new_pipe(char *value)
 	pipe.rdr_count = loop_rdr_check(value, &pipe, formatted);
 	pipe.has_subshell = FALSE;
 	pipe.arg = split_keep_quotes(head);
-	// i = -1;
-	// while (pipe.arg[++i])
-	// 	pipe.arg[i] = exclude_quotes(pipe.arg[i]);
 	if (pipe.arg && pipe.arg[0])
 	{
 		pipe.cmd = ft_strdup(pipe.arg[0]);
@@ -93,30 +91,29 @@ void	handle_if_pipe(int *j, t_pipe *cmdlst, int *pipe_count, char **buffer)
 	}
 }
 
-t_pipe	*generate_pipe_list(char *value, t_token *token)
+t_pipe	*generate_pipe_list(char *value, int *pipe_num)
 {
 	int		j;
 	int		paren;
-	int		pipe_count;
 	t_pipe	*cmdlst;
 	char	*buffer;
+	char	quote_t;
 
-	cmdlst = (t_pipe *)malloc(sizeof(t_pipe) * (count_pipes(value) + 1));
+	cmdlst = (t_pipe *)ft_calloc((count_pipes(value) + 1), sizeof(t_pipe));
 	buffer = (char *)ft_calloc(1000, 1);
 	j = 0;
 	paren = 0;
-	pipe_count = 0;
+	quote_t = 0;
 	while (*value != 0)
 	{
-		// quote
-		if (update_paren_char(*value, &paren) == 0 && *value == '|')
-			handle_if_pipe(&j, cmdlst, &pipe_count, &buffer);
+		quote_t = update_quote_t(quote_t, *value);
+		if (!quote_t && update_paren_char(*value, &paren) == 0 && *value == '|')
+			handle_if_pipe(&j, cmdlst, pipe_num, &buffer);
 		else if (buffer[0] != 0 || *value != ' ')
 			buffer[j++] = *value;
 		value++;
 	}
 	if (buffer[0] != 0)
-		cmdlst[pipe_count++] = create_new_pipe(ft_trim(buffer));
-	token->pipe_num = pipe_count;
+		cmdlst[(*pipe_num)++] = create_new_pipe(ft_trim(buffer));
 	return (cmdlst);
 }

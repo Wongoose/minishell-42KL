@@ -26,14 +26,14 @@ t_token	*create_token(t_vars *vars, char *value)
 	formatted = ft_strdup(value);
 	new_token->left = NULL;
 	new_token->right = NULL;
+	new_token->hdoc_str = NULL;
 	new_token->value = formatted;
 	new_token->operator = get_operator_type(formatted);
 	new_token->pipe_num = 0;
-	new_token->hdoc_str = NULL;
 	if (is_operator(formatted))
 		new_token->cmdlst = NULL;
 	else
-		new_token->cmdlst = generate_pipe_list(formatted, new_token);
+		new_token->cmdlst = generate_pipe_list(formatted, &new_token->pipe_num);
 	new_token->exit_status = 0;
 	return (new_token);
 }

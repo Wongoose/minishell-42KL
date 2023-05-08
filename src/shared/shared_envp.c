@@ -79,11 +79,8 @@ char	*expand_env_dollar(t_vars *vars, char *str)
 	while (str[i] != '\0')
 	{
 		j = 0;
-		if (quote_t && quote_t == str[i])
-			quote_t = 0;
-		else if (!quote_t && ft_isquote(str[i]))
-			quote_t = str[i];
-		else if (str[i] == '$' && quote_t != '\'' && str[i + 1] != ' ')
+		quote_t = update_quote_t(quote_t, str[i]);
+		if (str[i] == '$' && quote_t != '\'' && str[i + 1] != ' ')
 		{
 			if (str[++i] == '?')
 			{
