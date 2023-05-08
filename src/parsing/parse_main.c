@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_main.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 13:54:12 by zwong             #+#    #+#             */
-/*   Updated: 2023/05/05 17:46:51 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/05/08 19:21:08 by zwong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,36 +22,33 @@ static t_pipe	prepare_subshell(t_pipe *pipe, char *value, char *formatted)
 	return (*pipe);
 }
 
-static int	loop_rdr_check(char *value, t_pipe *pipe, char *formatted)
+static void	loop_rdr_check(char *value, t_pipe *pipe, char *str, int *rdr_i)
 {
 	int	i;
-	int	rdr_i;
 	int	quote_t;
 
 	i = -1;
-	rdr_i = 0;
 	quote_t = 0;
 	while (value[++i] != 0)
 	{
 		quote_t = update_quote_t(quote_t, value[i]);
 		if (!quote_t && value[i] == '>')
 		{
-			pipe->rdr_info[rdr_i].rdr_type = OUT;
+			pipe->rdr_info[*rdr_i].rdr_type = OUT;
 			if (value[++i] == '>')
-				pipe->rdr_info[rdr_i].rdr_type = APPEND;
-			i = handle_rdr_out(i, value, &pipe->rdr_info[rdr_i++]);
+				pipe->rdr_info[*rdr_i].rdr_type = APPEND;
+			i = handle_rdr_out(i, value, &pipe->rdr_info[(*rdr_i)++]);
 		}
 		else if (!quote_t && value[i] == '<')
 		{
-			pipe->rdr_info[rdr_i].rdr_type = IN;
+			pipe->rdr_info[*rdr_i].rdr_type = IN;
 			if (value[++i] == '<')
-				pipe->rdr_info[rdr_i].rdr_type = HEREDOC;
-			i = handle_rdr_in(i, value, &pipe->rdr_info[rdr_i++]);
+				pipe->rdr_info[*rdr_i].rdr_type = HEREDOC;
+			i = handle_rdr_in(i, value, &pipe->rdr_info[(*rdr_i)++]);
 		}
 		else
-			ft_memset(formatted++, value[i], 1);
+			*str++ = value[i];
 	}
-	return (rdr_i);
 }
 
 t_pipe	create_new_pipe(char *value)
@@ -60,14 +57,15 @@ t_pipe	create_new_pipe(char *value)
 	char	*formatted;
 	char	*head;
 
-	formatted = (char *)ft_calloc(ft_strlen(value) + 1, sizeof(char));
+	formatted = (char *)ft_calloc(ft_strlen(value) + 3, sizeof(char));
 	pipe.rdr_info = (t_rdrinfo *)ft_calloc(1000, sizeof(t_rdrinfo));
 	head = formatted;
 	if (value[0] == '(' && value[ft_strlen(value) - 1] == ')')
 		return (prepare_subshell(&pipe, value, formatted));
-	pipe.rdr_count = loop_rdr_check(value, &pipe, formatted);
+	pipe.rdr_count = 0;
+	loop_rdr_check(value, &pipe, formatted, &pipe.rdr_count);
 	pipe.has_subshell = FALSE;
-	pipe.arg = split_keep_quotes(head);
+	pipe.arg = split_keep_quotes(ft_trim(head));
 	if (pipe.arg && pipe.arg[0])
 	{
 		pipe.cmd = ft_strdup(pipe.arg[0]);
@@ -111,6 +109,7 @@ t_pipe	*generate_pipe_list(char *value, int *pipe_num)
 			handle_if_pipe(&j, cmdlst, pipe_num, &buffer);
 		else if (buffer[0] != 0 || *value != ' ')
 			buffer[j++] = *value;
+		printf("buffer is: %s\n", buffer);
 		value++;
 	}
 	if (buffer[0] != 0)

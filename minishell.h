@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/05/08 19:24:14 by zwong             #+#    #+#             */
+/*   Updated: 2023/05/08 19:24:14 by zwong            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
@@ -20,11 +32,11 @@
 # include <stdio.h>
 # include <stdlib.h>
 
-struct s_vars;
-struct s_token;
+struct		s_vars;
+struct		s_token;
 typedef int	(*t_func)(struct s_vars *vars, char **args);
 
-#define MAX_TOKENS 1024
+# define MAX_TOKENS 1024
 
 typedef enum e_bool
 {
@@ -52,17 +64,17 @@ typedef enum e_function
 
 typedef enum s_rdrtype
 {
-	IN = 1,		 // <
-	OUT = 2,	 // >
-	HEREDOC = 3, // <<
-	APPEND = 4,	 // >>
+	IN = 1,
+	OUT = 2,
+	HEREDOC = 3,
+	APPEND = 4,
 }	t_rdrtype;
 
 typedef struct s_rdrinfo
 {
 	pid_t		rdr_pid;
-    char		*rdr_str;
-    t_rdrtype	rdr_type;
+	char		*rdr_str;
+	t_rdrtype	rdr_type;
 }	t_rdrinfo;
 
 typedef struct s_pipe
@@ -79,7 +91,7 @@ typedef struct s_token
 	struct s_token	*parent;
 	struct s_token	*left;
 	struct s_token	*right;
-	char			*value; // raw value (e.g. "echo z")
+	char			*value;
 	int				exit_status;
 	int				pipe_num;
 	char			**hdoc_str;
@@ -139,18 +151,18 @@ void		free_doublearray(char **data);
 /* tokenization */
 t_token		*tokenize_input(t_vars *vars, char *input);
 t_bool		has_pipe_in_shell(char **tokens);
-t_token 	*build_token_tree(t_vars *vars, char **tokens, int start, int end);
-t_token 	*create_token(t_vars *vars, char *value);
-int 		is_operator(char *token);
-int 		is_pipe(char *token);
-int 		is_left_paren(char *token);
-int 		is_right_paren(char *token);
-int 		count_paren_and_ops(char *input);
+t_token		*build_token_tree(t_vars *vars, char **tokens, int start, int end);
+t_token		*create_token(t_vars *vars, char *value);
+int			is_operator(char *token);
+int			is_pipe(char *token);
+int			is_left_paren(char *token);
+int			is_right_paren(char *token);
+int			count_paren_and_ops(char *input);
 t_bool		is_operator_char(char *input, int i);
 int			update_parenthesis(char *token, int paren);
-int 		should_add_to_tokens(char **token, int i, int operator_i);
-int  		find_operator(char **split, int i);
-void		print_token_tree(t_token *token, int level, char *direction); // temporary
+int			should_add_to_tokens(char **token, int i, int operator_i);
+int			find_operator(char **split, int i);
+void		print_token_tree(t_token *token, int level, char *direction);
 t_operator	get_operator_type(char *value);
 char		*expand_env_dollar(t_vars *vars, char *str);
 
@@ -167,41 +179,46 @@ char		*exclude_quotes(char *str);
 char		**split_keep_quotes(char *s);
 
 /* piping */
-int		start_minishell(t_vars *vars, t_token *group);
-int		cmdgroup(t_vars *vars, t_token *group);
-void	first_child(t_vars *vars, t_token *group, int index, int pipefd[2][2]);
-void	middle_child(t_vars *vars, t_token *group, int index, int pipefd[2][2]);
-void	last_child(t_vars *vars, t_token *group, int index, int pipefd[2][2]);
-void	ft_dup_inoutfile(int i, t_pipe cmdlst, char **hdoc, int rdr_inout[2]);
-void	ft_dup(char *cmd, int fd_one, int fd_two);
-void	ft_open(int i, t_rdrinfo info, char **hdoc, int rdr_inout[2]);
-void	ft_close_pipe(int index, int n_cmds, int pipefd[2][2]);
+int			start_minishell(t_vars *vars, t_token *group);
+int			cmdgroup(t_vars *vars, t_token *group);
+void		first_child(t_vars *vars, t_token *group, int index,
+				int pipefd[2][2]);
+void		middle_child(t_vars *vars, t_token *group, int index,
+				int pipefd[2][2]);
+void		last_child(t_vars *vars, t_token *group, int index,
+				int pipefd[2][2]);
+void		ft_dup_inoutfile(int i, t_pipe cmdlst, char **hdoc,
+				int rdr_inout[2]);
+void		ft_dup(char *cmd, int fd_one, int fd_two);
+void		ft_open(int i, t_rdrinfo info, char **hdoc, int rdr_inout[2]);
+void		ft_close_pipe(int index, int n_cmds, int pipefd[2][2]);
 
 /* heredoc */
-char	**handle_heredoc(t_vars *vars, t_token *group);
-char	*get_readline(t_vars *vars, char *rdr_str);
+char		**handle_heredoc(t_vars *vars, t_token *group);
+char		*get_readline(t_vars *vars, char *rdr_str);
 
 /* wildcard */
-char	*handle_wildcard(char **arg);
-char	*expand_wildcard(char *wc_str);
+char		*handle_wildcard(char **arg);
+char		*expand_wildcard(char *wc_str);
 
 /* dollar expansion */
-void	handle_dollar(t_vars *vars, t_pipe *cmdlst);
+void		handle_dollar(t_vars *vars, t_pipe *cmdlst);
 
 /* execution */
-int		do_builtin(t_vars *vars, t_pipe *cmdlst);
-void	execution(t_vars *vars, t_pipe *cmdlst);
-void	wait_for_pid(t_vars *vars, t_token *group, int *pid);
+int			do_builtin(t_vars *vars, t_pipe *cmdlst);
+void		execution(t_vars *vars, t_pipe *cmdlst);
+void		wait_for_pid(t_vars *vars, t_token *group, int *pid);
 
 /* piping/execution utils */
-char	*join_str(char *front, char *middle, char *rear);
-int		error(char *cmd, char *str);
-void	ft_fork(int *pid);
+char		*join_str(char *front, char *middle, char *rear);
+int			error(char *cmd, char *str);
+void		ft_fork(int *pid);
 
 /* subshell */
-void	start_subshell(t_vars *vars, t_token *group, t_pipe cmdlst, char **envp);
+void		start_subshell(t_vars *vars, t_token *group, t_pipe cmdlst,
+				char **envp);
 
 /* shared */
-char	update_quote_t(char	quote_t, char value);
+char		update_quote_t(char quote_t, char value);
 
 #endif

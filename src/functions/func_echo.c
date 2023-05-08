@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   func_echo.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/05/08 18:29:37 by zwong             #+#    #+#             */
+/*   Updated: 2023/05/08 18:29:37 by zwong            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../minishell.h"
 
 int	count_flags(char **argv)
@@ -33,7 +45,6 @@ int	func_echo(t_vars *vars, char **argv)
 {
 	int		i;
 	int		flag_count;
-	(void)	vars;
 
 	if (argv[1] == 0)
 	{
@@ -41,7 +52,7 @@ int	func_echo(t_vars *vars, char **argv)
 		return (0);
 	}
 	flag_count = count_flags(argv);
-	i = flag_count + 1; // before printing, jump pass the number of -n
+	i = flag_count + 1;
 	while (argv[i])
 	{
 		ft_printf(argv[i]);

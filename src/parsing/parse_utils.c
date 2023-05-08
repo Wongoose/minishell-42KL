@@ -6,7 +6,7 @@
 /*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 14:50:55 by zwong             #+#    #+#             */
-/*   Updated: 2023/05/04 11:22:32 by zwong            ###   ########.fr       */
+/*   Updated: 2023/05/08 19:20:26 by zwong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,8 @@ int	handle_rdr_out(int i, char *value, t_rdrinfo *rdr_info)
 			break ;
 		}
 	}
+	if (value[j] == 0)
+		j -= 1;
 	return (j);
 }
 
@@ -73,8 +75,8 @@ int	handle_rdr_in(int i, char *value, t_rdrinfo *rdr_info)
 		i++;
 	if (!quote_t && ft_isquote(value[i]))
 		quote_t = value[i++];
-	j = i;
-	while (value[j] != 0)
+	j = i - 1;
+	while (value[++j] != 0)
 	{
 		if ((!quote_t && (value[j + 1] == ' ' || value[j + 1] == '\0'))
 			|| value[j + 1] == quote_t)
@@ -84,8 +86,9 @@ int	handle_rdr_in(int i, char *value, t_rdrinfo *rdr_info)
 			rdr_info->rdr_str = ft_substr(value, i, j++ - i + 1);
 			break ;
 		}
-		j++;
 	}
+	if (value[j] == 0)
+		j -= 1;
 	return (j);
 }
 

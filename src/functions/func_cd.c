@@ -1,17 +1,27 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   func_cd.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/05/08 18:30:56 by zwong             #+#    #+#             */
+/*   Updated: 2023/05/08 18:30:56 by zwong            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../minishell.h"
 
 int	func_cd(t_vars *vars, char **args)
 {
 	char	*path;
 
-	(void)args;
-
-	if (args[1] == 0) // if no provided path is given, set default to HOME
+	if (args[1] == 0)
 	{
 		path = get_envp_value(vars->envp, ft_strdup("HOME"));
 		if (path == NULL)
-			ft_putstr_fd("HOME not set\n", STDERR_FILENO); // Error if HOME cannot be found
-		else if (chdir(path) < 0) // chdir is a system function
+			ft_putstr_fd("HOME not set\n", STDERR_FILENO);
+		else if (chdir(path) < 0)
 			perror(path);
 	}
 	else if (chdir(args[1]) < 0)

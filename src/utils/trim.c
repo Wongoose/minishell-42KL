@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   trim.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 13:36:52 by zwong             #+#    #+#             */
-/*   Updated: 2023/05/05 19:40:07 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/05/08 18:47:31 by zwong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,17 +54,14 @@ char	*ft_trim_paren(char *str)
 	char	*ret;
 	char	*temp;
 
-	if (!str)
-		return (NULL);
-	paren = -1;
-	i = 0;
+	if (!str || str[0] != '(')
+		return (ft_trim(str));
 	ret = ft_trim(str);
-	if (ret[0] != '(')
-		return (ret);
-	while (ret[i])
+	i = -1;
+	paren = -1;
+	while (ret[++i])
 	{
-		update_paren_char(ret[i], &paren);
-		if (paren == 0)
+		if (update_paren_char(ret[i], &paren) == 0)
 		{
 			if (i == (int)(ft_strlen(ret) - 1))
 			{
@@ -74,7 +71,6 @@ char	*ft_trim_paren(char *str)
 			}
 			break ;
 		}
-		i++;
 	}
 	return (ft_trim(ret));
 }

@@ -6,11 +6,11 @@
 /*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 18:10:52 by zwong             #+#    #+#             */
-/*   Updated: 2023/05/03 18:11:48 by zwong            ###   ########.fr       */
+/*   Updated: 2023/05/08 19:23:37 by zwong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
+#include "minishell.h"
 
 static int	count_words(char const *s)
 {
@@ -68,6 +68,24 @@ char	*exclude_quotes(char *str)
 	return (new);
 }
 
+static int	find_end(char *s, int start, char quote_t)
+{
+	int	end;
+
+	end = start + 1;
+	while (quote_t && (s[end] != quote_t && s[end]))
+		end++;
+	if (quote_t && s[end] == quote_t)
+		quote_t = 0;
+	while (s[end] != ' ' && s[end])
+	{
+		end++;
+		if (ft_isquote(s[end]))
+			break ;
+	}
+	return (end);
+}
+
 char	**split_keep_quotes(char *s)
 {
 	char	**splitstr;
@@ -77,8 +95,6 @@ char	**split_keep_quotes(char *s)
 	int		i;
 
 	splitstr = (char **)ft_calloc(count_words(s) + 1, sizeof(char *));
-	if (!s || !splitstr)
-		return (NULL);
 	quote_t = 0;
 	start = 0;
 	end = 0;
@@ -88,18 +104,9 @@ char	**split_keep_quotes(char *s)
 		while (s[start] == ' ')
 			start++;
 		quote_t = update_quote_t(quote_t, s[start]);
-		end = start + 1;
-		while (quote_t && (s[end] != quote_t && s[end]))
-			end++;
-		if (quote_t && s[end] == quote_t)
-			quote_t = 0;
-		while (s[end] != ' ' && s[end])
-		{
-			end++;
-			if (ft_isquote(s[end]))
-				break ;
-		}
-		splitstr[i] = join_str(splitstr[i], NULL, ft_substr(s, start, end - start));
+		end = find_end(s, start, quote_t);
+		splitstr[i]
+			= join_str(splitstr[i], NULL, ft_substr(s, start, end - start));
 		if (!quote_t && ft_isquote(s[end]))
 			i--;
 		start = end;

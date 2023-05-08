@@ -23,7 +23,7 @@ void	print_envp(t_vars *vars)
 	int	i;
 	int	j;
 	int	count;
-	
+
 	i = -1;
 	while (vars->envp[++i] != NULL)
 	{

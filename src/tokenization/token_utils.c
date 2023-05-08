@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/28 18:06:17 by zwong             #+#    #+#             */
-/*   Updated: 2023/05/05 17:10:52 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/05/08 17:47:26 by zwong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,26 +99,26 @@ int	find_operator(char **split, int current)
 	return (-1);
 }
 
-void	print_token_tree(t_token *token, int level, char *direction)
-{
-	int	i;
+// void	print_token_tree(t_token *token, int level, char *direction)
+// {
+// 	int	i;
 
-	if (token == NULL)
-		return ;
-	i = -1;
-	while (++i < level)
-		printf("    ");
-	printf("%s: %s", direction, token->value);
-	i = 0;
-	while (i < token->pipe_num)
-	{
-		if (token->cmdlst[i++].has_subshell)
-		{
-			printf("\t[has subshell]");
-			break ;
-		}
-	}
-	printf("\n");
-	print_token_tree(token->left, level + 1, "LEFT");
-	print_token_tree(token->right, level + 1, "RIGHT");
-}
+// 	if (token == NULL)
+// 		return ;
+// 	i = -1;
+// 	while (++i < level)
+// 		printf("    ");
+// 	printf("%s: %s", direction, token->value);
+// 	i = 0;
+// 	while (i < token->pipe_num)
+// 	{
+// 		if (token->cmdlst[i++].has_subshell)
+// 		{
+// 			printf("\t[has subshell]");
+// 			break ;
+// 		}
+// 	}
+// 	printf("\n");
+// 	print_token_tree(token->left, level + 1, "LEFT");
+// 	print_token_tree(token->right, level + 1, "RIGHT");
+// }
