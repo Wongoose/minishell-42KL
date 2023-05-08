@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   trim.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 13:36:52 by zwong             #+#    #+#             */
-/*   Updated: 2023/05/08 18:47:31 by zwong            ###   ########.fr       */
+/*   Updated: 2023/05/08 19:59:42 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,15 +21,15 @@ char	*ft_trim(char *str)
 	if (!str)
 		return (NULL);
 	i = 0;
-	j = ft_strlen(str);
+	j = ft_strlen(str) - 1;
 	while (str[i] == ' ' && str[i])
 		i++;
-	while (str[j] == ' ' && j != 0)
+	while (j > 0 && str[j] == ' ')
 		j--;
-	if (j == 0)
+	if (j <= 0)
 		ret = ft_strdup("");
 	else
-		ret = ft_substr(str, i, j - i);
+		ret = ft_substr(str, i, j - i + 1);
 	free(str);
 	return (ret);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_main.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
+/*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 13:54:12 by zwong             #+#    #+#             */
-/*   Updated: 2023/05/08 19:21:08 by zwong            ###   ########.fr       */
+/*   Updated: 2023/05/08 20:03:56 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,6 @@ t_pipe	*generate_pipe_list(char *value, int *pipe_num)
 			handle_if_pipe(&j, cmdlst, pipe_num, &buffer);
 		else if (buffer[0] != 0 || *value != ' ')
 			buffer[j++] = *value;
-		printf("buffer is: %s\n", buffer);
 		value++;
 	}
 	if (buffer[0] != 0)
