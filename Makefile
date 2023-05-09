@@ -16,6 +16,7 @@ DSRCS		= src				\
 DOBJS		= objs/
 
 FILES		=	print_start				\
+				print_token_tree		\
 				signal					\
 				trim					\
 				func_cd					\
