@@ -29,7 +29,7 @@ void	ft_free_pipe(int pipe_num, t_pipe *cmdlst)
 	while (++i < pipe_num)
 	{
 		free(cmdlst[i].cmd);
-		if (cmdlst[i].arg != NULL && cmdlst[i].arg[0] != NULL)
+		if (cmdlst[i].arg != NULL)
 			free_doublearray(cmdlst[i].arg);
 		j = -1;
 		while (++j < cmdlst[i].rdr_count)
