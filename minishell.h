@@ -139,6 +139,7 @@ int			func_pwd(t_vars *vars, char **args);
 int			func_exit(t_vars *vars, char **args);
 int			func_env(t_vars *vars, char **args);
 int			func_export(t_vars *vars, char **args);
+int			add_or_replace(t_vars *vars, char **args);
 void		print_envp(t_vars *vars);
 char		**equal_split(char *str);
 t_bool		verify_variable(char *variable);

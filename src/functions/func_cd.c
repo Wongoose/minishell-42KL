@@ -15,6 +15,7 @@
 int	func_cd(t_vars *vars, char **args)
 {
 	char	*path;
+	char	**temp;
 
 	if (args[1] == NULL || args[1][0] == '~')
 	{
@@ -30,5 +31,9 @@ int	func_cd(t_vars *vars, char **args)
 	}
 	else if (chdir(args[1]) < 0)
 		perror(args[1]);
+	temp = ft_calloc(3, sizeof(char *));
+	temp[1] = join_str(ft_strdup("PWD="), NULL, ft_strdup(getcwd(NULL, 0)));
+	add_or_replace(vars, temp);
+	free(temp);
 	return (0);
 }
