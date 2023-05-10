@@ -36,6 +36,7 @@ FILES		=	print_start				\
 				token_tree				\
 				parse_main				\
 				parse_utils				\
+				rdr_utils				\
 				split_keep_quotes		\
 				start					\
 				subshell				\

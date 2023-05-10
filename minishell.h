@@ -121,6 +121,8 @@ char		**dup_envp(char **envp);
 char		*ft_trim(char *str);
 char		*ft_trim_paren(char *str);
 int			update_paren_char(char c, int *paren);
+t_bool		is_rdr_char(char value);
+t_bool		is_rdr_str(char *value);
 
 /* validation */
 char		*validate_raw_input(char *input);
@@ -177,6 +179,9 @@ int			handle_rdr_in(int i, char *value, t_rdrinfo *rdr_info);
 void		filter_exceptions(t_pipe *pipe);
 char		*exclude_quotes(char *str);
 char		**split_keep_quotes(char *s);
+void		assign_rdr_in_type(t_pipe *pipe, int *i, char *value, int *rdr_i);
+void		assign_rdr_out_type(t_pipe *pipe, int *i, char *value, int *rdr_i);
+t_rdrinfo	*remove_rdr_from_list(t_rdrinfo *list, int index, int item_count);
 
 /* piping */
 int			start_minishell(t_vars *vars, t_token *group);
@@ -220,7 +225,5 @@ void		start_subshell(t_vars *vars, t_token *group, t_pipe cmdlst,
 
 /* shared */
 char		update_quote_t(char quote_t, char value);
-t_bool		is_rdr_char(char value);
-t_bool		is_rdr_str(char *value);
 
 #endif

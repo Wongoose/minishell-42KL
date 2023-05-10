@@ -6,20 +6,17 @@
 /*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 13:54:12 by zwong             #+#    #+#             */
-/*   Updated: 2023/05/10 14:04:16 by zwong            ###   ########.fr       */
+/*   Updated: 2023/05/10 17:59:28 by zwong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static t_pipe	prepare_subshell(t_pipe *pipe, char *value, char *formatted)
+static t_pipe	prepare_subshell(t_pipe *pipe, char *head)
 {
-	(void)formatted;
 	pipe->has_subshell = TRUE;
-	pipe->cmd = ft_trim_paren(value);
+	pipe->cmd = ft_trim_paren(head);
 	pipe->arg = NULL;
-	// pipe->rdr_count = 0;
-	// free(formatted);
 	return (*pipe);
 }
 
@@ -27,25 +24,22 @@ static void	loop_rdr_check(char *value, t_pipe *pipe, char *str, int *rdr_i)
 {
 	int	i;
 	int	quote_t;
+	int	paren;
 
 	i = -1;
 	quote_t = 0;
+	paren = 0;
 	while (value[++i] != 0)
 	{
 		quote_t = update_quote_t(quote_t, value[i]);
-		if (!quote_t && value[i] == '>')
+		if (!quote_t && update_paren_char(value[i], &paren) == 0)
 		{
-			pipe->rdr_info[*rdr_i].rdr_type = OUT;
-			if (value[++i] == '>')
-				pipe->rdr_info[*rdr_i].rdr_type = APPEND;
-			i = handle_rdr_out(i, value, &pipe->rdr_info[(*rdr_i)++]);
-		}
-		else if (!quote_t && value[i] == '<')
-		{
-			pipe->rdr_info[*rdr_i].rdr_type = IN;
-			if (value[++i] == '<')
-				pipe->rdr_info[*rdr_i].rdr_type = HEREDOC;
-			i = handle_rdr_in(i, value, &pipe->rdr_info[(*rdr_i)++]);
+			if (value[i] == '>')
+				assign_rdr_out_type(pipe, &i, value, rdr_i);
+			else if (value[i] == '<')
+				assign_rdr_in_type(pipe, &i, value, rdr_i);
+			else
+				*str++ = value[i];
 		}
 		else
 			*str++ = value[i];
@@ -62,14 +56,11 @@ t_pipe	create_new_pipe(char *value)
 	pipe.rdr_info = (t_rdrinfo *)ft_calloc(1000, sizeof(t_rdrinfo));
 	head = formatted;
 	pipe.rdr_count = 0;
-	printf("value is: %s\n", value);
 	loop_rdr_check(value, &pipe, formatted, &pipe.rdr_count);
 	head = ft_trim(head);
-	printf("Head is: %s\n", head);
+	free(value);
 	if (head[0] == '(' && head[ft_strlen(head) - 1] == ')')
-		return (prepare_subshell(&pipe, head, formatted));
-	// pipe.rdr_count = 0;
-	// loop_rdr_check(value, &pipe, formatted, &pipe.rdr_count);
+		return (prepare_subshell(&pipe, head));
 	pipe.has_subshell = FALSE;
 	pipe.arg = split_keep_quotes(ft_trim(head));
 	if (pipe.arg && pipe.arg[0])
@@ -79,7 +70,6 @@ t_pipe	create_new_pipe(char *value)
 	}
 	else
 		pipe.cmd = NULL;
-	free(value);
 	return (pipe);
 }
 

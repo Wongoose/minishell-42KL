@@ -6,7 +6,7 @@
 /*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 14:50:55 by zwong             #+#    #+#             */
-/*   Updated: 2023/05/08 19:20:26 by zwong            ###   ########.fr       */
+/*   Updated: 2023/05/10 17:55:56 by zwong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,79 +34,20 @@ int	count_pipes(char *value)
 	return (count);
 }
 
-int	handle_rdr_out(int i, char *value, t_rdrinfo *rdr_info)
+void	assign_rdr_out_type(t_pipe *pipe, int *i, char *value, int *rdr_i)
 {
-	int		j;
-	char	quote_t;
-
-	quote_t = 0;
-	if (value[i] == '>')
-		i++;
-	while (value[i] == ' ')
-		i++;
-	if (!quote_t && ft_isquote(value[i]))
-		quote_t = value[i++];
-	j = i - 1;
-	while (value[++j] != 0)
-	{
-		if ((!quote_t && (value[j + 1] == ' ' || value[j + 1] == '\0'))
-			|| value[j + 1] == quote_t)
-		{
-			if (rdr_info->rdr_str)
-				free(rdr_info->rdr_str);
-			rdr_info->rdr_str = ft_substr(value, i, j++ - i + 1);
-			break ;
-		}
-	}
-	if (value[j] == 0)
-		j -= 1;
-	return (j);
+	pipe->rdr_info[*rdr_i].rdr_type = OUT;
+	if (value[++(*i)] == '>')
+		pipe->rdr_info[*rdr_i].rdr_type = APPEND;
+	*i = handle_rdr_out(*i, value, &pipe->rdr_info[(*rdr_i)++]);
 }
 
-int	handle_rdr_in(int i, char *value, t_rdrinfo *rdr_info)
+void	assign_rdr_in_type(t_pipe *pipe, int *i, char *value, int *rdr_i)
 {
-	int		j;
-	char	quote_t;
-
-	quote_t = 0;
-	if (value[i] == '<')
-		i++;
-	while (value[i] == ' ')
-		i++;
-	if (!quote_t && ft_isquote(value[i]))
-		quote_t = value[i++];
-	j = i - 1;
-	while (value[++j] != 0)
-	{
-		if ((!quote_t && (value[j + 1] == ' ' || value[j + 1] == '\0'))
-			|| value[j + 1] == quote_t)
-		{
-			if (rdr_info->rdr_str)
-				free(rdr_info->rdr_str);
-			rdr_info->rdr_str = ft_substr(value, i, j++ - i + 1);
-			break ;
-		}
-	}
-	if (value[j] == 0)
-		j -= 1;
-	return (j);
-}
-
-t_rdrinfo	*remove_rdr_from_list(t_rdrinfo *list, int index, int item_count)
-{
-	int			i;
-	int			j;
-	t_rdrinfo	*new_list;
-
-	new_list = malloc(sizeof(t_rdrinfo) * (item_count + 1));
-	i = -1;
-	j = 0;
-	while (++i < item_count)
-	{
-		if (i != index)
-			new_list[j++] = list[i];
-	}
-	return (new_list);
+	pipe->rdr_info[*rdr_i].rdr_type = IN;
+	if (value[++(*i)] == '<')
+		pipe->rdr_info[*rdr_i].rdr_type = HEREDOC;
+	*i = handle_rdr_in(*i, value, &pipe->rdr_info[(*rdr_i)++]);
 }
 
 void	filter_exceptions(t_pipe *pipe)
