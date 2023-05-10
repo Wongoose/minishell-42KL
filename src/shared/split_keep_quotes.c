@@ -68,15 +68,15 @@ char	*exclude_quotes(char *str)
 	return (new);
 }
 
-static int	find_end(char *s, int start, char quote_t)
+static int	find_end(char *s, int start, char *quote_t)
 {
 	int	end;
 
 	end = start + 1;
-	while (quote_t && (s[end] != quote_t && s[end]))
+	while (*quote_t && (s[end] != *quote_t && s[end]))
 		end++;
-	if (quote_t && s[end] == quote_t)
-		quote_t = 0;
+	if (*quote_t && s[end] == *quote_t)
+		*quote_t = 0;
 	while (s[end] != ' ' && s[end])
 	{
 		end++;
@@ -104,7 +104,7 @@ char	**split_keep_quotes(char *s)
 		while (s[start] == ' ')
 			start++;
 		quote_t = update_quote_t(quote_t, s[start]);
-		end = find_end(s, start, quote_t);
+		end = find_end(s, start, &quote_t);
 		splitstr[i]
 			= join_str(splitstr[i], NULL, ft_substr(s, start, end - start));
 		if (!quote_t && ft_isquote(s[end]))
