@@ -15,6 +15,9 @@
 char	**extract_path(char **path, char **envp)
 {
 	char	*str;
+	char	**path_arr;
+	char	**new_path;
+	int		i;
 
 	if (path != NULL)
 		free_doublearray(path);
@@ -22,7 +25,19 @@ char	**extract_path(char **path, char **envp)
 	if (str == NULL)
 		return (NULL);
 	else
-		return (ft_split(str, ':'));
+	{
+		path_arr = ft_split(str, ':');
+		i = 0;
+		while (path_arr[i])
+			i++;
+		new_path = (char **)ft_calloc(i + 2, sizeof(char *));
+		i = -1;
+		while (path_arr[++i] != NULL)
+			new_path[i] = ft_strdup(path_arr[i]);
+		free_doublearray(path_arr);
+		new_path[i] = ft_strdup("");
+		return (new_path);
+	}
 }
 
 /**
