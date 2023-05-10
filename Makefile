@@ -50,6 +50,7 @@ FILES		=	print_start				\
 				execution_utils			\
 				identifier				\
 				join_str				\
+				is_rdr_char				\
 				free
 
 FOBJS		= $(addprefix $(DOBJS), $(addsuffix .o, $(FILES:.c=.o)))

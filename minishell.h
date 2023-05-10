@@ -220,5 +220,7 @@ void		start_subshell(t_vars *vars, t_token *group, t_pipe cmdlst,
 
 /* shared */
 char		update_quote_t(char quote_t, char value);
+t_bool		is_rdr_char(char value);
+t_bool		is_rdr_str(char *value);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 13:14:38 by zwong             #+#    #+#             */
-/*   Updated: 2023/05/05 14:47:11 by zwong            ###   ########.fr       */
+/*   Updated: 2023/05/10 13:58:31 by zwong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int	validate_paren(char quote_t, char *input, int i, int *paren)
 		if (input[i + 1] == '\0')
 			return (0);
 		if (input[i + 1] != ')' && input[i + 1] != '|'
-			&& !is_operator_char(input, i + 1))
+			&& !is_operator_char(input, i + 1) && !is_rdr_char(input[i + 1]))
 			return (printf("Found unexpected token near '%s'\n",
 					get_str(input, i + 1)), -1);
 	}

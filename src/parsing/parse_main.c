@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_main.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 13:54:12 by zwong             #+#    #+#             */
-/*   Updated: 2023/05/08 20:03:56 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/05/10 14:04:16 by zwong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,12 @@
 
 static t_pipe	prepare_subshell(t_pipe *pipe, char *value, char *formatted)
 {
+	(void)formatted;
 	pipe->has_subshell = TRUE;
 	pipe->cmd = ft_trim_paren(value);
 	pipe->arg = NULL;
-	pipe->rdr_count = 0;
-	free(formatted);
+	// pipe->rdr_count = 0;
+	// free(formatted);
 	return (*pipe);
 }
 
@@ -60,10 +61,15 @@ t_pipe	create_new_pipe(char *value)
 	formatted = (char *)ft_calloc(ft_strlen(value) + 3, sizeof(char));
 	pipe.rdr_info = (t_rdrinfo *)ft_calloc(1000, sizeof(t_rdrinfo));
 	head = formatted;
-	if (value[0] == '(' && value[ft_strlen(value) - 1] == ')')
-		return (prepare_subshell(&pipe, value, formatted));
 	pipe.rdr_count = 0;
+	printf("value is: %s\n", value);
 	loop_rdr_check(value, &pipe, formatted, &pipe.rdr_count);
+	head = ft_trim(head);
+	printf("Head is: %s\n", head);
+	if (head[0] == '(' && head[ft_strlen(head) - 1] == ')')
+		return (prepare_subshell(&pipe, head, formatted));
+	// pipe.rdr_count = 0;
+	// loop_rdr_check(value, &pipe, formatted, &pipe.rdr_count);
 	pipe.has_subshell = FALSE;
 	pipe.arg = split_keep_quotes(ft_trim(head));
 	if (pipe.arg && pipe.arg[0])

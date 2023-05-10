@@ -6,7 +6,7 @@
 /*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/28 18:06:17 by zwong             #+#    #+#             */
-/*   Updated: 2023/05/09 12:12:56 by zwong            ###   ########.fr       */
+/*   Updated: 2023/05/10 13:59:57 by zwong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ t_bool	has_pipe_in_shell(char **tokens)
 			paren++;
 		else if (is_right_paren(tokens[i]))
 			paren--;
-		if (paren == 0 && is_pipe(tokens[i]))
+		if (paren == 0 && (is_pipe(tokens[i]) || is_rdr_str(tokens[i])))
 			return (TRUE);
 	}
 	return (FALSE);
