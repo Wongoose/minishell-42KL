@@ -18,6 +18,7 @@ void	init_vars(t_vars *vars, char **envp)
 	vars->is_subshell = FALSE;
 	vars->envp = dup_envp(envp);
 	vars->path = NULL;
+	vars->syntax_err = NULL;
 	vars->functions = ft_split("echo cd pwd export unset env exit", ' ');
 	vars->last_errno = 0;
 	vars->func[E_ECHO] = func_echo;
@@ -72,7 +73,7 @@ int	read_terminal(t_vars *vars)
 	ret = -2;
 	init_signal();
 	input = readline("minihell$> ");
-	input = validate_raw_input(input);
+	input = validate_raw_input(vars, input, FALSE);
 	if (input == NULL)
 	{
 		printf("exit\n");
@@ -106,7 +107,9 @@ int	main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		vars.tokens = NULL;
+		vars.syntax_err = NULL;
 		ret = read_terminal(&vars);
+		handle_syntax_err(&vars);
 		exit_status = vars.last_errno;
 		ft_free_tree(vars.tokens, ret);
 		if (ret != -2)

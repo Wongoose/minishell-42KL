@@ -6,7 +6,7 @@
 /*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 13:54:12 by zwong             #+#    #+#             */
-/*   Updated: 2023/05/10 17:59:28 by zwong            ###   ########.fr       */
+/*   Updated: 2023/05/11 14:53:51 by zwong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,6 @@ t_pipe	create_new_pipe(char *value)
 
 void	handle_if_pipe(int *j, t_pipe *cmdlst, int *pipe_count, char **buffer)
 {
-	if (*j == 0)
-		write(2, "minishell: syntax error near unexpected token '|'\n", 50);
 	if ((*buffer)[0] != 0)
 	{
 		cmdlst[(*pipe_count)++] = create_new_pipe(ft_trim(*buffer));

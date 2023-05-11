@@ -134,3 +134,14 @@ void	free_doublearray(char **data)
 		free(data[i]);
 	free(data);
 }
+
+void	handle_syntax_err(t_vars *vars)
+{
+	if (vars->syntax_err != NULL)
+	{
+		printf("minishell: syntax error near unexpected token `%s'\n",
+			vars->syntax_err);
+		vars->last_errno = 258;
+		free(vars->syntax_err);
+	}
+}

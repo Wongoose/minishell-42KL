@@ -6,7 +6,7 @@
 /*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/28 15:56:08 by zwong             #+#    #+#             */
-/*   Updated: 2023/05/05 14:40:21 by zwong            ###   ########.fr       */
+/*   Updated: 2023/05/11 14:46:32 by zwong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ t_token	*tokenize_input(t_vars *vars, char *input)
 
 	tokens = malloc(sizeof(char *) * MAX_TOKENS);
 	tokens = format_input(tokens, input);
-	tokens = validate_ops(tokens);
+	tokens = validate_ops(vars, tokens);
 	if (!tokens || !tokens[0])
 	{
 		root = create_token(vars, NULL);

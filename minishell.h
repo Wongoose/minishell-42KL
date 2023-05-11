@@ -106,6 +106,7 @@ typedef struct s_vars
 	char			**functions;
 	char			**path;
 	int				last_errno;
+	char			*syntax_err;
 	t_token			*tokens;
 	t_func			func[7];
 }	t_vars;
@@ -123,11 +124,12 @@ char		*ft_trim_paren(char *str);
 int			update_paren_char(char c, int *paren);
 t_bool		is_rdr_char(char value);
 t_bool		is_rdr_str(char *value);
+int			is_syntax_char(char *input, int i);
+void		handle_syntax_err(t_vars *vars);
 
 /* validation */
-char		*validate_raw_input(char *input);
-char		*prompt_raw_input(char *str);
-char		**validate_ops(char **tokens);
+char		*validate_raw_input(t_vars *vars, char *input, t_bool from_op);
+char		**validate_ops(t_vars *vars, char **tokens);
 
 /* signals */
 void		init_signal(void);
@@ -226,5 +228,6 @@ void		start_subshell(t_vars *vars, t_token *group, t_pipe cmdlst,
 
 /* shared */
 char		update_quote_t(char quote_t, char value);
+char		*get_str(char *input, int start);
 
 #endif

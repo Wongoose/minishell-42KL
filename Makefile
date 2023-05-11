@@ -19,6 +19,7 @@ FILES		=	print_start				\
 				print_token_tree		\
 				signal					\
 				trim					\
+				get_operator_type		\
 				func_cd					\
 				func_echo				\
 				func_exit				\

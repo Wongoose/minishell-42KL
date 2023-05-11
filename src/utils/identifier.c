@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   identifier.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
+/*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 19:37:23 by chenlee           #+#    #+#             */
-/*   Updated: 2023/05/05 19:37:25 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/05/11 15:37:51 by zwong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,12 +32,8 @@ int	is_right_paren(char *token)
 	return (ft_strcmp(token, ")") == 0);
 }
 
-t_operator	get_operator_type(char *value)
+int	is_syntax_char(char *input, int i)
 {
-	if (ft_strcmp(value, "&&") == 0)
-		return (AND);
-	else if (ft_strcmp(value, "||") == 0)
-		return (OR);
-	else
-		return (UNDEFINED);
+	return ((input[i] == '|' || input[i] == '&')
+		&& (input[i + 1] == 0 || input[i + 1] == ' '));
 }
