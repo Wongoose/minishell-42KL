@@ -6,7 +6,7 @@
 /*   By: zwong <zwong@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 13:14:38 by zwong             #+#    #+#             */
-/*   Updated: 2023/05/11 16:17:17 by zwong            ###   ########.fr       */
+/*   Updated: 2023/05/11 16:25:53 by zwong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ int	validate_paren(t_vars *vars, char *input, int i, int *paren)
 			i++;
 		if (input[i + 1] == '\0')
 			return (0);
-		if (is_syntax_char(input, i + 1))
+		if (input[i + 1] == '|' || input[i + 1] == '&')
 			return (vars->syntax_err = ft_substr(input, i + 1, 1), -1);
 	}
 	else if (input[i] == ')')
