@@ -5,8 +5,8 @@
 
 <p align="center">
   <img
-       width="500"
-       src="https://github.com/Wongoose/minishell-42KL/assets/99158692/3ccbf9e0-8862-4d13-9414-69590a53a148"
+       width="800"
+       src="https://github.com/Wongoose/minishell-42KL/assets/99158692/687ddf0f-da28-4490-923e-96bb8234b3fe"
   >
 </p>
 
