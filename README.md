@@ -11,11 +11,17 @@
 </p>
 
 The project "Minishell" presents a replica of a bash environment, implementing numerous features to provide a functional and user-friendly shell experience.
-The Minishell project encompasses various functionalities, including prompt display, history management, executable search and launch, and handling of special
-characters and quoting rules. The project further incorporates redirections, pipes for command chaining, and environment variable expansion. Additionally,
-it handles essential keyboard interrupts, such as ctrl-C, ctrl-D, and ctrl-, mirroring their behavior in the bash shell. Lastly, Minishell introduces support
-for logical operators (&& and ||) with parenthesis for command priorities and enables the usage of wildcards (\*) in the current working directory.
-This project effectively replicates a bash-like environment, providing users with a powerful and feature-rich shell for their command-line interactions.
+The Minishell project encompasses various functionalities, including:
+- Display prompt for new command
+- History management
+- Executable search and launch based on PATH variable or using relative/absolute path
+- Handling of special characters and quoting rules
+- Redirections
+- Pipes for command chaining
+- Environment variable expansion.
+- Keyboard interrupts such as ctrl-C, ctrl-D and ctrl-\\
+- Logical operators (&& and ||) with parenthesis for command priorities
+- Wildcards (\*) in the current working directory.
 
 ## 2. Setup
 
